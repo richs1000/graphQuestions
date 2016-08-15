@@ -67,21 +67,21 @@ view model =
             ]
 
 
-questionForm : Model -> Html Msg
-questionForm model =
+displayQuestion : Model -> Html Msg
+displayQuestion model =
     let
-        { question, distractors, answer } =
+        { question, distractors, answer, format } =
             model.question
     in
-        case model.success of
-            Nothing ->
+        case format of
+            FillInTheBlank ->
                 Html.form [ onSubmit Submit ]
                     [ div [] [ Html.text question ]
                     , input
                         [ Html.Attributes.type' "text"
                         , placeholder "Answer here..."
-                        , onInput Respond
-                        , value model.response
+                        , onInput UserInput
+                        , value model.userInput
                         ]
                         []
                     , button
@@ -89,14 +89,63 @@ questionForm model =
                         [ Html.text "Submit" ]
                     ]
 
+            MultipleChoice ->
+                -- let
+                --     buttons =
+                --         createButtons model
+                -- in
+                Html.form [ onSubmit Submit ]
+                    [ div []
+                        [ span [] [ Html.text question ]
+                        , radio "True" model
+                        , radio "False" model
+                        ]
+                    , button
+                        [ Html.Attributes.type' "submit" ]
+                        [ Html.text "Submit" ]
+                    ]
+
+
+
+-- createRadios : Model -> Html Msg
+-- createRadios model =
+--     let
+--         rdo =
+
+
+radio : String -> Model -> Html Msg
+radio name model =
+    let
+        isSelected =
+            model.userInput == name
+    in
+        label []
+            [ br [] []
+            , input [ Html.Attributes.type' "radio", checked isSelected, onCheck (\_ -> UserInput name) ] []
+            , Html.text name
+            ]
+
+
+questionForm : Model -> Html Msg
+questionForm model =
+    let
+        { question, distractors, answer, format } =
+            model.question
+    in
+        case model.success of
+            -- No answer has been submitted, so display the question
+            Nothing ->
+                displayQuestion model
+
+            -- Answer has been submitted, so display the feedback
             Just _ ->
                 Html.form [ onSubmit GiveFeedback ]
                     [ div [] [ Html.text model.feedback ]
                     , input
                         [ Html.Attributes.type' "text"
                         , placeholder "Answer here..."
-                        , onInput Respond
-                        , value model.response
+                        , onInput UserInput
+                        , value model.userInput
                         ]
                         []
                     , button
@@ -463,7 +512,10 @@ update msg model =
     in
         case msg of
             Reset ->
-                ( initModel, Random.generate NewNodes (Random.list 15 (Random.int 1 15)) )
+                ( initModel, Random.generate NewRandomValues (Random.list 15 (Random.int 1 15)) )
+
+            NewRandomValues newValues ->
+                ( { model | randomValues = newValues }, Random.generate NewNodes (Random.list 15 (Random.int 1 15)) )
 
             NewNodes newNodes ->
                 let
@@ -483,7 +535,7 @@ update msg model =
                         (replaceWeights edges newWeights)
                 in
                     ( updateGraph model nodes newEdges directional weighted
-                    , Random.generate NewQuestion (Random.int 1 2)
+                    , Random.generate NewQuestion (Random.int 3 3)
                     )
 
             NewQuestion questionIndex ->
@@ -495,11 +547,11 @@ update msg model =
             ToggleDirectional ->
                 ( updateGraph model nodes edges (not directional) weighted, Cmd.none )
 
-            Respond r ->
-                ( { model | response = r }, Cmd.none )
+            UserInput i ->
+                ( { model | userInput = i }, Cmd.none )
 
             Submit ->
-                if (String.isEmpty model.response) then
+                if (String.isEmpty model.userInput) then
                     ( model, Cmd.none )
                 else
                     ( checkAnswer model
@@ -508,7 +560,7 @@ update msg model =
 
             GiveFeedback ->
                 ( model
-                , Random.generate NewNodes (Random.list 15 (Random.int 1 15))
+                , Random.generate NewRandomValues (Random.list 15 (Random.int 1 15))
                 )
 
             BreadthFirstSearch ->
@@ -548,8 +600,9 @@ questionByIndex model index =
             ( toString (numberOfNodes model)
             , "Correct."
             )
+        , format = FillInTheBlank
         }
-    else
+    else if index == 2 then
         { question = "How many edges are in the graph above?"
         , distractors =
             [ ( toString (numberOfNodes model)
@@ -563,7 +616,40 @@ questionByIndex model index =
             ( toString (numberOfEdges model)
             , "Correct."
             )
+        , format = FillInTheBlank
         }
+    else
+        let
+            f =
+                firstNode model
+
+            l =
+                lastNode model
+
+            ans =
+                pathExists model.graph f l
+
+            actualPath =
+                Maybe.withDefault [] (genericSearch model.graph f l)
+
+            fbackString =
+                if ans then
+                    "One valid path is " ++ (toString actualPath)
+                else
+                    "There is no path from Node " ++ toString (f) ++ " to Node " ++ toString (l)
+        in
+            { question = "True or False: There is a path from Node " ++ toString (f) ++ " to Node " ++ toString (l)
+            , distractors =
+                [ ( toString (not ans)
+                  , "Incorrect. " ++ fbackString
+                  )
+                ]
+            , answer =
+                ( toString ans
+                , "Correct. " ++ fbackString
+                )
+            , format = MultipleChoice
+            }
 
 
 newQuestion : Model -> Int -> Model
@@ -575,7 +661,7 @@ newQuestion model index =
         newQuestion =
             questionByIndex model index
     in
-        { model | question = newQuestion, success = Nothing, response = "" }
+        { model | question = newQuestion, success = Nothing, userInput = "" }
 
 
 checkAnswer : Model -> Model
@@ -587,10 +673,10 @@ checkAnswer model =
         { question, distractors, answer } =
             model.question
     in
-        if (fst answer) == model.response then
+        if (fst answer) == model.userInput then
             { model | success = Just True, history = (Just True) :: newHistory, feedback = (snd answer) }
         else
-            { model | success = Just False, history = (Just False) :: newHistory, feedback = (findFeedback (fst answer) model.response distractors) }
+            { model | success = Just False, history = (Just False) :: newHistory, feedback = (findFeedback (fst answer) model.userInput distractors) }
 
 
 findFeedback : String -> String -> List ResponseAndFeedback -> String
@@ -704,6 +790,20 @@ unwindSearchTree searchTree lastNode =
                 unwindSearchTree rest lastNode
 
 
+pathExists : Graph -> NodeId -> NodeId -> Bool
+pathExists graph startNode endNode =
+    let
+        s =
+            breadthFirstSearch graph startNode endNode
+    in
+        case s of
+            Nothing ->
+                False
+
+            Just _ ->
+                True
+
+
 breadthFirstSearch : Graph -> NodeId -> NodeId -> Maybe (List NodeId)
 breadthFirstSearch graph startNode endNode =
     genericSearch graph startNode endNode
@@ -727,7 +827,7 @@ genericSearch graph startNode endNode =
                     else
                         let
                             neighbors =
-                                List.filter (canReach graph firstNode) graph.nodes
+                                List.filter (edgeExists graph firstNode) graph.nodes
                                     |> List.filter (\n -> not (visited openList closedList n))
 
                             -- DFS put at start
@@ -755,8 +855,8 @@ visited openList closedList node =
     (List.member node openList) || (List.member node closedList)
 
 
-canReach : Graph -> NodeId -> NodeId -> Bool
-canReach graph n1 n2 =
+edgeExists : Graph -> NodeId -> NodeId -> Bool
+edgeExists graph n1 n2 =
     let
         -- is there an edge (uni- or bi-directional) from n1 to n2
         n1_to_n2 =
@@ -789,3 +889,34 @@ numberOfEdges model =
             model.graph
     in
         List.length edges
+
+
+firstNode : Model -> NodeId
+firstNode model =
+    let
+        { nodes, edges, directional, weighted } =
+            model.graph
+    in
+        case nodes of
+            [] ->
+                0
+
+            n :: ns ->
+                n
+
+
+lastNode : Model -> NodeId
+lastNode model =
+    let
+        { nodes, edges, directional, weighted } =
+            model.graph
+
+        nodes' =
+            List.reverse nodes
+    in
+        case nodes' of
+            [] ->
+                0
+
+            n :: ns ->
+                n

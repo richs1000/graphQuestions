@@ -17,30 +17,14 @@ var _user$project$Types$emptyGraph = {
 	directional: true,
 	weighted: true
 };
-var _user$project$Types$emptyQuestion = {
-	question: '',
-	distractors: _elm_lang$core$Native_List.fromArray(
-		[]),
-	answer: {ctor: '_Tuple2', _0: '', _1: ''}
-};
 var _user$project$Types$historyLength = 10;
-var _user$project$Types$initModel = {
-	graph: _user$project$Types$emptyGraph,
-	debug: true,
-	response: '',
-	history: A2(_elm_lang$core$List$repeat, _user$project$Types$historyLength, _elm_lang$core$Maybe$Nothing),
-	bfs: _elm_lang$core$Maybe$Nothing,
-	success: _elm_lang$core$Maybe$Nothing,
-	question: _user$project$Types$emptyQuestion,
-	feedback: ''
-};
-var _user$project$Types$Model = F8(
-	function (a, b, c, d, e, f, g, h) {
-		return {graph: a, debug: b, response: c, history: d, bfs: e, question: f, success: g, feedback: h};
+var _user$project$Types$Model = F9(
+	function (a, b, c, d, e, f, g, h, i) {
+		return {graph: a, debug: b, userInput: c, history: d, bfs: e, question: f, success: g, feedback: h, randomValues: i};
 	});
-var _user$project$Types$Question = F3(
-	function (a, b, c) {
-		return {question: a, distractors: b, answer: c};
+var _user$project$Types$Question = F4(
+	function (a, b, c, d) {
+		return {question: a, distractors: b, answer: c, format: d};
 	});
 var _user$project$Types$Edge = F4(
 	function (a, b, c, d) {
@@ -54,6 +38,27 @@ var _user$project$Types$ViewConstants = F9(
 	function (a, b, c, d, e, f, g, h, i) {
 		return {nodeSeparation: a, nodeRadius: b, nodeOffset: c, weightOffset: d, graphUpperLeft: e, nodesPerRow: f, nodesPerCol: g, historySquareSize: h, historySquareSeparation: i};
 	});
+var _user$project$Types$MultipleChoice = {ctor: 'MultipleChoice'};
+var _user$project$Types$FillInTheBlank = {ctor: 'FillInTheBlank'};
+var _user$project$Types$emptyQuestion = {
+	question: '',
+	distractors: _elm_lang$core$Native_List.fromArray(
+		[]),
+	answer: {ctor: '_Tuple2', _0: '', _1: ''},
+	format: _user$project$Types$FillInTheBlank
+};
+var _user$project$Types$initModel = {
+	graph: _user$project$Types$emptyGraph,
+	debug: true,
+	userInput: '',
+	history: A2(_elm_lang$core$List$repeat, _user$project$Types$historyLength, _elm_lang$core$Maybe$Nothing),
+	bfs: _elm_lang$core$Maybe$Nothing,
+	success: _elm_lang$core$Maybe$Nothing,
+	question: _user$project$Types$emptyQuestion,
+	feedback: '',
+	randomValues: _elm_lang$core$Native_List.fromArray(
+		[])
+};
 var _user$project$Types$BiDirectional = {ctor: 'BiDirectional'};
 var _user$project$Types$UniDirectional = {ctor: 'UniDirectional'};
 var _user$project$Types$ToggleDirectional = {ctor: 'ToggleDirectional'};
@@ -61,8 +66,8 @@ var _user$project$Types$ToggleWeighted = {ctor: 'ToggleWeighted'};
 var _user$project$Types$BreadthFirstSearch = {ctor: 'BreadthFirstSearch'};
 var _user$project$Types$GiveFeedback = {ctor: 'GiveFeedback'};
 var _user$project$Types$Submit = {ctor: 'Submit'};
-var _user$project$Types$Respond = function (a) {
-	return {ctor: 'Respond', _0: a};
+var _user$project$Types$UserInput = function (a) {
+	return {ctor: 'UserInput', _0: a};
 };
 var _user$project$Types$NewQuestion = function (a) {
 	return {ctor: 'NewQuestion', _0: a};
@@ -72,5 +77,8 @@ var _user$project$Types$NewEdgeWeights = function (a) {
 };
 var _user$project$Types$NewNodes = function (a) {
 	return {ctor: 'NewNodes', _0: a};
+};
+var _user$project$Types$NewRandomValues = function (a) {
+	return {ctor: 'NewRandomValues', _0: a};
 };
 var _user$project$Types$Reset = {ctor: 'Reset'};

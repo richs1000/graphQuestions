@@ -6,27 +6,28 @@ module Types exposing (..)
 type alias Model =
     { graph : Graph
     , debug : Bool
-    , response : String
+    , userInput : String
     , history : HistoryList
     , bfs : Maybe (List NodeId)
     , question : Question
     , success : Maybe Bool
     , feedback : String
+    , randomValues : List Int
     }
+
 
 initModel : Model
 initModel =
     { graph = emptyGraph
     , debug = True
-    , response = ""
+    , userInput = ""
     , history = List.repeat historyLength Nothing
     , bfs = Nothing
     , success = Nothing
     , question = emptyQuestion
     , feedback = ""
+    , randomValues = []
     }
-
-
 
 
 
@@ -46,10 +47,16 @@ historyLength =
 -- QUESTION
 
 
+type QuestionFormat
+    = FillInTheBlank
+    | MultipleChoice
+
+
 type alias Question =
     { question : String
     , distractors : List ResponseAndFeedback
     , answer : ResponseAndFeedback
+    , format : QuestionFormat
     }
 
 
@@ -59,10 +66,13 @@ type alias ResponseAndFeedback =
 
 emptyQuestion : Question
 emptyQuestion =
-  { question = ""
-  , distractors = []
-  , answer = ("", "")
-  }
+    { question = ""
+    , distractors = []
+    , answer = ( "", "" )
+    , format = FillInTheBlank
+    }
+
+
 
 -- GRAPH
 
@@ -157,10 +167,11 @@ viewConstants =
 
 type Msg
     = Reset
+    | NewRandomValues (List Int)
     | NewNodes (List NodeId)
     | NewEdgeWeights (List EdgeWeight)
     | NewQuestion Int
-    | Respond String
+    | UserInput String
     | Submit
     | GiveFeedback
     | BreadthFirstSearch
