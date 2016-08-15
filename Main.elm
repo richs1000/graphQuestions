@@ -540,6 +540,9 @@ questionByIndex model index =
             [ ( toString (numberOfEdges model)
               , "That is the number of edges. Nodes are the labeled circles in the picture above."
               )
+            , ( ""
+              , "Incorrect. Nodes are the labeled circles in the picture above. A node is still part of a graph even if it is not connected by an edge to any other nodes"
+              )
             ]
         , answer =
             ( toString (numberOfNodes model)
@@ -551,6 +554,9 @@ questionByIndex model index =
         , distractors =
             [ ( toString (numberOfNodes model)
               , "That is the number of nodes. Edges are the lines connecting circles in the picture above. A bi-directional edge (i.e., an edge with two arrows) still counts as a single edge."
+              )
+            , ( ""
+              , "Incorrect. Edges are the lines connecting circles in the picture above. A bi-directional edge (i.e., an edge with two arrows) still counts as a single edge."
               )
             ]
         , answer =
@@ -569,7 +575,7 @@ newQuestion model index =
         newQuestion =
             questionByIndex model index
     in
-        { model | question = newQuestion, success = Nothing }
+        { model | question = newQuestion, success = Nothing, response = "" }
 
 
 checkAnswer : Model -> Model
@@ -582,9 +588,22 @@ checkAnswer model =
             model.question
     in
         if (fst answer) == model.response then
-            { model | response = "", success = Just True, history = (Just True) :: newHistory, feedback = (snd answer) }
+            { model | success = Just True, history = (Just True) :: newHistory, feedback = (snd answer) }
         else
-            { model | response = "", success = Just False, history = (Just False) :: newHistory, feedback = "Oops, I did it again!" }
+            { model | success = Just False, history = (Just False) :: newHistory, feedback = (findFeedback (fst answer) model.response distractors) }
+
+
+findFeedback : String -> String -> List ResponseAndFeedback -> String
+findFeedback answer response distractors =
+    case distractors of
+        [] ->
+            "Incorrect. The answer is " ++ answer
+
+        d :: ds ->
+            if ((fst d) == response || ((fst d) == "")) then
+                (snd d) ++ " The answer is " ++ answer
+            else
+                findFeedback answer response ds
 
 
 
