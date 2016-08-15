@@ -1,0 +1,271 @@
+var _user$project$DrawGraph$arrowHeads = _elm_lang$core$Native_List.fromArray(
+	[
+		A2(
+		_elm_lang$svg$Svg$defs,
+		_elm_lang$core$Native_List.fromArray(
+			[]),
+		_elm_lang$core$Native_List.fromArray(
+			[
+				A2(
+				_elm_lang$svg$Svg$marker,
+				_elm_lang$core$Native_List.fromArray(
+					[
+						_elm_lang$svg$Svg_Attributes$id('ArrowHeadEnd'),
+						_elm_lang$svg$Svg_Attributes$viewBox('0 0 10 10'),
+						_elm_lang$svg$Svg_Attributes$refX('1'),
+						_elm_lang$svg$Svg_Attributes$refY('5'),
+						_elm_lang$svg$Svg_Attributes$markerWidth('6'),
+						_elm_lang$svg$Svg_Attributes$markerHeight('6'),
+						_elm_lang$svg$Svg_Attributes$orient('auto')
+					]),
+				_elm_lang$core$Native_List.fromArray(
+					[
+						A2(
+						_elm_lang$svg$Svg$path,
+						_elm_lang$core$Native_List.fromArray(
+							[
+								_elm_lang$svg$Svg_Attributes$d('M 0 0 L 10 5 L 0 10 z')
+							]),
+						_elm_lang$core$Native_List.fromArray(
+							[]))
+					])),
+				A2(
+				_elm_lang$svg$Svg$marker,
+				_elm_lang$core$Native_List.fromArray(
+					[
+						_elm_lang$svg$Svg_Attributes$id('ArrowHeadStart'),
+						_elm_lang$svg$Svg_Attributes$viewBox('0 0 10 10'),
+						_elm_lang$svg$Svg_Attributes$refX('9'),
+						_elm_lang$svg$Svg_Attributes$refY('5'),
+						_elm_lang$svg$Svg_Attributes$markerWidth('6'),
+						_elm_lang$svg$Svg_Attributes$markerHeight('6'),
+						_elm_lang$svg$Svg_Attributes$orient('auto')
+					]),
+				_elm_lang$core$Native_List.fromArray(
+					[
+						A2(
+						_elm_lang$svg$Svg$path,
+						_elm_lang$core$Native_List.fromArray(
+							[
+								_elm_lang$svg$Svg_Attributes$d('M 10 10 L 0 5 L 10 0 z')
+							]),
+						_elm_lang$core$Native_List.fromArray(
+							[]))
+					]))
+			]))
+	]);
+var _user$project$DrawGraph$viewConstants = {
+	nodeSeparation: 100,
+	nodeRadius: 20,
+	nodeOffset: 30,
+	weightOffset: 7,
+	graphUpperLeft: {ctor: '_Tuple2', _0: 20, _1: 20},
+	nodesPerRow: 4,
+	nodesPerCol: 4
+};
+var _user$project$DrawGraph$nodeCol = function (nodeId) {
+	return A2(_elm_lang$core$Basics$rem, nodeId, _user$project$DrawGraph$viewConstants.nodesPerCol);
+};
+var _user$project$DrawGraph$nodeX = function (nodeId) {
+	var col = A2(_elm_lang$core$Basics$rem, nodeId, _user$project$DrawGraph$viewConstants.nodesPerCol);
+	var x0 = _elm_lang$core$Basics$fst(_user$project$DrawGraph$viewConstants.graphUpperLeft);
+	return x0 + (col * (_user$project$DrawGraph$viewConstants.nodeRadius + _user$project$DrawGraph$viewConstants.nodeSeparation));
+};
+var _user$project$DrawGraph$sameCol = F2(
+	function (n1, n2) {
+		return _elm_lang$core$Native_Utils.eq(
+			_user$project$DrawGraph$nodeX(n1),
+			_user$project$DrawGraph$nodeX(n2));
+	});
+var _user$project$DrawGraph$nodeRow = function (nodeId) {
+	return (nodeId / _user$project$DrawGraph$viewConstants.nodesPerCol) | 0;
+};
+var _user$project$DrawGraph$nodeY = function (nodeId) {
+	var row = (nodeId / _user$project$DrawGraph$viewConstants.nodesPerCol) | 0;
+	var y0 = _elm_lang$core$Basics$snd(_user$project$DrawGraph$viewConstants.graphUpperLeft);
+	return y0 + (row * (_user$project$DrawGraph$viewConstants.nodeRadius + _user$project$DrawGraph$viewConstants.nodeSeparation));
+};
+var _user$project$DrawGraph$sameRow = F2(
+	function (n1, n2) {
+		return _elm_lang$core$Native_Utils.eq(
+			_user$project$DrawGraph$nodeY(n1),
+			_user$project$DrawGraph$nodeY(n2));
+	});
+var _user$project$DrawGraph$drawNode = function (nodeId) {
+	return _elm_lang$core$Native_List.fromArray(
+		[
+			A2(
+			_elm_lang$svg$Svg$circle,
+			_elm_lang$core$Native_List.fromArray(
+				[
+					_elm_lang$svg$Svg_Attributes$cx(
+					_elm_lang$core$Basics$toString(
+						_user$project$DrawGraph$nodeX(nodeId))),
+					_elm_lang$svg$Svg_Attributes$cy(
+					_elm_lang$core$Basics$toString(
+						_user$project$DrawGraph$nodeY(nodeId))),
+					_elm_lang$svg$Svg_Attributes$r(
+					_elm_lang$core$Basics$toString(_user$project$DrawGraph$viewConstants.nodeRadius)),
+					_elm_lang$svg$Svg_Attributes$fill('blue')
+				]),
+			_elm_lang$core$Native_List.fromArray(
+				[])),
+			A2(
+			_elm_lang$svg$Svg$text$,
+			_elm_lang$core$Native_List.fromArray(
+				[
+					_elm_lang$svg$Svg_Attributes$x(
+					_elm_lang$core$Basics$toString(
+						_user$project$DrawGraph$nodeX(nodeId))),
+					_elm_lang$svg$Svg_Attributes$y(
+					_elm_lang$core$Basics$toString(
+						_user$project$DrawGraph$nodeY(nodeId))),
+					_elm_lang$svg$Svg_Attributes$fontSize('14'),
+					_elm_lang$svg$Svg_Attributes$textAnchor('middle'),
+					_elm_lang$svg$Svg_Attributes$fill('white')
+				]),
+			_elm_lang$core$Native_List.fromArray(
+				[
+					_elm_lang$svg$Svg$text(
+					_elm_lang$core$Basics$toString(nodeId))
+				]))
+		]);
+};
+var _user$project$DrawGraph$drawNodes = function (graph) {
+	var drawNodesHelper = function (nodeIds) {
+		var _p0 = nodeIds;
+		if (_p0.ctor === '[]') {
+			return _elm_lang$core$Native_List.fromArray(
+				[]);
+		} else {
+			return A2(
+				_elm_lang$core$List$append,
+				_user$project$DrawGraph$drawNode(_p0._0),
+				drawNodesHelper(_p0._1));
+		}
+	};
+	return drawNodesHelper(graph.nodes);
+};
+var _user$project$DrawGraph$edgeWeight = F5(
+	function (weight, x_1, y_1, x_2, y_2) {
+		var yOffset = _elm_lang$core$Native_Utils.eq(y_1, y_2) ? (3 * _user$project$DrawGraph$viewConstants.weightOffset) : 0;
+		var midY = (((y_1 + y_2) / 2) | 0) + yOffset;
+		var xOffset = _elm_lang$core$Native_Utils.eq(x_1, x_2) ? _user$project$DrawGraph$viewConstants.weightOffset : 0;
+		var midX = (((x_1 + x_2) / 2) | 0) + xOffset;
+		return A2(
+			_elm_lang$svg$Svg$text$,
+			_elm_lang$core$Native_List.fromArray(
+				[
+					_elm_lang$svg$Svg_Attributes$x(
+					_elm_lang$core$Basics$toString(midX)),
+					_elm_lang$svg$Svg_Attributes$y(
+					_elm_lang$core$Basics$toString(midY)),
+					_elm_lang$svg$Svg_Attributes$fontSize('18'),
+					_elm_lang$svg$Svg_Attributes$textAnchor('middle'),
+					_elm_lang$svg$Svg_Attributes$fill('red')
+				]),
+			_elm_lang$core$Native_List.fromArray(
+				[
+					_elm_lang$svg$Svg$text(
+					_elm_lang$core$Basics$toString(weight))
+				]));
+	});
+var _user$project$DrawGraph$adjustPixel = F2(
+	function (p1, p2) {
+		return (_elm_lang$core$Native_Utils.cmp(p1, p2) < 0) ? (p1 + _user$project$DrawGraph$viewConstants.nodeOffset) : (_elm_lang$core$Native_Utils.eq(p1, p2) ? p1 : (p1 - _user$project$DrawGraph$viewConstants.nodeOffset));
+	});
+var _user$project$DrawGraph$edgeLine = F6(
+	function (x_1, y_1, x_2, y_2, directional, direction) {
+		var lineStyle = _elm_lang$core$Native_List.fromArray(
+			[
+				_elm_lang$svg$Svg_Attributes$x1(
+				_elm_lang$core$Basics$toString(
+					A2(_user$project$DrawGraph$adjustPixel, x_1, x_2))),
+				_elm_lang$svg$Svg_Attributes$y1(
+				_elm_lang$core$Basics$toString(
+					A2(_user$project$DrawGraph$adjustPixel, y_1, y_2))),
+				_elm_lang$svg$Svg_Attributes$x2(
+				_elm_lang$core$Basics$toString(
+					A2(_user$project$DrawGraph$adjustPixel, x_2, x_1))),
+				_elm_lang$svg$Svg_Attributes$y2(
+				_elm_lang$core$Basics$toString(
+					A2(_user$project$DrawGraph$adjustPixel, y_2, y_1))),
+				_elm_lang$svg$Svg_Attributes$fill('none'),
+				_elm_lang$svg$Svg_Attributes$stroke('black'),
+				_elm_lang$svg$Svg_Attributes$strokeWidth('2')
+			]);
+		var uniArrow = _elm_lang$core$Native_List.fromArray(
+			[
+				_elm_lang$svg$Svg_Attributes$markerEnd('url(#ArrowHeadEnd)')
+			]);
+		var biArrow = _elm_lang$core$Native_List.fromArray(
+			[
+				_elm_lang$svg$Svg_Attributes$markerStart('url(#ArrowHeadStart)'),
+				_elm_lang$svg$Svg_Attributes$markerEnd('url(#ArrowHeadEnd)')
+			]);
+		var lineStyle$ = (directional && _elm_lang$core$Native_Utils.eq(direction, _user$project$Graph$BiDirectional)) ? A2(_elm_lang$core$List$append, lineStyle, biArrow) : ((directional && _elm_lang$core$Native_Utils.eq(direction, _user$project$Graph$UniDirectional)) ? A2(_elm_lang$core$List$append, lineStyle, uniArrow) : lineStyle);
+		return A2(
+			_elm_lang$svg$Svg$line,
+			lineStyle$,
+			_elm_lang$core$Native_List.fromArray(
+				[]));
+	});
+var _user$project$DrawGraph$drawEdge = F3(
+	function (edge, weighted, directional) {
+		var y_2 = _user$project$DrawGraph$nodeY(edge.to);
+		var x_2 = _user$project$DrawGraph$nodeX(edge.to);
+		var y_1 = _user$project$DrawGraph$nodeY(edge.from);
+		var x_1 = _user$project$DrawGraph$nodeX(edge.from);
+		var lne = _elm_lang$core$Native_List.fromArray(
+			[
+				A6(_user$project$DrawGraph$edgeLine, x_1, y_1, x_2, y_2, directional, edge.direction)
+			]);
+		return (weighted && (_elm_lang$core$Native_Utils.cmp(edge.weight, 0) > 0)) ? A2(
+			_elm_lang$core$List$append,
+			lne,
+			_elm_lang$core$Native_List.fromArray(
+				[
+					A5(_user$project$DrawGraph$edgeWeight, edge.weight, x_1, y_1, x_2, y_2)
+				])) : lne;
+	});
+var _user$project$DrawGraph$drawEdges = function (graph) {
+	var drawEdgesHelper = F3(
+		function (edges, weighted, directional) {
+			var _p1 = edges;
+			if (_p1.ctor === '[]') {
+				return _user$project$DrawGraph$arrowHeads;
+			} else {
+				return A2(
+					_elm_lang$core$List$append,
+					A3(_user$project$DrawGraph$drawEdge, _p1._0, weighted, directional),
+					A3(drawEdgesHelper, _p1._1, weighted, directional));
+			}
+		});
+	return A3(drawEdgesHelper, graph.edges, graph.weighted, graph.directional);
+};
+var _user$project$DrawGraph$drawGraph = function (graph) {
+	return A2(
+		_elm_lang$core$List$append,
+		_user$project$DrawGraph$drawNodes(graph),
+		_user$project$DrawGraph$drawEdges(graph));
+};
+var _user$project$DrawGraph$imageOfGraph = function (model) {
+	var graphHeight = (_user$project$DrawGraph$viewConstants.nodeSeparation + _user$project$DrawGraph$viewConstants.nodeRadius) * _user$project$DrawGraph$viewConstants.nodesPerCol;
+	var graphWidth = (_user$project$DrawGraph$viewConstants.nodeSeparation + _user$project$DrawGraph$viewConstants.nodeRadius) * _user$project$DrawGraph$viewConstants.nodesPerRow;
+	return A2(
+		_elm_lang$svg$Svg$svg,
+		_elm_lang$core$Native_List.fromArray(
+			[
+				_elm_lang$svg$Svg_Attributes$version('1.1'),
+				_elm_lang$svg$Svg_Attributes$baseProfile('full'),
+				_elm_lang$svg$Svg_Attributes$width(
+				_elm_lang$core$Basics$toString(graphWidth)),
+				_elm_lang$svg$Svg_Attributes$height(
+				_elm_lang$core$Basics$toString(graphHeight))
+			]),
+		_user$project$DrawGraph$drawGraph(model.graph));
+};
+var _user$project$DrawGraph$ViewConstants = F7(
+	function (a, b, c, d, e, f, g) {
+		return {nodeSeparation: a, nodeRadius: b, nodeOffset: c, weightOffset: d, graphUpperLeft: e, nodesPerRow: f, nodesPerCol: g};
+	});

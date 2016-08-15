@@ -1,0 +1,145 @@
+var _user$project$Update$replaceWeights = F2(
+	function (edges, newWeights) {
+		return _user$project$GraphCreateEdges$removeOverlappingEdges(
+			_user$project$Graph$mergeDuplicates(
+				A2(
+					_elm_lang$core$List$filter,
+					function (e) {
+						return _elm_lang$core$Native_Utils.cmp(e.weight, 0) > 0;
+					},
+					A3(
+						_elm_lang$core$List$map2,
+						F2(
+							function (e, w) {
+								return {from: e.from, to: e.to, weight: w, direction: e.direction};
+							}),
+						edges,
+						newWeights))));
+	});
+var _user$project$Update$checkAnswer = function (model) {
+	var _p0 = model.graph;
+	var nodes = _p0.nodes;
+	var edges = _p0.edges;
+	var directional = _p0.directional;
+	var weighted = _p0.weighted;
+	var answer = _elm_lang$core$List$length(nodes);
+	return _elm_lang$core$Native_Utils.eq(
+		_elm_lang$core$Basics$toString(answer),
+		model.response) ? _elm_lang$core$Native_Utils.update(
+		model,
+		{
+			success: _elm_lang$core$Maybe$Just(true)
+		}) : _elm_lang$core$Native_Utils.update(
+		model,
+		{
+			success: _elm_lang$core$Maybe$Just(false)
+		});
+};
+var _user$project$Update$update = F2(
+	function (msg, model) {
+		var _p1 = model.graph;
+		var nodes = _p1.nodes;
+		var edges = _p1.edges;
+		var directional = _p1.directional;
+		var weighted = _p1.weighted;
+		var _p2 = msg;
+		switch (_p2.ctor) {
+			case 'Reset':
+				return {
+					ctor: '_Tuple2',
+					_0: _elm_lang$core$Native_Utils.update(
+						model,
+						{graph: _user$project$Graph$emptyGraph, response: ''}),
+					_1: A2(
+						_elm_lang$core$Random$generate,
+						_user$project$Messages$NewNodes,
+						A2(
+							_elm_lang$core$Random$list,
+							15,
+							A2(_elm_lang$core$Random$int, 1, 15)))
+				};
+			case 'NewNodes':
+				var newNodes$ = _elm_lang$core$Set$toList(
+					_elm_lang$core$Set$fromList(_p2._0));
+				var newEdges = _user$project$GraphCreateEdges$createAllEdges(newNodes$);
+				return {
+					ctor: '_Tuple2',
+					_0: A5(_user$project$Model$updateGraph, model, newNodes$, newEdges, directional, weighted),
+					_1: A2(
+						_elm_lang$core$Random$generate,
+						_user$project$Messages$NewEdgeWeights,
+						A2(
+							_elm_lang$core$Random$list,
+							_elm_lang$core$List$length(newEdges),
+							A2(_elm_lang$core$Random$int, -1, 5)))
+				};
+			case 'NewEdgeWeights':
+				var newEdges = A2(_user$project$Update$replaceWeights, edges, _p2._0);
+				return {
+					ctor: '_Tuple2',
+					_0: A5(_user$project$Model$updateGraph, model, nodes, newEdges, directional, weighted),
+					_1: _elm_lang$core$Platform_Cmd$none
+				};
+			case 'ToggleWeighted':
+				return {
+					ctor: '_Tuple2',
+					_0: A5(
+						_user$project$Model$updateGraph,
+						model,
+						nodes,
+						edges,
+						directional,
+						_elm_lang$core$Basics$not(weighted)),
+					_1: _elm_lang$core$Platform_Cmd$none
+				};
+			case 'ToggleDirectional':
+				return {
+					ctor: '_Tuple2',
+					_0: A5(
+						_user$project$Model$updateGraph,
+						model,
+						nodes,
+						edges,
+						_elm_lang$core$Basics$not(directional),
+						weighted),
+					_1: _elm_lang$core$Platform_Cmd$none
+				};
+			case 'Respond':
+				return {
+					ctor: '_Tuple2',
+					_0: _elm_lang$core$Native_Utils.update(
+						model,
+						{response: _p2._0}),
+					_1: _elm_lang$core$Platform_Cmd$none
+				};
+			case 'Submit':
+				return _elm_lang$core$String$isEmpty(model.response) ? {ctor: '_Tuple2', _0: model, _1: _elm_lang$core$Platform_Cmd$none} : {
+					ctor: '_Tuple2',
+					_0: _user$project$Update$checkAnswer(model),
+					_1: _elm_lang$core$Platform_Cmd$none
+				};
+			default:
+				var lastNode = _elm_lang$core$List$head(
+					_elm_lang$core$List$reverse(nodes));
+				var firstNode = _elm_lang$core$List$head(nodes);
+				var _p3 = firstNode;
+				if (_p3.ctor === 'Nothing') {
+					return {ctor: '_Tuple2', _0: model, _1: _elm_lang$core$Platform_Cmd$none};
+				} else {
+					var _p4 = lastNode;
+					if (_p4.ctor === 'Nothing') {
+						return {ctor: '_Tuple2', _0: model, _1: _elm_lang$core$Platform_Cmd$none};
+					} else {
+						return {
+							ctor: '_Tuple2',
+							_0: _elm_lang$core$Native_Utils.update(
+								model,
+								{
+									bfs: A3(_user$project$Search$breadthFirstSearch, model.graph, _p3._0, _p4._0)
+								}),
+							_1: _elm_lang$core$Platform_Cmd$none
+						};
+					}
+				}
+		}
+	});

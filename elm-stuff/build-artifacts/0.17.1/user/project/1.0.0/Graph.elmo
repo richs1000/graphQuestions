@@ -1,0 +1,105 @@
+var _user$project$Graph$stripList = function (maybes) {
+	stripList:
+	while (true) {
+		var _p0 = maybes;
+		if (_p0.ctor === '[]') {
+			return _elm_lang$core$Native_List.fromArray(
+				[]);
+		} else {
+			if (_p0._0.ctor === 'Just') {
+				return A2(
+					_elm_lang$core$List_ops['::'],
+					_p0._0._0,
+					_user$project$Graph$stripList(_p0._1));
+			} else {
+				var _v1 = _p0._1;
+				maybes = _v1;
+				continue stripList;
+			}
+		}
+	}
+};
+var _user$project$Graph$emptyGraph = {
+	nodes: _elm_lang$core$Native_List.fromArray(
+		[]),
+	edges: _elm_lang$core$Native_List.fromArray(
+		[]),
+	directional: true,
+	weighted: true
+};
+var _user$project$Graph$Edge = F4(
+	function (a, b, c, d) {
+		return {from: a, to: b, weight: c, direction: d};
+	});
+var _user$project$Graph$Graph = F4(
+	function (a, b, c, d) {
+		return {nodes: a, edges: b, directional: c, weighted: d};
+	});
+var _user$project$Graph$BiDirectional = {ctor: 'BiDirectional'};
+var _user$project$Graph$canReach = F3(
+	function (graph, n1, n2) {
+		var n2_to_n1_non = _elm_lang$core$Basics$not(graph.directional) && A2(
+			_elm_lang$core$List$any,
+			function (e) {
+				return _elm_lang$core$Native_Utils.eq(e.from, n2) && _elm_lang$core$Native_Utils.eq(e.to, n1);
+			},
+			graph.edges);
+		var n2_to_n1_bi = A2(
+			_elm_lang$core$List$any,
+			function (e) {
+				return _elm_lang$core$Native_Utils.eq(e.from, n2) && (_elm_lang$core$Native_Utils.eq(e.to, n1) && _elm_lang$core$Native_Utils.eq(e.direction, _user$project$Graph$BiDirectional));
+			},
+			graph.edges);
+		var n1_to_n2 = A2(
+			_elm_lang$core$List$any,
+			function (e) {
+				return _elm_lang$core$Native_Utils.eq(e.from, n1) && _elm_lang$core$Native_Utils.eq(e.to, n2);
+			},
+			graph.edges);
+		return n1_to_n2 || (n2_to_n1_bi || n2_to_n1_non);
+	});
+var _user$project$Graph$mergeDuplicates = function (edges) {
+	var _p1 = edges;
+	if (_p1.ctor === '[]') {
+		return _elm_lang$core$Native_List.fromArray(
+			[]);
+	} else {
+		var _p4 = _p1._0;
+		var _p2 = A2(
+			_elm_lang$core$List$partition,
+			function (ee) {
+				return _elm_lang$core$Native_Utils.eq(_p4.to, ee.from) && _elm_lang$core$Native_Utils.eq(_p4.from, ee.to);
+			},
+			_p1._1);
+		var rev = _p2._0;
+		var notRev = _p2._1;
+		var _p3 = rev;
+		if (_p3.ctor === '[]') {
+			return A2(
+				_elm_lang$core$List_ops['::'],
+				_p4,
+				_user$project$Graph$mergeDuplicates(notRev));
+		} else {
+			return A2(
+				_elm_lang$core$List_ops['::'],
+				_elm_lang$core$Native_Utils.update(
+					_p4,
+					{direction: _user$project$Graph$BiDirectional}),
+				_user$project$Graph$mergeDuplicates(notRev));
+		}
+	}
+};
+var _user$project$Graph$UniDirectional = {ctor: 'UniDirectional'};
+var _user$project$Graph$createEdgesFromNode = F2(
+	function (fromNode, neighbors) {
+		var _p5 = neighbors;
+		if (_p5.ctor === '[]') {
+			return _elm_lang$core$Native_List.fromArray(
+				[]);
+		} else {
+			return A2(
+				_elm_lang$core$List_ops['::'],
+				A4(_user$project$Graph$Edge, fromNode, _p5._0, 0, _user$project$Graph$UniDirectional),
+				A2(_user$project$Graph$createEdgesFromNode, fromNode, _p5._1));
+		}
+	});

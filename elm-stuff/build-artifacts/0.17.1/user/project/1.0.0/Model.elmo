@@ -1,0 +1,14 @@
+var _user$project$Model$updateGraph = F5(
+	function (model, ns, es, d, w) {
+		return _elm_lang$core$Native_Utils.update(
+			model,
+			{
+				graph: {nodes: ns, edges: es, directional: d, weighted: w}
+			});
+	});
+var _user$project$Model$historyLength = 10;
+var _user$project$Model$emptyHistory = A2(_elm_lang$core$List$repeat, _user$project$Model$historyLength, false);
+var _user$project$Model$Model = F6(
+	function (a, b, c, d, e, f) {
+		return {graph: a, debug: b, response: c, history: d, bfs: e, success: f};
+	});

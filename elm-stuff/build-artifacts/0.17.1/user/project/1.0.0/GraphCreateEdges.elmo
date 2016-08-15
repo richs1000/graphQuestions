@@ -1,0 +1,92 @@
+var _user$project$GraphCreateEdges$edgesOverlap = F2(
+	function (e1, e2) {
+		return A2(_user$project$DrawGraph$sameRow, e1.from, e1.to) && (A2(_user$project$DrawGraph$sameCol, e2.from, e2.to) && ((((_elm_lang$core$Native_Utils.cmp(
+			_user$project$DrawGraph$nodeRow(e2.from),
+			_user$project$DrawGraph$nodeRow(e1.from)) < 0) && (_elm_lang$core$Native_Utils.cmp(
+			_user$project$DrawGraph$nodeRow(e1.from),
+			_user$project$DrawGraph$nodeRow(e2.to)) < 0)) || ((_elm_lang$core$Native_Utils.cmp(
+			_user$project$DrawGraph$nodeRow(e2.to),
+			_user$project$DrawGraph$nodeRow(e1.from)) < 0) && (_elm_lang$core$Native_Utils.cmp(
+			_user$project$DrawGraph$nodeRow(e1.from),
+			_user$project$DrawGraph$nodeRow(e2.from)) < 0))) && (((_elm_lang$core$Native_Utils.cmp(
+			_user$project$DrawGraph$nodeCol(e1.from),
+			_user$project$DrawGraph$nodeCol(e2.from)) < 0) && (_elm_lang$core$Native_Utils.cmp(
+			_user$project$DrawGraph$nodeCol(e2.from),
+			_user$project$DrawGraph$nodeCol(e1.to)) < 0)) || ((_elm_lang$core$Native_Utils.cmp(
+			_user$project$DrawGraph$nodeCol(e1.to),
+			_user$project$DrawGraph$nodeCol(e2.from)) < 0) && (_elm_lang$core$Native_Utils.cmp(
+			_user$project$DrawGraph$nodeCol(e2.from),
+			_user$project$DrawGraph$nodeCol(e1.from)) < 0)))));
+	});
+var _user$project$GraphCreateEdges$removeOverlappingEdges = function (edges) {
+	var _p0 = edges;
+	if (_p0.ctor === '[]') {
+		return _elm_lang$core$Native_List.fromArray(
+			[]);
+	} else {
+		var _p2 = _p0._0;
+		var _p1 = A2(
+			_elm_lang$core$List$partition,
+			function (ee) {
+				return A2(_user$project$GraphCreateEdges$edgesOverlap, _p2, ee) || A2(_user$project$GraphCreateEdges$edgesOverlap, ee, _p2);
+			},
+			_p0._1);
+		var overlap = _p1._0;
+		var notOverlap = _p1._1;
+		return A2(
+			_elm_lang$core$List_ops['::'],
+			_p2,
+			_user$project$GraphCreateEdges$removeOverlappingEdges(notOverlap));
+	}
+};
+var _user$project$GraphCreateEdges$closestNeighbor = F4(
+	function (allNodes, fromNode, pred, offset) {
+		var closestNeighborHelper = function (nodeId) {
+			closestNeighborHelper:
+			while (true) {
+				if ((_elm_lang$core$Native_Utils.cmp(nodeId, 0) < 0) || (_elm_lang$core$Native_Utils.cmp(nodeId, _user$project$DrawGraph$viewConstants.nodesPerRow * _user$project$DrawGraph$viewConstants.nodesPerCol) > -1)) {
+					return _elm_lang$core$Maybe$Nothing;
+				} else {
+					if (A2(_elm_lang$core$List$member, nodeId, allNodes) && A2(pred, fromNode, nodeId)) {
+						return _elm_lang$core$Maybe$Just(nodeId);
+					} else {
+						var _v1 = nodeId + offset;
+						nodeId = _v1;
+						continue closestNeighborHelper;
+					}
+				}
+			}
+		};
+		return closestNeighborHelper(fromNode + offset);
+	});
+var _user$project$GraphCreateEdges$findNeighbors = F2(
+	function (nodes, node) {
+		return _elm_lang$core$Native_List.fromArray(
+			[
+				A4(_user$project$GraphCreateEdges$closestNeighbor, nodes, node, _user$project$DrawGraph$sameRow, 1),
+				A4(_user$project$GraphCreateEdges$closestNeighbor, nodes, node, _user$project$DrawGraph$sameRow, -1),
+				A4(_user$project$GraphCreateEdges$closestNeighbor, nodes, node, _user$project$DrawGraph$sameCol, _user$project$DrawGraph$viewConstants.nodesPerRow),
+				A4(_user$project$GraphCreateEdges$closestNeighbor, nodes, node, _user$project$DrawGraph$sameCol, 0 - _user$project$DrawGraph$viewConstants.nodesPerRow)
+			]);
+	});
+var _user$project$GraphCreateEdges$createAllEdges = function (nodes) {
+	var createAllEdgesHelper = F2(
+		function (allNodes, nodes) {
+			var _p3 = nodes;
+			if (_p3.ctor === '[]') {
+				return _elm_lang$core$Native_List.fromArray(
+					[]);
+			} else {
+				var _p4 = _p3._0;
+				return A2(
+					_elm_lang$core$List$append,
+					A2(
+						_user$project$Graph$createEdgesFromNode,
+						_p4,
+						_user$project$Graph$stripList(
+							A2(_user$project$GraphCreateEdges$findNeighbors, allNodes, _p4))),
+					A2(createAllEdgesHelper, allNodes, _p3._1));
+			}
+		});
+	return A2(createAllEdgesHelper, nodes, nodes);
+};

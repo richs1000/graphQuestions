@@ -1,0 +1,14 @@
+var _user$project$Messages$BreadthFirstSearch = {ctor: 'BreadthFirstSearch'};
+var _user$project$Messages$Submit = {ctor: 'Submit'};
+var _user$project$Messages$Respond = function (a) {
+	return {ctor: 'Respond', _0: a};
+};
+var _user$project$Messages$ToggleDirectional = {ctor: 'ToggleDirectional'};
+var _user$project$Messages$ToggleWeighted = {ctor: 'ToggleWeighted'};
+var _user$project$Messages$NewEdgeWeights = function (a) {
+	return {ctor: 'NewEdgeWeights', _0: a};
+};
+var _user$project$Messages$NewNodes = function (a) {
+	return {ctor: 'NewNodes', _0: a};
+};
+var _user$project$Messages$Reset = {ctor: 'Reset'};

@@ -1,0 +1,44 @@
+var _user$project$QuestionView$questionString = function (model) {
+	return 'How many nodes does this graph have?';
+};
+var _user$project$QuestionView$questionForm = function (model) {
+	return A2(
+		_elm_lang$html$Html$form,
+		_elm_lang$core$Native_List.fromArray(
+			[
+				_elm_lang$html$Html_Events$onSubmit(_user$project$Messages$Submit)
+			]),
+		_elm_lang$core$Native_List.fromArray(
+			[
+				A2(
+				_elm_lang$html$Html$div,
+				_elm_lang$core$Native_List.fromArray(
+					[]),
+				_elm_lang$core$Native_List.fromArray(
+					[
+						_elm_lang$html$Html$text(
+						_user$project$QuestionView$questionString(model))
+					])),
+				A2(
+				_elm_lang$html$Html$input,
+				_elm_lang$core$Native_List.fromArray(
+					[
+						_elm_lang$html$Html_Attributes$type$('text'),
+						_elm_lang$html$Html_Attributes$placeholder('Answer here...'),
+						_elm_lang$html$Html_Events$onInput(_user$project$Messages$Respond),
+						_elm_lang$html$Html_Attributes$value(model.response)
+					]),
+				_elm_lang$core$Native_List.fromArray(
+					[])),
+				A2(
+				_elm_lang$html$Html$button,
+				_elm_lang$core$Native_List.fromArray(
+					[
+						_elm_lang$html$Html_Attributes$type$('submit')
+					]),
+				_elm_lang$core$Native_List.fromArray(
+					[
+						_elm_lang$html$Html$text('Submit')
+					]))
+			]));
+};

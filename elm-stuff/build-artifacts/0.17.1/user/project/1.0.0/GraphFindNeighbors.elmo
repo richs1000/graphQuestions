@@ -1,0 +1,51 @@
+var _user$project$GraphFindNeighbors$closestNeighbor = F4(
+	function (allNodes, fromNode, pred, offset) {
+		var closestNeighborHelper = function (nodeId) {
+			closestNeighborHelper:
+			while (true) {
+				if ((_elm_lang$core$Native_Utils.cmp(nodeId, 0) < 0) || (_elm_lang$core$Native_Utils.cmp(nodeId, _user$project$DrawGraph$viewConstants.nodesPerRow * _user$project$DrawGraph$viewConstants.nodesPerCol) > -1)) {
+					return _elm_lang$core$Maybe$Nothing;
+				} else {
+					if (A2(_elm_lang$core$List$member, nodeId, allNodes) && A2(pred, fromNode, nodeId)) {
+						return _elm_lang$core$Maybe$Just(nodeId);
+					} else {
+						var _v0 = nodeId + offset;
+						nodeId = _v0;
+						continue closestNeighborHelper;
+					}
+				}
+			}
+		};
+		return closestNeighborHelper(fromNode + offset);
+	});
+var _user$project$GraphFindNeighbors$findNeighbors = F2(
+	function (nodes, node) {
+		return _elm_lang$core$Native_List.fromArray(
+			[
+				A4(_user$project$GraphFindNeighbors$closestNeighbor, nodes, node, _user$project$DrawGraph$sameRow, 1),
+				A4(_user$project$GraphFindNeighbors$closestNeighbor, nodes, node, _user$project$DrawGraph$sameRow, -1),
+				A4(_user$project$GraphFindNeighbors$closestNeighbor, nodes, node, _user$project$DrawGraph$sameCol, _user$project$DrawGraph$viewConstants.nodesPerRow),
+				A4(_user$project$GraphFindNeighbors$closestNeighbor, nodes, node, _user$project$DrawGraph$sameCol, 0 - _user$project$DrawGraph$viewConstants.nodesPerRow)
+			]);
+	});
+var _user$project$GraphFindNeighbors$createAllEdges = function (nodes) {
+	var createAllEdgesHelper = F2(
+		function (allNodes, nodes) {
+			var _p0 = nodes;
+			if (_p0.ctor === '[]') {
+				return _elm_lang$core$Native_List.fromArray(
+					[]);
+			} else {
+				var _p1 = _p0._0;
+				return A2(
+					_elm_lang$core$List$append,
+					A2(
+						_user$project$Graph$createEdgesFromNode,
+						_p1,
+						_user$project$Graph$stripList(
+							A2(_user$project$GraphFindNeighbors$findNeighbors, allNodes, _p1))),
+					A2(createAllEdgesHelper, allNodes, _p0._1));
+			}
+		});
+	return A2(createAllEdgesHelper, nodes, nodes);
+};

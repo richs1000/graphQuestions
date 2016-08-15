@@ -1,0 +1,968 @@
+var _user$project$Main$numberOfEdges = function (model) {
+	var _p0 = model.graph;
+	var nodes = _p0.nodes;
+	var edges = _p0.edges;
+	var directional = _p0.directional;
+	var weighted = _p0.weighted;
+	return _elm_lang$core$List$length(edges);
+};
+var _user$project$Main$numberOfNodes = function (model) {
+	var _p1 = model.graph;
+	var nodes = _p1.nodes;
+	var edges = _p1.edges;
+	var directional = _p1.directional;
+	var weighted = _p1.weighted;
+	return _elm_lang$core$List$length(nodes);
+};
+var _user$project$Main$canReach = F3(
+	function (graph, n1, n2) {
+		var n2_to_n1_non = _elm_lang$core$Basics$not(graph.directional) && A2(
+			_elm_lang$core$List$any,
+			function (e) {
+				return _elm_lang$core$Native_Utils.eq(e.from, n2) && _elm_lang$core$Native_Utils.eq(e.to, n1);
+			},
+			graph.edges);
+		var n2_to_n1_bi = A2(
+			_elm_lang$core$List$any,
+			function (e) {
+				return _elm_lang$core$Native_Utils.eq(e.from, n2) && (_elm_lang$core$Native_Utils.eq(e.to, n1) && _elm_lang$core$Native_Utils.eq(e.direction, _user$project$Types$BiDirectional));
+			},
+			graph.edges);
+		var n1_to_n2 = A2(
+			_elm_lang$core$List$any,
+			function (e) {
+				return _elm_lang$core$Native_Utils.eq(e.from, n1) && _elm_lang$core$Native_Utils.eq(e.to, n2);
+			},
+			graph.edges);
+		return n1_to_n2 || (n2_to_n1_bi || n2_to_n1_non);
+	});
+var _user$project$Main$visited = F3(
+	function (openList, closedList, node) {
+		return A2(_elm_lang$core$List$member, node, openList) || A2(_elm_lang$core$List$member, node, closedList);
+	});
+var _user$project$Main$unwindSearchTree = F2(
+	function (searchTree, lastNode) {
+		unwindSearchTree:
+		while (true) {
+			var _p2 = searchTree;
+			if (_p2.ctor === '[]') {
+				return _elm_lang$core$Native_List.fromArray(
+					[]);
+			} else {
+				var _p4 = _p2._1;
+				var _p3 = _p2._0._0;
+				if (A2(
+					_elm_lang$core$List$member,
+					lastNode,
+					A2(_elm_lang$core$Debug$log, 'kids', _p2._0._1))) {
+					return A2(
+						_elm_lang$core$List_ops['::'],
+						_p3,
+						A2(_user$project$Main$unwindSearchTree, _p4, _p3));
+				} else {
+					var _v1 = _p4,
+						_v2 = lastNode;
+					searchTree = _v1;
+					lastNode = _v2;
+					continue unwindSearchTree;
+				}
+			}
+		}
+	});
+var _user$project$Main$genericSearch = F3(
+	function (graph, startNode, endNode) {
+		var searchHelper = F3(
+			function (openList, closedList, searchTree) {
+				searchHelper:
+				while (true) {
+					var _p5 = openList;
+					if (_p5.ctor === '[]') {
+						return _elm_lang$core$Maybe$Nothing;
+					} else {
+						var _p7 = _p5._0;
+						if (_elm_lang$core$Native_Utils.eq(_p7, endNode)) {
+							return _elm_lang$core$Maybe$Just(
+								_elm_lang$core$List$reverse(
+									A2(
+										_elm_lang$core$List_ops['::'],
+										endNode,
+										A2(_user$project$Main$unwindSearchTree, searchTree, endNode))));
+						} else {
+							var neighbors = A2(
+								_elm_lang$core$List$filter,
+								function (n) {
+									return _elm_lang$core$Basics$not(
+										A3(_user$project$Main$visited, openList, closedList, n));
+								},
+								A2(
+									_elm_lang$core$List$filter,
+									A2(_user$project$Main$canReach, graph, _p7),
+									graph.nodes));
+							var openList$ = A2(_elm_lang$core$List$append, _p5._1, neighbors);
+							var searchTree$ = A2(
+								_elm_lang$core$Debug$log,
+								'search tree: ',
+								A2(
+									_elm_lang$core$List_ops['::'],
+									{ctor: '_Tuple2', _0: _p7, _1: neighbors},
+									searchTree));
+							var _p6 = neighbors;
+							if (_p6.ctor === '[]') {
+								var _v5 = openList$,
+									_v6 = A2(_elm_lang$core$List_ops['::'], _p7, closedList),
+									_v7 = searchTree$;
+								openList = _v5;
+								closedList = _v6;
+								searchTree = _v7;
+								continue searchHelper;
+							} else {
+								var _v8 = openList$,
+									_v9 = A2(_elm_lang$core$List_ops['::'], _p7, closedList),
+									_v10 = searchTree$;
+								openList = _v8;
+								closedList = _v9;
+								searchTree = _v10;
+								continue searchHelper;
+							}
+						}
+					}
+				}
+			});
+		return A3(
+			searchHelper,
+			_elm_lang$core$Native_List.fromArray(
+				[startNode]),
+			_elm_lang$core$Native_List.fromArray(
+				[]),
+			_elm_lang$core$Native_List.fromArray(
+				[]));
+	});
+var _user$project$Main$breadthFirstSearch = F3(
+	function (graph, startNode, endNode) {
+		return A3(_user$project$Main$genericSearch, graph, startNode, endNode);
+	});
+var _user$project$Main$mergeDuplicates = function (edges) {
+	var _p8 = edges;
+	if (_p8.ctor === '[]') {
+		return _elm_lang$core$Native_List.fromArray(
+			[]);
+	} else {
+		var _p11 = _p8._0;
+		var _p9 = A2(
+			_elm_lang$core$List$partition,
+			function (ee) {
+				return _elm_lang$core$Native_Utils.eq(_p11.to, ee.from) && _elm_lang$core$Native_Utils.eq(_p11.from, ee.to);
+			},
+			_p8._1);
+		var rev = _p9._0;
+		var notRev = _p9._1;
+		var _p10 = rev;
+		if (_p10.ctor === '[]') {
+			return A2(
+				_elm_lang$core$List_ops['::'],
+				_p11,
+				_user$project$Main$mergeDuplicates(notRev));
+		} else {
+			return A2(
+				_elm_lang$core$List_ops['::'],
+				_elm_lang$core$Native_Utils.update(
+					_p11,
+					{direction: _user$project$Types$BiDirectional}),
+				_user$project$Main$mergeDuplicates(notRev));
+		}
+	}
+};
+var _user$project$Main$checkAnswer = function (model) {
+	var _p12 = model.question;
+	var question = _p12.question;
+	var distractors = _p12.distractors;
+	var answer = _p12.answer;
+	var newHistory = A2(_elm_lang$core$List$take, _user$project$Types$historyLength - 1, model.history);
+	return _elm_lang$core$Native_Utils.eq(
+		_elm_lang$core$Basics$fst(answer),
+		model.response) ? _elm_lang$core$Native_Utils.update(
+		model,
+		{
+			response: '',
+			success: _elm_lang$core$Maybe$Just(true),
+			history: A2(
+				_elm_lang$core$List_ops['::'],
+				_elm_lang$core$Maybe$Just(true),
+				newHistory),
+			feedback: _elm_lang$core$Basics$snd(answer)
+		}) : _elm_lang$core$Native_Utils.update(
+		model,
+		{
+			response: '',
+			success: _elm_lang$core$Maybe$Just(false),
+			history: A2(
+				_elm_lang$core$List_ops['::'],
+				_elm_lang$core$Maybe$Just(false),
+				newHistory),
+			feedback: 'Oops, I did it again!'
+		});
+};
+var _user$project$Main$questionByIndex = F2(
+	function (model, index) {
+		return _elm_lang$core$Native_Utils.eq(index, 1) ? {
+			question: 'How many nodes are in the graph above?',
+			distractors: _elm_lang$core$Native_List.fromArray(
+				[
+					{
+					ctor: '_Tuple2',
+					_0: _elm_lang$core$Basics$toString(
+						_user$project$Main$numberOfEdges(model)),
+					_1: 'That is the number of edges. Nodes are the labeled circles in the picture above.'
+				}
+				]),
+			answer: {
+				ctor: '_Tuple2',
+				_0: _elm_lang$core$Basics$toString(
+					_user$project$Main$numberOfNodes(model)),
+				_1: 'Correct.'
+			}
+		} : {
+			question: 'How many edges are in the graph above?',
+			distractors: _elm_lang$core$Native_List.fromArray(
+				[
+					{
+					ctor: '_Tuple2',
+					_0: _elm_lang$core$Basics$toString(
+						_user$project$Main$numberOfNodes(model)),
+					_1: 'That is the number of nodes. Edges are the lines connecting circles in the picture above. A bi-directional edge (i.e., an edge with two arrows) still counts as a single edge.'
+				}
+				]),
+			answer: {
+				ctor: '_Tuple2',
+				_0: _elm_lang$core$Basics$toString(
+					_user$project$Main$numberOfEdges(model)),
+				_1: 'Correct.'
+			}
+		};
+	});
+var _user$project$Main$newQuestion = F2(
+	function (model, index) {
+		var newQuestion = A2(_user$project$Main$questionByIndex, model, index);
+		var _p13 = model.graph;
+		var nodes = _p13.nodes;
+		var edges = _p13.edges;
+		var directional = _p13.directional;
+		var weighted = _p13.weighted;
+		return _elm_lang$core$Native_Utils.update(
+			model,
+			{question: newQuestion, success: _elm_lang$core$Maybe$Nothing});
+	});
+var _user$project$Main$createEdgesFromNode = F2(
+	function (fromNode, neighbors) {
+		var _p14 = neighbors;
+		if (_p14.ctor === '[]') {
+			return _elm_lang$core$Native_List.fromArray(
+				[]);
+		} else {
+			return A2(
+				_elm_lang$core$List_ops['::'],
+				A4(_user$project$Types$Edge, fromNode, _p14._0, 0, _user$project$Types$UniDirectional),
+				A2(_user$project$Main$createEdgesFromNode, fromNode, _p14._1));
+		}
+	});
+var _user$project$Main$stripList = function (maybes) {
+	stripList:
+	while (true) {
+		var _p15 = maybes;
+		if (_p15.ctor === '[]') {
+			return _elm_lang$core$Native_List.fromArray(
+				[]);
+		} else {
+			if (_p15._0.ctor === 'Just') {
+				return A2(
+					_elm_lang$core$List_ops['::'],
+					_p15._0._0,
+					_user$project$Main$stripList(_p15._1));
+			} else {
+				var _v15 = _p15._1;
+				maybes = _v15;
+				continue stripList;
+			}
+		}
+	}
+};
+var _user$project$Main$closestNeighbor = F4(
+	function (allNodes, fromNode, pred, offset) {
+		var closestNeighborHelper = function (nodeId) {
+			closestNeighborHelper:
+			while (true) {
+				if ((_elm_lang$core$Native_Utils.cmp(nodeId, 0) < 0) || (_elm_lang$core$Native_Utils.cmp(nodeId, _user$project$Types$viewConstants.nodesPerRow * _user$project$Types$viewConstants.nodesPerCol) > -1)) {
+					return _elm_lang$core$Maybe$Nothing;
+				} else {
+					if (A2(_elm_lang$core$List$member, nodeId, allNodes) && A2(pred, fromNode, nodeId)) {
+						return _elm_lang$core$Maybe$Just(nodeId);
+					} else {
+						var _v16 = nodeId + offset;
+						nodeId = _v16;
+						continue closestNeighborHelper;
+					}
+				}
+			}
+		};
+		return closestNeighborHelper(fromNode + offset);
+	});
+var _user$project$Main$updateGraph = F5(
+	function (model, ns, es, d, w) {
+		return _elm_lang$core$Native_Utils.update(
+			model,
+			{
+				graph: {nodes: ns, edges: es, directional: d, weighted: w}
+			});
+	});
+var _user$project$Main$subscriptions = function (model) {
+	return _elm_lang$core$Platform_Sub$none;
+};
+var _user$project$Main$arrowHeads = _elm_lang$core$Native_List.fromArray(
+	[
+		A2(
+		_elm_lang$svg$Svg$defs,
+		_elm_lang$core$Native_List.fromArray(
+			[]),
+		_elm_lang$core$Native_List.fromArray(
+			[
+				A2(
+				_elm_lang$svg$Svg$marker,
+				_elm_lang$core$Native_List.fromArray(
+					[
+						_elm_lang$svg$Svg_Attributes$id('ArrowHeadEnd'),
+						_elm_lang$svg$Svg_Attributes$viewBox('0 0 10 10'),
+						_elm_lang$svg$Svg_Attributes$refX('1'),
+						_elm_lang$svg$Svg_Attributes$refY('5'),
+						_elm_lang$svg$Svg_Attributes$markerWidth('6'),
+						_elm_lang$svg$Svg_Attributes$markerHeight('6'),
+						_elm_lang$svg$Svg_Attributes$orient('auto')
+					]),
+				_elm_lang$core$Native_List.fromArray(
+					[
+						A2(
+						_elm_lang$svg$Svg$path,
+						_elm_lang$core$Native_List.fromArray(
+							[
+								_elm_lang$svg$Svg_Attributes$d('M 0 0 L 10 5 L 0 10 z')
+							]),
+						_elm_lang$core$Native_List.fromArray(
+							[]))
+					])),
+				A2(
+				_elm_lang$svg$Svg$marker,
+				_elm_lang$core$Native_List.fromArray(
+					[
+						_elm_lang$svg$Svg_Attributes$id('ArrowHeadStart'),
+						_elm_lang$svg$Svg_Attributes$viewBox('0 0 10 10'),
+						_elm_lang$svg$Svg_Attributes$refX('9'),
+						_elm_lang$svg$Svg_Attributes$refY('5'),
+						_elm_lang$svg$Svg_Attributes$markerWidth('6'),
+						_elm_lang$svg$Svg_Attributes$markerHeight('6'),
+						_elm_lang$svg$Svg_Attributes$orient('auto')
+					]),
+				_elm_lang$core$Native_List.fromArray(
+					[
+						A2(
+						_elm_lang$svg$Svg$path,
+						_elm_lang$core$Native_List.fromArray(
+							[
+								_elm_lang$svg$Svg_Attributes$d('M 10 10 L 0 5 L 10 0 z')
+							]),
+						_elm_lang$core$Native_List.fromArray(
+							[]))
+					]))
+			]))
+	]);
+var _user$project$Main$adjustPixel = F2(
+	function (p1, p2) {
+		return (_elm_lang$core$Native_Utils.cmp(p1, p2) < 0) ? (p1 + _user$project$Types$viewConstants.nodeOffset) : (_elm_lang$core$Native_Utils.eq(p1, p2) ? p1 : (p1 - _user$project$Types$viewConstants.nodeOffset));
+	});
+var _user$project$Main$edgeLine = F6(
+	function (x_1, y_1, x_2, y_2, directional, direction) {
+		var lineStyle = _elm_lang$core$Native_List.fromArray(
+			[
+				_elm_lang$svg$Svg_Attributes$x1(
+				_elm_lang$core$Basics$toString(
+					A2(_user$project$Main$adjustPixel, x_1, x_2))),
+				_elm_lang$svg$Svg_Attributes$y1(
+				_elm_lang$core$Basics$toString(
+					A2(_user$project$Main$adjustPixel, y_1, y_2))),
+				_elm_lang$svg$Svg_Attributes$x2(
+				_elm_lang$core$Basics$toString(
+					A2(_user$project$Main$adjustPixel, x_2, x_1))),
+				_elm_lang$svg$Svg_Attributes$y2(
+				_elm_lang$core$Basics$toString(
+					A2(_user$project$Main$adjustPixel, y_2, y_1))),
+				_elm_lang$svg$Svg_Attributes$fill('none'),
+				_elm_lang$svg$Svg_Attributes$stroke('black'),
+				_elm_lang$svg$Svg_Attributes$strokeWidth('2')
+			]);
+		var uniArrow = _elm_lang$core$Native_List.fromArray(
+			[
+				_elm_lang$svg$Svg_Attributes$markerEnd('url(#ArrowHeadEnd)')
+			]);
+		var biArrow = _elm_lang$core$Native_List.fromArray(
+			[
+				_elm_lang$svg$Svg_Attributes$markerStart('url(#ArrowHeadStart)'),
+				_elm_lang$svg$Svg_Attributes$markerEnd('url(#ArrowHeadEnd)')
+			]);
+		var lineStyle$ = (directional && _elm_lang$core$Native_Utils.eq(direction, _user$project$Types$BiDirectional)) ? A2(_elm_lang$core$List$append, lineStyle, biArrow) : ((directional && _elm_lang$core$Native_Utils.eq(direction, _user$project$Types$UniDirectional)) ? A2(_elm_lang$core$List$append, lineStyle, uniArrow) : lineStyle);
+		return A2(
+			_elm_lang$svg$Svg$line,
+			lineStyle$,
+			_elm_lang$core$Native_List.fromArray(
+				[]));
+	});
+var _user$project$Main$edgeWeight = F5(
+	function (weight, x_1, y_1, x_2, y_2) {
+		var yOffset = _elm_lang$core$Native_Utils.eq(y_1, y_2) ? (3 * _user$project$Types$viewConstants.weightOffset) : 0;
+		var midY = (((y_1 + y_2) / 2) | 0) + yOffset;
+		var xOffset = _elm_lang$core$Native_Utils.eq(x_1, x_2) ? _user$project$Types$viewConstants.weightOffset : 0;
+		var midX = (((x_1 + x_2) / 2) | 0) + xOffset;
+		return A2(
+			_elm_lang$svg$Svg$text$,
+			_elm_lang$core$Native_List.fromArray(
+				[
+					_elm_lang$svg$Svg_Attributes$x(
+					_elm_lang$core$Basics$toString(midX)),
+					_elm_lang$svg$Svg_Attributes$y(
+					_elm_lang$core$Basics$toString(midY)),
+					_elm_lang$svg$Svg_Attributes$fontSize('18'),
+					_elm_lang$svg$Svg_Attributes$textAnchor('middle'),
+					_elm_lang$svg$Svg_Attributes$fill('red')
+				]),
+			_elm_lang$core$Native_List.fromArray(
+				[
+					_elm_lang$svg$Svg$text(
+					_elm_lang$core$Basics$toString(weight))
+				]));
+	});
+var _user$project$Main$nodeY = function (nodeId) {
+	var row = (nodeId / _user$project$Types$viewConstants.nodesPerCol) | 0;
+	var y0 = _elm_lang$core$Basics$snd(_user$project$Types$viewConstants.graphUpperLeft);
+	return y0 + (row * (_user$project$Types$viewConstants.nodeRadius + _user$project$Types$viewConstants.nodeSeparation));
+};
+var _user$project$Main$sameRow = F2(
+	function (n1, n2) {
+		return _elm_lang$core$Native_Utils.eq(
+			_user$project$Main$nodeY(n1),
+			_user$project$Main$nodeY(n2));
+	});
+var _user$project$Main$nodeRow = function (nodeId) {
+	return (nodeId / _user$project$Types$viewConstants.nodesPerCol) | 0;
+};
+var _user$project$Main$nodeX = function (nodeId) {
+	var col = A2(_elm_lang$core$Basics$rem, nodeId, _user$project$Types$viewConstants.nodesPerCol);
+	var x0 = _elm_lang$core$Basics$fst(_user$project$Types$viewConstants.graphUpperLeft);
+	return x0 + (col * (_user$project$Types$viewConstants.nodeRadius + _user$project$Types$viewConstants.nodeSeparation));
+};
+var _user$project$Main$sameCol = F2(
+	function (n1, n2) {
+		return _elm_lang$core$Native_Utils.eq(
+			_user$project$Main$nodeX(n1),
+			_user$project$Main$nodeX(n2));
+	});
+var _user$project$Main$findNeighbors = F2(
+	function (nodes, node) {
+		return _elm_lang$core$Native_List.fromArray(
+			[
+				A4(_user$project$Main$closestNeighbor, nodes, node, _user$project$Main$sameRow, 1),
+				A4(_user$project$Main$closestNeighbor, nodes, node, _user$project$Main$sameRow, -1),
+				A4(_user$project$Main$closestNeighbor, nodes, node, _user$project$Main$sameCol, _user$project$Types$viewConstants.nodesPerRow),
+				A4(_user$project$Main$closestNeighbor, nodes, node, _user$project$Main$sameCol, 0 - _user$project$Types$viewConstants.nodesPerRow)
+			]);
+	});
+var _user$project$Main$createAllEdges = function (nodes) {
+	var createAllEdgesHelper = F2(
+		function (allNodes, nodes) {
+			var _p16 = nodes;
+			if (_p16.ctor === '[]') {
+				return _elm_lang$core$Native_List.fromArray(
+					[]);
+			} else {
+				var _p17 = _p16._0;
+				return A2(
+					_elm_lang$core$List$append,
+					A2(
+						_user$project$Main$createEdgesFromNode,
+						_p17,
+						_user$project$Main$stripList(
+							A2(_user$project$Main$findNeighbors, allNodes, _p17))),
+					A2(createAllEdgesHelper, allNodes, _p16._1));
+			}
+		});
+	return A2(createAllEdgesHelper, nodes, nodes);
+};
+var _user$project$Main$drawNode = function (nodeId) {
+	return _elm_lang$core$Native_List.fromArray(
+		[
+			A2(
+			_elm_lang$svg$Svg$circle,
+			_elm_lang$core$Native_List.fromArray(
+				[
+					_elm_lang$svg$Svg_Attributes$cx(
+					_elm_lang$core$Basics$toString(
+						_user$project$Main$nodeX(nodeId))),
+					_elm_lang$svg$Svg_Attributes$cy(
+					_elm_lang$core$Basics$toString(
+						_user$project$Main$nodeY(nodeId))),
+					_elm_lang$svg$Svg_Attributes$r(
+					_elm_lang$core$Basics$toString(_user$project$Types$viewConstants.nodeRadius)),
+					_elm_lang$svg$Svg_Attributes$fill('blue')
+				]),
+			_elm_lang$core$Native_List.fromArray(
+				[])),
+			A2(
+			_elm_lang$svg$Svg$text$,
+			_elm_lang$core$Native_List.fromArray(
+				[
+					_elm_lang$svg$Svg_Attributes$x(
+					_elm_lang$core$Basics$toString(
+						_user$project$Main$nodeX(nodeId))),
+					_elm_lang$svg$Svg_Attributes$y(
+					_elm_lang$core$Basics$toString(
+						_user$project$Main$nodeY(nodeId))),
+					_elm_lang$svg$Svg_Attributes$fontSize('14'),
+					_elm_lang$svg$Svg_Attributes$textAnchor('middle'),
+					_elm_lang$svg$Svg_Attributes$fill('white')
+				]),
+			_elm_lang$core$Native_List.fromArray(
+				[
+					_elm_lang$svg$Svg$text(
+					_elm_lang$core$Basics$toString(nodeId))
+				]))
+		]);
+};
+var _user$project$Main$drawEdge = F3(
+	function (edge, weighted, directional) {
+		var y_2 = _user$project$Main$nodeY(edge.to);
+		var x_2 = _user$project$Main$nodeX(edge.to);
+		var y_1 = _user$project$Main$nodeY(edge.from);
+		var x_1 = _user$project$Main$nodeX(edge.from);
+		var lne = _elm_lang$core$Native_List.fromArray(
+			[
+				A6(_user$project$Main$edgeLine, x_1, y_1, x_2, y_2, directional, edge.direction)
+			]);
+		return (weighted && (_elm_lang$core$Native_Utils.cmp(edge.weight, 0) > 0)) ? A2(
+			_elm_lang$core$List$append,
+			lne,
+			_elm_lang$core$Native_List.fromArray(
+				[
+					A5(_user$project$Main$edgeWeight, edge.weight, x_1, y_1, x_2, y_2)
+				])) : lne;
+	});
+var _user$project$Main$drawEdges = function (graph) {
+	var drawEdgesHelper = F3(
+		function (edges, weighted, directional) {
+			var _p18 = edges;
+			if (_p18.ctor === '[]') {
+				return _user$project$Main$arrowHeads;
+			} else {
+				return A2(
+					_elm_lang$core$List$append,
+					A3(_user$project$Main$drawEdge, _p18._0, weighted, directional),
+					A3(drawEdgesHelper, _p18._1, weighted, directional));
+			}
+		});
+	return A3(drawEdgesHelper, graph.edges, graph.weighted, graph.directional);
+};
+var _user$project$Main$nodeCol = function (nodeId) {
+	return A2(_elm_lang$core$Basics$rem, nodeId, _user$project$Types$viewConstants.nodesPerCol);
+};
+var _user$project$Main$edgesOverlap = F2(
+	function (e1, e2) {
+		return A2(_user$project$Main$sameRow, e1.from, e1.to) && (A2(_user$project$Main$sameCol, e2.from, e2.to) && ((((_elm_lang$core$Native_Utils.cmp(
+			_user$project$Main$nodeRow(e2.from),
+			_user$project$Main$nodeRow(e1.from)) < 0) && (_elm_lang$core$Native_Utils.cmp(
+			_user$project$Main$nodeRow(e1.from),
+			_user$project$Main$nodeRow(e2.to)) < 0)) || ((_elm_lang$core$Native_Utils.cmp(
+			_user$project$Main$nodeRow(e2.to),
+			_user$project$Main$nodeRow(e1.from)) < 0) && (_elm_lang$core$Native_Utils.cmp(
+			_user$project$Main$nodeRow(e1.from),
+			_user$project$Main$nodeRow(e2.from)) < 0))) && (((_elm_lang$core$Native_Utils.cmp(
+			_user$project$Main$nodeCol(e1.from),
+			_user$project$Main$nodeCol(e2.from)) < 0) && (_elm_lang$core$Native_Utils.cmp(
+			_user$project$Main$nodeCol(e2.from),
+			_user$project$Main$nodeCol(e1.to)) < 0)) || ((_elm_lang$core$Native_Utils.cmp(
+			_user$project$Main$nodeCol(e1.to),
+			_user$project$Main$nodeCol(e2.from)) < 0) && (_elm_lang$core$Native_Utils.cmp(
+			_user$project$Main$nodeCol(e2.from),
+			_user$project$Main$nodeCol(e1.from)) < 0)))));
+	});
+var _user$project$Main$removeOverlappingEdges = function (edges) {
+	var _p19 = edges;
+	if (_p19.ctor === '[]') {
+		return _elm_lang$core$Native_List.fromArray(
+			[]);
+	} else {
+		var _p21 = _p19._0;
+		var _p20 = A2(
+			_elm_lang$core$List$partition,
+			function (ee) {
+				return A2(_user$project$Main$edgesOverlap, _p21, ee) || A2(_user$project$Main$edgesOverlap, ee, _p21);
+			},
+			_p19._1);
+		var overlap = _p20._0;
+		var notOverlap = _p20._1;
+		return A2(
+			_elm_lang$core$List_ops['::'],
+			_p21,
+			_user$project$Main$removeOverlappingEdges(notOverlap));
+	}
+};
+var _user$project$Main$replaceWeights = F2(
+	function (edges, newWeights) {
+		return _user$project$Main$removeOverlappingEdges(
+			_user$project$Main$mergeDuplicates(
+				A2(
+					_elm_lang$core$List$filter,
+					function (e) {
+						return _elm_lang$core$Native_Utils.cmp(e.weight, 0) > 0;
+					},
+					A3(
+						_elm_lang$core$List$map2,
+						F2(
+							function (e, w) {
+								return {from: e.from, to: e.to, weight: w, direction: e.direction};
+							}),
+						edges,
+						newWeights))));
+	});
+var _user$project$Main$update = F2(
+	function (msg, model) {
+		var _p22 = model.graph;
+		var nodes = _p22.nodes;
+		var edges = _p22.edges;
+		var directional = _p22.directional;
+		var weighted = _p22.weighted;
+		var _p23 = msg;
+		switch (_p23.ctor) {
+			case 'Reset':
+				return {
+					ctor: '_Tuple2',
+					_0: _user$project$Types$initModel,
+					_1: A2(
+						_elm_lang$core$Random$generate,
+						_user$project$Types$NewNodes,
+						A2(
+							_elm_lang$core$Random$list,
+							15,
+							A2(_elm_lang$core$Random$int, 1, 15)))
+				};
+			case 'NewNodes':
+				var newNodes$ = _elm_lang$core$Set$toList(
+					_elm_lang$core$Set$fromList(_p23._0));
+				var newEdges = _user$project$Main$createAllEdges(newNodes$);
+				return {
+					ctor: '_Tuple2',
+					_0: A5(_user$project$Main$updateGraph, model, newNodes$, newEdges, directional, weighted),
+					_1: A2(
+						_elm_lang$core$Random$generate,
+						_user$project$Types$NewEdgeWeights,
+						A2(
+							_elm_lang$core$Random$list,
+							_elm_lang$core$List$length(newEdges),
+							A2(_elm_lang$core$Random$int, -1, 5)))
+				};
+			case 'NewEdgeWeights':
+				var newEdges = A2(_user$project$Main$replaceWeights, edges, _p23._0);
+				return {
+					ctor: '_Tuple2',
+					_0: A5(_user$project$Main$updateGraph, model, nodes, newEdges, directional, weighted),
+					_1: A2(
+						_elm_lang$core$Random$generate,
+						_user$project$Types$NewQuestion,
+						A2(_elm_lang$core$Random$int, 1, 2))
+				};
+			case 'NewQuestion':
+				return {
+					ctor: '_Tuple2',
+					_0: A2(_user$project$Main$newQuestion, model, _p23._0),
+					_1: _elm_lang$core$Platform_Cmd$none
+				};
+			case 'ToggleWeighted':
+				return {
+					ctor: '_Tuple2',
+					_0: A5(
+						_user$project$Main$updateGraph,
+						model,
+						nodes,
+						edges,
+						directional,
+						_elm_lang$core$Basics$not(weighted)),
+					_1: _elm_lang$core$Platform_Cmd$none
+				};
+			case 'ToggleDirectional':
+				return {
+					ctor: '_Tuple2',
+					_0: A5(
+						_user$project$Main$updateGraph,
+						model,
+						nodes,
+						edges,
+						_elm_lang$core$Basics$not(directional),
+						weighted),
+					_1: _elm_lang$core$Platform_Cmd$none
+				};
+			case 'Respond':
+				return {
+					ctor: '_Tuple2',
+					_0: _elm_lang$core$Native_Utils.update(
+						model,
+						{response: _p23._0}),
+					_1: _elm_lang$core$Platform_Cmd$none
+				};
+			case 'Submit':
+				return _elm_lang$core$String$isEmpty(model.response) ? {ctor: '_Tuple2', _0: model, _1: _elm_lang$core$Platform_Cmd$none} : {
+					ctor: '_Tuple2',
+					_0: _user$project$Main$checkAnswer(model),
+					_1: _elm_lang$core$Platform_Cmd$none
+				};
+			case 'GiveFeedback':
+				return {
+					ctor: '_Tuple2',
+					_0: model,
+					_1: A2(
+						_elm_lang$core$Random$generate,
+						_user$project$Types$NewNodes,
+						A2(
+							_elm_lang$core$Random$list,
+							15,
+							A2(_elm_lang$core$Random$int, 1, 15)))
+				};
+			default:
+				var lastNode = _elm_lang$core$List$head(
+					_elm_lang$core$List$reverse(nodes));
+				var firstNode = _elm_lang$core$List$head(nodes);
+				var _p24 = firstNode;
+				if (_p24.ctor === 'Nothing') {
+					return {ctor: '_Tuple2', _0: model, _1: _elm_lang$core$Platform_Cmd$none};
+				} else {
+					var _p25 = lastNode;
+					if (_p25.ctor === 'Nothing') {
+						return {ctor: '_Tuple2', _0: model, _1: _elm_lang$core$Platform_Cmd$none};
+					} else {
+						return {
+							ctor: '_Tuple2',
+							_0: _elm_lang$core$Native_Utils.update(
+								model,
+								{
+									bfs: A3(_user$project$Main$breadthFirstSearch, model.graph, _p24._0, _p25._0)
+								}),
+							_1: _elm_lang$core$Platform_Cmd$none
+						};
+					}
+				}
+		}
+	});
+var _user$project$Main$drawNodes = function (graph) {
+	var drawNodesHelper = function (nodeIds) {
+		var _p26 = nodeIds;
+		if (_p26.ctor === '[]') {
+			return _elm_lang$core$Native_List.fromArray(
+				[]);
+		} else {
+			return A2(
+				_elm_lang$core$List$append,
+				_user$project$Main$drawNode(_p26._0),
+				drawNodesHelper(_p26._1));
+		}
+	};
+	return drawNodesHelper(graph.nodes);
+};
+var _user$project$Main$drawGraph = function (graph) {
+	return A2(
+		_elm_lang$core$List$append,
+		_user$project$Main$drawNodes(graph),
+		_user$project$Main$drawEdges(graph));
+};
+var _user$project$Main$imageOfGraph = function (model) {
+	var graphHeight = (_user$project$Types$viewConstants.nodeSeparation + _user$project$Types$viewConstants.nodeRadius) * _user$project$Types$viewConstants.nodesPerCol;
+	var graphWidth = (_user$project$Types$viewConstants.nodeSeparation + _user$project$Types$viewConstants.nodeRadius) * _user$project$Types$viewConstants.nodesPerRow;
+	return A2(
+		_elm_lang$svg$Svg$svg,
+		_elm_lang$core$Native_List.fromArray(
+			[
+				_elm_lang$svg$Svg_Attributes$version('1.1'),
+				_elm_lang$svg$Svg_Attributes$baseProfile('full'),
+				_elm_lang$svg$Svg_Attributes$width(
+				_elm_lang$core$Basics$toString(graphWidth)),
+				_elm_lang$svg$Svg_Attributes$height(
+				_elm_lang$core$Basics$toString(graphHeight))
+			]),
+		_user$project$Main$drawGraph(model.graph));
+};
+var _user$project$Main$questionForm = function (model) {
+	var _p27 = model.question;
+	var question = _p27.question;
+	var distractors = _p27.distractors;
+	var answer = _p27.answer;
+	var _p28 = model.success;
+	if (_p28.ctor === 'Nothing') {
+		return A2(
+			_elm_lang$html$Html$form,
+			_elm_lang$core$Native_List.fromArray(
+				[
+					_elm_lang$html$Html_Events$onSubmit(_user$project$Types$Submit)
+				]),
+			_elm_lang$core$Native_List.fromArray(
+				[
+					A2(
+					_elm_lang$html$Html$div,
+					_elm_lang$core$Native_List.fromArray(
+						[]),
+					_elm_lang$core$Native_List.fromArray(
+						[
+							_elm_lang$html$Html$text(question)
+						])),
+					A2(
+					_elm_lang$html$Html$input,
+					_elm_lang$core$Native_List.fromArray(
+						[
+							_elm_lang$html$Html_Attributes$type$('text'),
+							_elm_lang$html$Html_Attributes$placeholder('Answer here...'),
+							_elm_lang$html$Html_Events$onInput(_user$project$Types$Respond),
+							_elm_lang$html$Html_Attributes$value(model.response)
+						]),
+					_elm_lang$core$Native_List.fromArray(
+						[])),
+					A2(
+					_elm_lang$html$Html$button,
+					_elm_lang$core$Native_List.fromArray(
+						[
+							_elm_lang$html$Html_Attributes$type$('submit')
+						]),
+					_elm_lang$core$Native_List.fromArray(
+						[
+							_elm_lang$html$Html$text('Submit')
+						]))
+				]));
+	} else {
+		return A2(
+			_elm_lang$html$Html$form,
+			_elm_lang$core$Native_List.fromArray(
+				[
+					_elm_lang$html$Html_Events$onSubmit(_user$project$Types$GiveFeedback)
+				]),
+			_elm_lang$core$Native_List.fromArray(
+				[
+					A2(
+					_elm_lang$html$Html$div,
+					_elm_lang$core$Native_List.fromArray(
+						[]),
+					_elm_lang$core$Native_List.fromArray(
+						[
+							_elm_lang$html$Html$text(model.feedback)
+						])),
+					A2(
+					_elm_lang$html$Html$input,
+					_elm_lang$core$Native_List.fromArray(
+						[
+							_elm_lang$html$Html_Attributes$type$('text'),
+							_elm_lang$html$Html_Attributes$placeholder('Answer here...'),
+							_elm_lang$html$Html_Events$onInput(_user$project$Types$Respond),
+							_elm_lang$html$Html_Attributes$value(model.response)
+						]),
+					_elm_lang$core$Native_List.fromArray(
+						[])),
+					A2(
+					_elm_lang$html$Html$button,
+					_elm_lang$core$Native_List.fromArray(
+						[
+							_elm_lang$html$Html_Attributes$type$('submit')
+						]),
+					_elm_lang$core$Native_List.fromArray(
+						[
+							_elm_lang$html$Html$text('Next Question')
+						]))
+				]));
+	}
+};
+var _user$project$Main$view = function (model) {
+	var resetBtn = A2(
+		_elm_lang$html$Html$button,
+		_elm_lang$core$Native_List.fromArray(
+			[
+				_elm_lang$html$Html_Events$onClick(_user$project$Types$Reset)
+			]),
+		_elm_lang$core$Native_List.fromArray(
+			[
+				_elm_lang$html$Html$text('Reset')
+			]));
+	var buttons = model.debug ? A2(
+		_elm_lang$html$Html$div,
+		_elm_lang$core$Native_List.fromArray(
+			[]),
+		_elm_lang$core$Native_List.fromArray(
+			[
+				resetBtn,
+				A2(
+				_elm_lang$html$Html$button,
+				_elm_lang$core$Native_List.fromArray(
+					[
+						_elm_lang$html$Html_Events$onClick(_user$project$Types$ToggleWeighted)
+					]),
+				_elm_lang$core$Native_List.fromArray(
+					[
+						_elm_lang$html$Html$text('Toggle Weighted')
+					])),
+				A2(
+				_elm_lang$html$Html$button,
+				_elm_lang$core$Native_List.fromArray(
+					[
+						_elm_lang$html$Html_Events$onClick(_user$project$Types$ToggleDirectional)
+					]),
+				_elm_lang$core$Native_List.fromArray(
+					[
+						_elm_lang$html$Html$text('Toggle Directional')
+					])),
+				A2(
+				_elm_lang$html$Html$button,
+				_elm_lang$core$Native_List.fromArray(
+					[
+						_elm_lang$html$Html_Events$onClick(_user$project$Types$BreadthFirstSearch)
+					]),
+				_elm_lang$core$Native_List.fromArray(
+					[
+						_elm_lang$html$Html$text('BFS')
+					]))
+			])) : A2(
+		_elm_lang$html$Html$div,
+		_elm_lang$core$Native_List.fromArray(
+			[]),
+		_elm_lang$core$Native_List.fromArray(
+			[resetBtn]));
+	return A2(
+		_elm_lang$html$Html$div,
+		_elm_lang$core$Native_List.fromArray(
+			[]),
+		_elm_lang$core$Native_List.fromArray(
+			[
+				A2(
+				_elm_lang$html$Html$h1,
+				_elm_lang$core$Native_List.fromArray(
+					[_user$project$View$scoreboardStyle]),
+				_elm_lang$core$Native_List.fromArray(
+					[
+						_elm_lang$html$Html$text('Mastery Quiz')
+					])),
+				_user$project$Main$imageOfGraph(model),
+				_user$project$Main$questionForm(model),
+				_user$project$View$historySection(model),
+				buttons,
+				A2(
+				_elm_lang$html$Html$p,
+				_elm_lang$core$Native_List.fromArray(
+					[]),
+				_elm_lang$core$Native_List.fromArray(
+					[
+						_elm_lang$html$Html$text(
+						_elm_lang$core$Basics$toString(model))
+					]))
+			]));
+};
+var _user$project$Main$init = A2(_user$project$Main$update, _user$project$Types$Reset, _user$project$Types$initModel);
+var _user$project$Main$main = {
+	main: _elm_lang$html$Html_App$program(
+		{init: _user$project$Main$init, view: _user$project$Main$view, update: _user$project$Main$update, subscriptions: _user$project$Main$subscriptions})
+};
