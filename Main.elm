@@ -535,7 +535,7 @@ update msg model =
                         (replaceWeights edges newWeights)
                 in
                     ( updateGraph model nodes newEdges directional weighted
-                    , Random.generate NewQuestion (Random.int 3 3)
+                    , Random.generate NewQuestion (Random.int 4 4)
                     )
 
             NewQuestion questionIndex ->
@@ -618,7 +618,7 @@ questionByIndex model index =
             )
         , format = FillInTheBlank
         }
-    else
+    else if index == 3 then
         let
             f =
                 firstNode model
@@ -650,6 +650,69 @@ questionByIndex model index =
                 )
             , format = MultipleChoice
             }
+    else
+        let
+            f =
+                randomNode model []
+
+            l =
+                randomNode model [ f ]
+
+            ans =
+                edgeExists model.graph f l
+
+            opposite =
+                edgeExists model.graph l f
+
+            fbackString =
+                if ans then
+                    "There is an edge from Node " ++ toString (f) ++ " to Node " ++ toString (l)
+                else if opposite then
+                    "There is an not an edge from Node "
+                        ++ toString (f)
+                        ++ " to Node "
+                        ++ toString (l)
+                        ++ ", but there is an edge from Node "
+                        ++ toString (l)
+                        ++ " to Node "
+                        ++ toString (f)
+                else
+                    "There is no edge between Node " ++ toString (f) ++ " and Node " ++ toString (l)
+        in
+            { question = "True or False: There is an edge from Node " ++ toString (f) ++ " to Node " ++ toString (l)
+            , distractors =
+                [ ( toString (not ans)
+                  , "Incorrect. " ++ fbackString
+                  )
+                ]
+            , answer =
+                ( toString ans
+                , "Correct. " ++ fbackString
+                )
+            , format = MultipleChoice
+            }
+
+
+randomNode : Model -> List NodeId -> NodeId
+randomNode model alreadyChosen =
+    let
+        graph =
+            model.graph
+
+        validNodes =
+            model.randomValues
+                |> List.filter (\n -> List.member n graph.nodes)
+                |> List.filter (\n -> not (List.member n alreadyChosen))
+
+        rNode =
+            List.head validNodes
+    in
+        case rNode of
+            Nothing ->
+                0
+
+            Just n ->
+                n
 
 
 newQuestion : Model -> Int -> Model

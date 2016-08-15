@@ -271,6 +271,29 @@ var _user$project$Main$checkAnswer = function (model) {
 				distractors)
 		});
 };
+var _user$project$Main$randomNode = F2(
+	function (model, alreadyChosen) {
+		var graph = model.graph;
+		var validNodes = A2(
+			_elm_lang$core$List$filter,
+			function (n) {
+				return _elm_lang$core$Basics$not(
+					A2(_elm_lang$core$List$member, n, alreadyChosen));
+			},
+			A2(
+				_elm_lang$core$List$filter,
+				function (n) {
+					return A2(_elm_lang$core$List$member, n, graph.nodes);
+				},
+				model.randomValues));
+		var rNode = _elm_lang$core$List$head(validNodes);
+		var _p20 = rNode;
+		if (_p20.ctor === 'Nothing') {
+			return 0;
+		} else {
+			return _p20._0;
+		}
+	});
 var _user$project$Main$questionByIndex = F2(
 	function (model, index) {
 		if (_elm_lang$core$Native_Utils.eq(index, 1)) {
@@ -317,98 +340,180 @@ var _user$project$Main$questionByIndex = F2(
 					format: _user$project$Types$FillInTheBlank
 				};
 			} else {
-				var l = _user$project$Main$lastNode(model);
-				var f = _user$project$Main$firstNode(model);
-				var ans = A3(_user$project$Main$pathExists, model.graph, f, l);
-				var actualPath = A2(
-					_elm_lang$core$Maybe$withDefault,
-					_elm_lang$core$Native_List.fromArray(
-						[]),
-					A3(_user$project$Main$genericSearch, model.graph, f, l));
-				var fbackString = ans ? A2(
-					_elm_lang$core$Basics_ops['++'],
-					'One valid path is ',
-					_elm_lang$core$Basics$toString(actualPath)) : A2(
-					_elm_lang$core$Basics_ops['++'],
-					'There is no path from Node ',
-					A2(
+				if (_elm_lang$core$Native_Utils.eq(index, 3)) {
+					var l = _user$project$Main$lastNode(model);
+					var f = _user$project$Main$firstNode(model);
+					var ans = A3(_user$project$Main$pathExists, model.graph, f, l);
+					var actualPath = A2(
+						_elm_lang$core$Maybe$withDefault,
+						_elm_lang$core$Native_List.fromArray(
+							[]),
+						A3(_user$project$Main$genericSearch, model.graph, f, l));
+					var fbackString = ans ? A2(
 						_elm_lang$core$Basics_ops['++'],
-						_elm_lang$core$Basics$toString(f),
-						A2(
-							_elm_lang$core$Basics_ops['++'],
-							' to Node ',
-							_elm_lang$core$Basics$toString(l))));
-				return {
-					question: A2(
+						'One valid path is ',
+						_elm_lang$core$Basics$toString(actualPath)) : A2(
 						_elm_lang$core$Basics_ops['++'],
-						'True or False: There is a path from Node ',
+						'There is no path from Node ',
 						A2(
 							_elm_lang$core$Basics_ops['++'],
 							_elm_lang$core$Basics$toString(f),
 							A2(
 								_elm_lang$core$Basics_ops['++'],
 								' to Node ',
-								_elm_lang$core$Basics$toString(l)))),
-					distractors: _elm_lang$core$Native_List.fromArray(
-						[
-							{
+								_elm_lang$core$Basics$toString(l))));
+					return {
+						question: A2(
+							_elm_lang$core$Basics_ops['++'],
+							'True or False: There is a path from Node ',
+							A2(
+								_elm_lang$core$Basics_ops['++'],
+								_elm_lang$core$Basics$toString(f),
+								A2(
+									_elm_lang$core$Basics_ops['++'],
+									' to Node ',
+									_elm_lang$core$Basics$toString(l)))),
+						distractors: _elm_lang$core$Native_List.fromArray(
+							[
+								{
+								ctor: '_Tuple2',
+								_0: _elm_lang$core$Basics$toString(
+									_elm_lang$core$Basics$not(ans)),
+								_1: A2(_elm_lang$core$Basics_ops['++'], 'Incorrect. ', fbackString)
+							}
+							]),
+						answer: {
 							ctor: '_Tuple2',
-							_0: _elm_lang$core$Basics$toString(
-								_elm_lang$core$Basics$not(ans)),
-							_1: A2(_elm_lang$core$Basics_ops['++'], 'Incorrect. ', fbackString)
-						}
-						]),
-					answer: {
-						ctor: '_Tuple2',
-						_0: _elm_lang$core$Basics$toString(ans),
-						_1: A2(_elm_lang$core$Basics_ops['++'], 'Correct. ', fbackString)
-					},
-					format: _user$project$Types$MultipleChoice
-				};
+							_0: _elm_lang$core$Basics$toString(ans),
+							_1: A2(_elm_lang$core$Basics_ops['++'], 'Correct. ', fbackString)
+						},
+						format: _user$project$Types$MultipleChoice
+					};
+				} else {
+					var f = A2(
+						_user$project$Main$randomNode,
+						model,
+						_elm_lang$core$Native_List.fromArray(
+							[]));
+					var l = A2(
+						_user$project$Main$randomNode,
+						model,
+						_elm_lang$core$Native_List.fromArray(
+							[f]));
+					var ans = A3(_user$project$Main$edgeExists, model.graph, f, l);
+					var opposite = A3(_user$project$Main$edgeExists, model.graph, l, f);
+					var fbackString = ans ? A2(
+						_elm_lang$core$Basics_ops['++'],
+						'There is an edge from Node ',
+						A2(
+							_elm_lang$core$Basics_ops['++'],
+							_elm_lang$core$Basics$toString(f),
+							A2(
+								_elm_lang$core$Basics_ops['++'],
+								' to Node ',
+								_elm_lang$core$Basics$toString(l)))) : (opposite ? A2(
+						_elm_lang$core$Basics_ops['++'],
+						'There is an not an edge from Node ',
+						A2(
+							_elm_lang$core$Basics_ops['++'],
+							_elm_lang$core$Basics$toString(f),
+							A2(
+								_elm_lang$core$Basics_ops['++'],
+								' to Node ',
+								A2(
+									_elm_lang$core$Basics_ops['++'],
+									_elm_lang$core$Basics$toString(l),
+									A2(
+										_elm_lang$core$Basics_ops['++'],
+										', but there is an edge from Node ',
+										A2(
+											_elm_lang$core$Basics_ops['++'],
+											_elm_lang$core$Basics$toString(l),
+											A2(
+												_elm_lang$core$Basics_ops['++'],
+												' to Node ',
+												_elm_lang$core$Basics$toString(f)))))))) : A2(
+						_elm_lang$core$Basics_ops['++'],
+						'There is no edge between Node ',
+						A2(
+							_elm_lang$core$Basics_ops['++'],
+							_elm_lang$core$Basics$toString(f),
+							A2(
+								_elm_lang$core$Basics_ops['++'],
+								' and Node ',
+								_elm_lang$core$Basics$toString(l)))));
+					return {
+						question: A2(
+							_elm_lang$core$Basics_ops['++'],
+							'True or False: There is an edge from Node ',
+							A2(
+								_elm_lang$core$Basics_ops['++'],
+								_elm_lang$core$Basics$toString(f),
+								A2(
+									_elm_lang$core$Basics_ops['++'],
+									' to Node ',
+									_elm_lang$core$Basics$toString(l)))),
+						distractors: _elm_lang$core$Native_List.fromArray(
+							[
+								{
+								ctor: '_Tuple2',
+								_0: _elm_lang$core$Basics$toString(
+									_elm_lang$core$Basics$not(ans)),
+								_1: A2(_elm_lang$core$Basics_ops['++'], 'Incorrect. ', fbackString)
+							}
+							]),
+						answer: {
+							ctor: '_Tuple2',
+							_0: _elm_lang$core$Basics$toString(ans),
+							_1: A2(_elm_lang$core$Basics_ops['++'], 'Correct. ', fbackString)
+						},
+						format: _user$project$Types$MultipleChoice
+					};
+				}
 			}
 		}
 	});
 var _user$project$Main$newQuestion = F2(
 	function (model, index) {
 		var newQuestion = A2(_user$project$Main$questionByIndex, model, index);
-		var _p20 = model.graph;
-		var nodes = _p20.nodes;
-		var edges = _p20.edges;
-		var directional = _p20.directional;
-		var weighted = _p20.weighted;
+		var _p21 = model.graph;
+		var nodes = _p21.nodes;
+		var edges = _p21.edges;
+		var directional = _p21.directional;
+		var weighted = _p21.weighted;
 		return _elm_lang$core$Native_Utils.update(
 			model,
 			{question: newQuestion, success: _elm_lang$core$Maybe$Nothing, userInput: ''});
 	});
 var _user$project$Main$createEdgesFromNode = F2(
 	function (fromNode, neighbors) {
-		var _p21 = neighbors;
-		if (_p21.ctor === '[]') {
+		var _p22 = neighbors;
+		if (_p22.ctor === '[]') {
 			return _elm_lang$core$Native_List.fromArray(
 				[]);
 		} else {
 			return A2(
 				_elm_lang$core$List_ops['::'],
-				A4(_user$project$Types$Edge, fromNode, _p21._0, 0, _user$project$Types$UniDirectional),
-				A2(_user$project$Main$createEdgesFromNode, fromNode, _p21._1));
+				A4(_user$project$Types$Edge, fromNode, _p22._0, 0, _user$project$Types$UniDirectional),
+				A2(_user$project$Main$createEdgesFromNode, fromNode, _p22._1));
 		}
 	});
 var _user$project$Main$stripList = function (maybes) {
 	stripList:
 	while (true) {
-		var _p22 = maybes;
-		if (_p22.ctor === '[]') {
+		var _p23 = maybes;
+		if (_p23.ctor === '[]') {
 			return _elm_lang$core$Native_List.fromArray(
 				[]);
 		} else {
-			if (_p22._0.ctor === 'Just') {
+			if (_p23._0.ctor === 'Just') {
 				return A2(
 					_elm_lang$core$List_ops['::'],
-					_p22._0._0,
-					_user$project$Main$stripList(_p22._1));
+					_p23._0._0,
+					_user$project$Main$stripList(_p23._1));
 			} else {
-				var _v22 = _p22._1;
-				maybes = _v22;
+				var _v23 = _p23._1;
+				maybes = _v23;
 				continue stripList;
 			}
 		}
@@ -425,8 +530,8 @@ var _user$project$Main$closestNeighbor = F4(
 					if (A2(_elm_lang$core$List$member, nodeId, allNodes) && A2(pred, fromNode, nodeId)) {
 						return _elm_lang$core$Maybe$Just(nodeId);
 					} else {
-						var _v23 = nodeId + offset;
-						nodeId = _v23;
+						var _v24 = nodeId + offset;
+						nodeId = _v24;
 						continue closestNeighborHelper;
 					}
 				}
@@ -603,20 +708,20 @@ var _user$project$Main$findNeighbors = F2(
 var _user$project$Main$createAllEdges = function (nodes) {
 	var createAllEdgesHelper = F2(
 		function (allNodes, nodes) {
-			var _p23 = nodes;
-			if (_p23.ctor === '[]') {
+			var _p24 = nodes;
+			if (_p24.ctor === '[]') {
 				return _elm_lang$core$Native_List.fromArray(
 					[]);
 			} else {
-				var _p24 = _p23._0;
+				var _p25 = _p24._0;
 				return A2(
 					_elm_lang$core$List$append,
 					A2(
 						_user$project$Main$createEdgesFromNode,
-						_p24,
+						_p25,
 						_user$project$Main$stripList(
-							A2(_user$project$Main$findNeighbors, allNodes, _p24))),
-					A2(createAllEdgesHelper, allNodes, _p23._1));
+							A2(_user$project$Main$findNeighbors, allNodes, _p25))),
+					A2(createAllEdgesHelper, allNodes, _p24._1));
 			}
 		});
 	return A2(createAllEdgesHelper, nodes, nodes);
@@ -682,14 +787,14 @@ var _user$project$Main$drawEdge = F3(
 var _user$project$Main$drawEdges = function (graph) {
 	var drawEdgesHelper = F3(
 		function (edges, weighted, directional) {
-			var _p25 = edges;
-			if (_p25.ctor === '[]') {
+			var _p26 = edges;
+			if (_p26.ctor === '[]') {
 				return _user$project$Main$arrowHeads;
 			} else {
 				return A2(
 					_elm_lang$core$List$append,
-					A3(_user$project$Main$drawEdge, _p25._0, weighted, directional),
-					A3(drawEdgesHelper, _p25._1, weighted, directional));
+					A3(_user$project$Main$drawEdge, _p26._0, weighted, directional),
+					A3(drawEdgesHelper, _p26._1, weighted, directional));
 			}
 		});
 	return A3(drawEdgesHelper, graph.edges, graph.weighted, graph.directional);
@@ -718,23 +823,23 @@ var _user$project$Main$edgesOverlap = F2(
 			_user$project$Main$nodeCol(e1.from)) < 0)))));
 	});
 var _user$project$Main$removeOverlappingEdges = function (edges) {
-	var _p26 = edges;
-	if (_p26.ctor === '[]') {
+	var _p27 = edges;
+	if (_p27.ctor === '[]') {
 		return _elm_lang$core$Native_List.fromArray(
 			[]);
 	} else {
-		var _p28 = _p26._0;
-		var _p27 = A2(
+		var _p29 = _p27._0;
+		var _p28 = A2(
 			_elm_lang$core$List$partition,
 			function (ee) {
-				return A2(_user$project$Main$edgesOverlap, _p28, ee) || A2(_user$project$Main$edgesOverlap, ee, _p28);
+				return A2(_user$project$Main$edgesOverlap, _p29, ee) || A2(_user$project$Main$edgesOverlap, ee, _p29);
 			},
-			_p26._1);
-		var overlap = _p27._0;
-		var notOverlap = _p27._1;
+			_p27._1);
+		var overlap = _p28._0;
+		var notOverlap = _p28._1;
 		return A2(
 			_elm_lang$core$List_ops['::'],
-			_p28,
+			_p29,
 			_user$project$Main$removeOverlappingEdges(notOverlap));
 	}
 };
@@ -758,13 +863,13 @@ var _user$project$Main$replaceWeights = F2(
 	});
 var _user$project$Main$update = F2(
 	function (msg, model) {
-		var _p29 = model.graph;
-		var nodes = _p29.nodes;
-		var edges = _p29.edges;
-		var directional = _p29.directional;
-		var weighted = _p29.weighted;
-		var _p30 = msg;
-		switch (_p30.ctor) {
+		var _p30 = model.graph;
+		var nodes = _p30.nodes;
+		var edges = _p30.edges;
+		var directional = _p30.directional;
+		var weighted = _p30.weighted;
+		var _p31 = msg;
+		switch (_p31.ctor) {
 			case 'Reset':
 				return {
 					ctor: '_Tuple2',
@@ -782,7 +887,7 @@ var _user$project$Main$update = F2(
 					ctor: '_Tuple2',
 					_0: _elm_lang$core$Native_Utils.update(
 						model,
-						{randomValues: _p30._0}),
+						{randomValues: _p31._0}),
 					_1: A2(
 						_elm_lang$core$Random$generate,
 						_user$project$Types$NewNodes,
@@ -793,7 +898,7 @@ var _user$project$Main$update = F2(
 				};
 			case 'NewNodes':
 				var newNodes$ = _elm_lang$core$Set$toList(
-					_elm_lang$core$Set$fromList(_p30._0));
+					_elm_lang$core$Set$fromList(_p31._0));
 				var newEdges = _user$project$Main$createAllEdges(newNodes$);
 				return {
 					ctor: '_Tuple2',
@@ -807,19 +912,19 @@ var _user$project$Main$update = F2(
 							A2(_elm_lang$core$Random$int, -1, 5)))
 				};
 			case 'NewEdgeWeights':
-				var newEdges = A2(_user$project$Main$replaceWeights, edges, _p30._0);
+				var newEdges = A2(_user$project$Main$replaceWeights, edges, _p31._0);
 				return {
 					ctor: '_Tuple2',
 					_0: A5(_user$project$Main$updateGraph, model, nodes, newEdges, directional, weighted),
 					_1: A2(
 						_elm_lang$core$Random$generate,
 						_user$project$Types$NewQuestion,
-						A2(_elm_lang$core$Random$int, 3, 3))
+						A2(_elm_lang$core$Random$int, 4, 4))
 				};
 			case 'NewQuestion':
 				return {
 					ctor: '_Tuple2',
-					_0: A2(_user$project$Main$newQuestion, model, _p30._0),
+					_0: A2(_user$project$Main$newQuestion, model, _p31._0),
 					_1: _elm_lang$core$Platform_Cmd$none
 				};
 			case 'ToggleWeighted':
@@ -851,7 +956,7 @@ var _user$project$Main$update = F2(
 					ctor: '_Tuple2',
 					_0: _elm_lang$core$Native_Utils.update(
 						model,
-						{userInput: _p30._0}),
+						{userInput: _p31._0}),
 					_1: _elm_lang$core$Platform_Cmd$none
 				};
 			case 'Submit':
@@ -876,12 +981,12 @@ var _user$project$Main$update = F2(
 				var lastNode = _elm_lang$core$List$head(
 					_elm_lang$core$List$reverse(nodes));
 				var firstNode = _elm_lang$core$List$head(nodes);
-				var _p31 = firstNode;
-				if (_p31.ctor === 'Nothing') {
+				var _p32 = firstNode;
+				if (_p32.ctor === 'Nothing') {
 					return {ctor: '_Tuple2', _0: model, _1: _elm_lang$core$Platform_Cmd$none};
 				} else {
-					var _p32 = lastNode;
-					if (_p32.ctor === 'Nothing') {
+					var _p33 = lastNode;
+					if (_p33.ctor === 'Nothing') {
 						return {ctor: '_Tuple2', _0: model, _1: _elm_lang$core$Platform_Cmd$none};
 					} else {
 						return {
@@ -889,7 +994,7 @@ var _user$project$Main$update = F2(
 							_0: _elm_lang$core$Native_Utils.update(
 								model,
 								{
-									bfs: A3(_user$project$Main$breadthFirstSearch, model.graph, _p31._0, _p32._0)
+									bfs: A3(_user$project$Main$breadthFirstSearch, model.graph, _p32._0, _p33._0)
 								}),
 							_1: _elm_lang$core$Platform_Cmd$none
 						};
@@ -899,15 +1004,15 @@ var _user$project$Main$update = F2(
 	});
 var _user$project$Main$drawNodes = function (graph) {
 	var drawNodesHelper = function (nodeIds) {
-		var _p33 = nodeIds;
-		if (_p33.ctor === '[]') {
+		var _p34 = nodeIds;
+		if (_p34.ctor === '[]') {
 			return _elm_lang$core$Native_List.fromArray(
 				[]);
 		} else {
 			return A2(
 				_elm_lang$core$List$append,
-				_user$project$Main$drawNode(_p33._0),
-				drawNodesHelper(_p33._1));
+				_user$project$Main$drawNode(_p34._0),
+				drawNodesHelper(_p34._1));
 		}
 	};
 	return drawNodesHelper(graph.nodes);
@@ -956,7 +1061,7 @@ var _user$project$Main$radio = F2(
 							_elm_lang$html$Html_Attributes$type$('radio'),
 							_elm_lang$html$Html_Attributes$checked(isSelected),
 							_elm_lang$html$Html_Events$onCheck(
-							function (_p34) {
+							function (_p35) {
 								return _user$project$Types$UserInput(name);
 							})
 						]),
@@ -966,13 +1071,13 @@ var _user$project$Main$radio = F2(
 				]));
 	});
 var _user$project$Main$displayQuestion = function (model) {
-	var _p35 = model.question;
-	var question = _p35.question;
-	var distractors = _p35.distractors;
-	var answer = _p35.answer;
-	var format = _p35.format;
-	var _p36 = format;
-	if (_p36.ctor === 'FillInTheBlank') {
+	var _p36 = model.question;
+	var question = _p36.question;
+	var distractors = _p36.distractors;
+	var answer = _p36.answer;
+	var format = _p36.format;
+	var _p37 = format;
+	if (_p37.ctor === 'FillInTheBlank') {
 		return A2(
 			_elm_lang$html$Html$form,
 			_elm_lang$core$Native_List.fromArray(
@@ -1051,13 +1156,13 @@ var _user$project$Main$displayQuestion = function (model) {
 	}
 };
 var _user$project$Main$questionForm = function (model) {
-	var _p37 = model.question;
-	var question = _p37.question;
-	var distractors = _p37.distractors;
-	var answer = _p37.answer;
-	var format = _p37.format;
-	var _p38 = model.success;
-	if (_p38.ctor === 'Nothing') {
+	var _p38 = model.question;
+	var question = _p38.question;
+	var distractors = _p38.distractors;
+	var answer = _p38.answer;
+	var format = _p38.format;
+	var _p39 = model.success;
+	if (_p39.ctor === 'Nothing') {
 		return _user$project$Main$displayQuestion(model);
 	} else {
 		return A2(
