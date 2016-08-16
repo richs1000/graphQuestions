@@ -34,6 +34,7 @@ var _user$project$Types$emptyQuestion = {
 };
 var _user$project$Types$BiDirectional = {ctor: 'BiDirectional'};
 var _user$project$Types$UniDirectional = {ctor: 'UniDirectional'};
+var _user$project$Types$emptyEdge = {from: 0, to: 0, weight: 0, direction: _user$project$Types$UniDirectional};
 var _user$project$Types$ToggleDirectional = {ctor: 'ToggleDirectional'};
 var _user$project$Types$ToggleWeighted = {ctor: 'ToggleWeighted'};
 var _user$project$Types$BreadthFirstSearch = {ctor: 'BreadthFirstSearch'};

@@ -95,6 +95,15 @@ type alias Edge =
     }
 
 
+emptyEdge : Edge
+emptyEdge =
+    { from = 0
+    , to = 0
+    , weight = 0
+    , direction = UniDirectional
+    }
+
+
 type alias Graph =
     { nodes : List NodeId
     , edges : List Edge

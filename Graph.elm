@@ -323,3 +323,31 @@ randomNode model alreadyChosen =
 
             Just n ->
                 n
+
+
+randomEdge : Model -> Edge
+randomEdge model =
+    let
+        graph =
+            model.graph
+
+        edges =
+            graph.edges
+
+        index =
+            model.randomValues
+                |> List.filter (\n -> n < List.length edges)
+                |> List.head
+
+        i =
+            Maybe.withDefault ((List.length edges) - 1) index
+
+        edge =
+            List.head (List.drop i edges)
+    in
+        case edge of
+            Nothing ->
+                emptyEdge
+
+            Just e ->
+                e

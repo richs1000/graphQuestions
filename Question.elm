@@ -186,6 +186,32 @@ questionByIndex model index =
                     )
                 , format = FillInTheBlank
                 }
+        else if index == 7 && weighted then
+            let
+                e =
+                    randomEdge model
+
+                f =
+                    e.from
+
+                t =
+                    e.to
+
+                weight =
+                    e.weight
+            in
+                { question = "What is the weight of the edge from Node " ++ toString f ++ " to Node " ++ toString t ++ "?"
+                , distractors =
+                    [ ( ""
+                      , "Incorrect. An edge's weight is the number displayed on top of the edge."
+                      )
+                    ]
+                , answer =
+                    ( toString (weight)
+                    , "Correct."
+                    )
+                , format = FillInTheBlank
+                }
         else
             let
                 n =

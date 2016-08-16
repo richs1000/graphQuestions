@@ -1,3 +1,28 @@
+var _user$project$Graph$randomEdge = function (model) {
+	var graph = model.graph;
+	var edges = graph.edges;
+	var index = _elm_lang$core$List$head(
+		A2(
+			_elm_lang$core$List$filter,
+			function (n) {
+				return _elm_lang$core$Native_Utils.cmp(
+					n,
+					_elm_lang$core$List$length(edges)) < 0;
+			},
+			model.randomValues));
+	var i = A2(
+		_elm_lang$core$Maybe$withDefault,
+		_elm_lang$core$List$length(edges) - 1,
+		index);
+	var edge = _elm_lang$core$List$head(
+		A2(_elm_lang$core$List$drop, i, edges));
+	var _p0 = edge;
+	if (_p0.ctor === 'Nothing') {
+		return _user$project$Types$emptyEdge;
+	} else {
+		return _p0._0;
+	}
+};
 var _user$project$Graph$randomNode = F2(
 	function (model, alreadyChosen) {
 		var graph = model.graph;
@@ -14,85 +39,85 @@ var _user$project$Graph$randomNode = F2(
 				},
 				model.randomValues));
 		var rNode = _elm_lang$core$List$head(validNodes);
-		var _p0 = rNode;
-		if (_p0.ctor === 'Nothing') {
+		var _p1 = rNode;
+		if (_p1.ctor === 'Nothing') {
 			return 0;
 		} else {
-			return _p0._0;
+			return _p1._0;
 		}
 	});
 var _user$project$Graph$mergeDuplicates = function (edges) {
-	var _p1 = edges;
-	if (_p1.ctor === '[]') {
+	var _p2 = edges;
+	if (_p2.ctor === '[]') {
 		return _elm_lang$core$Native_List.fromArray(
 			[]);
 	} else {
-		var _p4 = _p1._0;
-		var _p2 = A2(
+		var _p5 = _p2._0;
+		var _p3 = A2(
 			_elm_lang$core$List$partition,
 			function (ee) {
-				return _elm_lang$core$Native_Utils.eq(_p4.to, ee.from) && _elm_lang$core$Native_Utils.eq(_p4.from, ee.to);
+				return _elm_lang$core$Native_Utils.eq(_p5.to, ee.from) && _elm_lang$core$Native_Utils.eq(_p5.from, ee.to);
 			},
-			_p1._1);
-		var rev = _p2._0;
-		var notRev = _p2._1;
-		var _p3 = rev;
-		if (_p3.ctor === '[]') {
+			_p2._1);
+		var rev = _p3._0;
+		var notRev = _p3._1;
+		var _p4 = rev;
+		if (_p4.ctor === '[]') {
 			return A2(
 				_elm_lang$core$List_ops['::'],
-				_p4,
+				_p5,
 				_user$project$Graph$mergeDuplicates(notRev));
 		} else {
 			return A2(
 				_elm_lang$core$List_ops['::'],
 				_elm_lang$core$Native_Utils.update(
-					_p4,
+					_p5,
 					{direction: _user$project$Types$BiDirectional}),
 				_user$project$Graph$mergeDuplicates(notRev));
 		}
 	}
 };
 var _user$project$Graph$lastNode = function (model) {
-	var _p5 = model.graph;
-	var nodes = _p5.nodes;
-	var edges = _p5.edges;
-	var directional = _p5.directional;
-	var weighted = _p5.weighted;
+	var _p6 = model.graph;
+	var nodes = _p6.nodes;
+	var edges = _p6.edges;
+	var directional = _p6.directional;
+	var weighted = _p6.weighted;
 	var nodes$ = _elm_lang$core$List$reverse(nodes);
-	var _p6 = nodes$;
-	if (_p6.ctor === '[]') {
+	var _p7 = nodes$;
+	if (_p7.ctor === '[]') {
 		return 0;
 	} else {
-		return _p6._0;
+		return _p7._0;
 	}
 };
 var _user$project$Graph$firstNode = function (model) {
-	var _p7 = model.graph;
-	var nodes = _p7.nodes;
-	var edges = _p7.edges;
-	var directional = _p7.directional;
-	var weighted = _p7.weighted;
-	var _p8 = nodes;
-	if (_p8.ctor === '[]') {
+	var _p8 = model.graph;
+	var nodes = _p8.nodes;
+	var edges = _p8.edges;
+	var directional = _p8.directional;
+	var weighted = _p8.weighted;
+	var _p9 = nodes;
+	if (_p9.ctor === '[]') {
 		return 0;
 	} else {
-		return _p8._0;
+		return _p9._0;
 	}
 };
 var _user$project$Graph$numberOfEdges = function (model) {
-	var _p9 = model.graph;
-	var nodes = _p9.nodes;
-	var edges = _p9.edges;
-	var directional = _p9.directional;
-	var weighted = _p9.weighted;
-	return _elm_lang$core$List$length(edges);
-};
-var _user$project$Graph$numberOfNodes = function (model) {
 	var _p10 = model.graph;
 	var nodes = _p10.nodes;
 	var edges = _p10.edges;
 	var directional = _p10.directional;
 	var weighted = _p10.weighted;
+	return _elm_lang$core$List$length(edges);
+};
+var _user$project$Graph$numberOfNodes = function (model) {
+	var _p11 = model.graph;
+	var nodes = _p11.nodes;
+	var edges = _p11.edges;
+	var directional = _p11.directional;
+	var weighted = _p11.weighted;
 	return _elm_lang$core$List$length(nodes);
 };
 var _user$project$Graph$outDegree = F2(
@@ -162,19 +187,19 @@ var _user$project$Graph$updateGraph = F5(
 var _user$project$Graph$stripList = function (maybes) {
 	stripList:
 	while (true) {
-		var _p11 = maybes;
-		if (_p11.ctor === '[]') {
+		var _p12 = maybes;
+		if (_p12.ctor === '[]') {
 			return _elm_lang$core$Native_List.fromArray(
 				[]);
 		} else {
-			if (_p11._0.ctor === 'Just') {
+			if (_p12._0.ctor === 'Just') {
 				return A2(
 					_elm_lang$core$List_ops['::'],
-					_p11._0._0,
-					_user$project$Graph$stripList(_p11._1));
+					_p12._0._0,
+					_user$project$Graph$stripList(_p12._1));
 			} else {
-				var _v6 = _p11._1;
-				maybes = _v6;
+				var _v7 = _p12._1;
+				maybes = _v7;
 				continue stripList;
 			}
 		}
@@ -182,15 +207,15 @@ var _user$project$Graph$stripList = function (maybes) {
 };
 var _user$project$Graph$createEdgesFromNode = F2(
 	function (fromNode, neighbors) {
-		var _p12 = neighbors;
-		if (_p12.ctor === '[]') {
+		var _p13 = neighbors;
+		if (_p13.ctor === '[]') {
 			return _elm_lang$core$Native_List.fromArray(
 				[]);
 		} else {
 			return A2(
 				_elm_lang$core$List_ops['::'],
-				A4(_user$project$Types$Edge, fromNode, _p12._0, 0, _user$project$Types$UniDirectional),
-				A2(_user$project$Graph$createEdgesFromNode, fromNode, _p12._1));
+				A4(_user$project$Types$Edge, fromNode, _p13._0, 0, _user$project$Types$UniDirectional),
+				A2(_user$project$Graph$createEdgesFromNode, fromNode, _p13._1));
 		}
 	});
 var _user$project$Graph$nodesPerCol = 4;
@@ -231,23 +256,23 @@ var _user$project$Graph$edgesOverlap = F2(
 			_user$project$Graph$nodeCol(e1.from)) < 0)))));
 	});
 var _user$project$Graph$removeOverlappingEdges = function (edges) {
-	var _p13 = edges;
-	if (_p13.ctor === '[]') {
+	var _p14 = edges;
+	if (_p14.ctor === '[]') {
 		return _elm_lang$core$Native_List.fromArray(
 			[]);
 	} else {
-		var _p15 = _p13._0;
-		var _p14 = A2(
+		var _p16 = _p14._0;
+		var _p15 = A2(
 			_elm_lang$core$List$partition,
 			function (ee) {
-				return A2(_user$project$Graph$edgesOverlap, _p15, ee) || A2(_user$project$Graph$edgesOverlap, ee, _p15);
+				return A2(_user$project$Graph$edgesOverlap, _p16, ee) || A2(_user$project$Graph$edgesOverlap, ee, _p16);
 			},
-			_p13._1);
-		var overlap = _p14._0;
-		var notOverlap = _p14._1;
+			_p14._1);
+		var overlap = _p15._0;
+		var notOverlap = _p15._1;
 		return A2(
 			_elm_lang$core$List_ops['::'],
-			_p15,
+			_p16,
 			_user$project$Graph$removeOverlappingEdges(notOverlap));
 	}
 };
@@ -281,8 +306,8 @@ var _user$project$Graph$closestNeighbor = F4(
 					if (A2(_elm_lang$core$List$member, nodeId, allNodes) && A2(pred, fromNode, nodeId)) {
 						return _elm_lang$core$Maybe$Just(nodeId);
 					} else {
-						var _v9 = nodeId + offset;
-						nodeId = _v9;
+						var _v10 = nodeId + offset;
+						nodeId = _v10;
 						continue closestNeighborHelper;
 					}
 				}
@@ -303,20 +328,20 @@ var _user$project$Graph$findNeighbors = F2(
 var _user$project$Graph$createAllEdges = function (nodes) {
 	var createAllEdgesHelper = F2(
 		function (allNodes, nodes) {
-			var _p16 = nodes;
-			if (_p16.ctor === '[]') {
+			var _p17 = nodes;
+			if (_p17.ctor === '[]') {
 				return _elm_lang$core$Native_List.fromArray(
 					[]);
 			} else {
-				var _p17 = _p16._0;
+				var _p18 = _p17._0;
 				return A2(
 					_elm_lang$core$List$append,
 					A2(
 						_user$project$Graph$createEdgesFromNode,
-						_p17,
+						_p18,
 						_user$project$Graph$stripList(
-							A2(_user$project$Graph$findNeighbors, allNodes, _p17))),
-					A2(createAllEdgesHelper, allNodes, _p16._1));
+							A2(_user$project$Graph$findNeighbors, allNodes, _p18))),
+					A2(createAllEdgesHelper, allNodes, _p17._1));
 			}
 		});
 	return A2(createAllEdgesHelper, nodes, nodes);

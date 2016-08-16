@@ -330,48 +330,80 @@ var _user$project$Question$questionByIndex = F2(
 									format: _user$project$Types$FillInTheBlank
 								};
 							} else {
-								var n = A2(
-									_user$project$Graph$randomNode,
-									model,
-									_elm_lang$core$Native_List.fromArray(
-										[]));
-								var deg = A2(_user$project$Graph$degree, model.graph, n);
-								var inDeg = A2(_user$project$Graph$inDegree, model.graph, n);
-								var outDeg = A2(_user$project$Graph$outDegree, model.graph, n);
-								return {
-									question: A2(
-										_elm_lang$core$Basics_ops['++'],
-										'What is the degree of Node ',
-										A2(
+								if (_elm_lang$core$Native_Utils.eq(index, 7) && weighted) {
+									var e = _user$project$Graph$randomEdge(model);
+									var f = e.from;
+									var t = e.to;
+									var weight = e.weight;
+									return {
+										question: A2(
 											_elm_lang$core$Basics_ops['++'],
-											_elm_lang$core$Basics$toString(n),
-											'?')),
-									distractors: _elm_lang$core$Native_List.fromArray(
-										[
-											{
+											'What is the weight of the edge from Node ',
+											A2(
+												_elm_lang$core$Basics_ops['++'],
+												_elm_lang$core$Basics$toString(f),
+												A2(
+													_elm_lang$core$Basics_ops['++'],
+													' to Node ',
+													A2(
+														_elm_lang$core$Basics_ops['++'],
+														_elm_lang$core$Basics$toString(t),
+														'?')))),
+										distractors: _elm_lang$core$Native_List.fromArray(
+											[
+												{ctor: '_Tuple2', _0: '', _1: 'Incorrect. An edge\'s weight is the number displayed on top of the edge.'}
+											]),
+										answer: {
 											ctor: '_Tuple2',
-											_0: _elm_lang$core$Basics$toString(inDeg),
-											_1: 'Incorrect. You identified the number of edges entering the node (the in-degree) but did not count the number of edges leaving the node (the out-degree)'
+											_0: _elm_lang$core$Basics$toString(weight),
+											_1: 'Correct.'
 										},
-											{
+										format: _user$project$Types$FillInTheBlank
+									};
+								} else {
+									var n = A2(
+										_user$project$Graph$randomNode,
+										model,
+										_elm_lang$core$Native_List.fromArray(
+											[]));
+									var deg = A2(_user$project$Graph$degree, model.graph, n);
+									var inDeg = A2(_user$project$Graph$inDegree, model.graph, n);
+									var outDeg = A2(_user$project$Graph$outDegree, model.graph, n);
+									return {
+										question: A2(
+											_elm_lang$core$Basics_ops['++'],
+											'What is the degree of Node ',
+											A2(
+												_elm_lang$core$Basics_ops['++'],
+												_elm_lang$core$Basics$toString(n),
+												'?')),
+										distractors: _elm_lang$core$Native_List.fromArray(
+											[
+												{
+												ctor: '_Tuple2',
+												_0: _elm_lang$core$Basics$toString(inDeg),
+												_1: 'Incorrect. You identified the number of edges entering the node (the in-degree) but did not count the number of edges leaving the node (the out-degree)'
+											},
+												{
+												ctor: '_Tuple2',
+												_0: _elm_lang$core$Basics$toString(outDeg),
+												_1: 'Incorrect. You identified the number of edges leaving the node (the out-degree) but did not count the number of edges entering the node (the in-degree)'
+											},
+												{
+												ctor: '_Tuple2',
+												_0: _elm_lang$core$Basics$toString(inDeg + outDeg),
+												_1: 'Incorrect. You double-counted the bi-directional edges.'
+											},
+												{ctor: '_Tuple2', _0: '', _1: 'Incorrect. A node\'s degree is the number of edges entering (to) or exiting (from) the node. A bidirectional node only is only counted once.'}
+											]),
+										answer: {
 											ctor: '_Tuple2',
-											_0: _elm_lang$core$Basics$toString(outDeg),
-											_1: 'Incorrect. You identified the number of edges leaving the node (the out-degree) but did not count the number of edges entering the node (the in-degree)'
+											_0: _elm_lang$core$Basics$toString(deg),
+											_1: 'Correct.'
 										},
-											{
-											ctor: '_Tuple2',
-											_0: _elm_lang$core$Basics$toString(inDeg + outDeg),
-											_1: 'Incorrect. You double-counted the bi-directional edges.'
-										},
-											{ctor: '_Tuple2', _0: '', _1: 'Incorrect. A node\'s degree is the number of edges entering (to) or exiting (from) the node. A bidirectional node only is only counted once.'}
-										]),
-									answer: {
-										ctor: '_Tuple2',
-										_0: _elm_lang$core$Basics$toString(deg),
-										_1: 'Correct.'
-									},
-									format: _user$project$Types$FillInTheBlank
-								};
+										format: _user$project$Types$FillInTheBlank
+									};
+								}
 							}
 						}
 					}
