@@ -535,7 +535,7 @@ update msg model =
                         (replaceWeights edges newWeights)
                 in
                     ( updateGraph model nodes newEdges directional weighted
-                    , Random.generate NewQuestion (Random.int 4 4)
+                    , Random.generate NewQuestion (Random.int 6 6)
                     )
 
             NewQuestion questionIndex ->
@@ -586,111 +586,220 @@ update msg model =
 
 questionByIndex : Model -> Int -> Question
 questionByIndex model index =
-    if index == 1 then
-        { question = "How many nodes are in the graph above?"
-        , distractors =
-            [ ( toString (numberOfEdges model)
-              , "That is the number of edges. Nodes are the labeled circles in the picture above."
-              )
-            , ( ""
-              , "Incorrect. Nodes are the labeled circles in the picture above. A node is still part of a graph even if it is not connected by an edge to any other nodes"
-              )
-            ]
-        , answer =
-            ( toString (numberOfNodes model)
-            , "Correct."
-            )
-        , format = FillInTheBlank
-        }
-    else if index == 2 then
-        { question = "How many edges are in the graph above?"
-        , distractors =
-            [ ( toString (numberOfNodes model)
-              , "That is the number of nodes. Edges are the lines connecting circles in the picture above. A bi-directional edge (i.e., an edge with two arrows) still counts as a single edge."
-              )
-            , ( ""
-              , "Incorrect. Edges are the lines connecting circles in the picture above. A bi-directional edge (i.e., an edge with two arrows) still counts as a single edge."
-              )
-            ]
-        , answer =
-            ( toString (numberOfEdges model)
-            , "Correct."
-            )
-        , format = FillInTheBlank
-        }
-    else if index == 3 then
-        let
-            f =
-                firstNode model
-
-            l =
-                lastNode model
-
-            ans =
-                pathExists model.graph f l
-
-            actualPath =
-                Maybe.withDefault [] (genericSearch model.graph f l)
-
-            fbackString =
-                if ans then
-                    "One valid path is " ++ (toString actualPath)
-                else
-                    "There is no path from Node " ++ toString (f) ++ " to Node " ++ toString (l)
-        in
-            { question = "True or False: There is a path from Node " ++ toString (f) ++ " to Node " ++ toString (l)
+    let
+        { nodes, edges, directional, weighted } =
+            model.graph
+    in
+        if index == 1 then
+            { question = "How many nodes are in the graph above?"
             , distractors =
-                [ ( toString (not ans)
-                  , "Incorrect. " ++ fbackString
+                [ ( toString (numberOfEdges model)
+                  , "That is the number of edges. Nodes are the labeled circles in the picture above."
+                  )
+                , ( ""
+                  , "Incorrect. Nodes are the labeled circles in the picture above. A node is still part of a graph even if it is not connected by an edge to any other nodes"
                   )
                 ]
             , answer =
-                ( toString ans
-                , "Correct. " ++ fbackString
+                ( toString (numberOfNodes model)
+                , "Correct."
                 )
-            , format = MultipleChoice
+            , format = FillInTheBlank
             }
-    else
-        let
-            f =
-                randomNode model []
-
-            l =
-                randomNode model [ f ]
-
-            ans =
-                edgeExists model.graph f l
-
-            opposite =
-                edgeExists model.graph l f
-
-            fbackString =
-                if ans then
-                    "There is an edge from Node " ++ toString (f) ++ " to Node " ++ toString (l)
-                else if opposite then
-                    "There is an not an edge from Node "
-                        ++ toString (f)
-                        ++ " to Node "
-                        ++ toString (l)
-                        ++ ", but there is an edge from Node "
-                        ++ toString (l)
-                        ++ " to Node "
-                        ++ toString (f)
-                else
-                    "There is no edge between Node " ++ toString (f) ++ " and Node " ++ toString (l)
-        in
-            { question = "True or False: There is an edge from Node " ++ toString (f) ++ " to Node " ++ toString (l)
+        else if index == 2 then
+            { question = "How many edges are in the graph above?"
             , distractors =
-                [ ( toString (not ans)
-                  , "Incorrect. " ++ fbackString
+                [ ( toString (numberOfNodes model)
+                  , "That is the number of nodes. Edges are the lines connecting circles in the picture above. A bi-directional edge (i.e., an edge with two arrows) still counts as a single edge."
+                  )
+                , ( ""
+                  , "Incorrect. Edges are the lines connecting circles in the picture above. A bi-directional edge (i.e., an edge with two arrows) still counts as a single edge."
                   )
                 ]
             , answer =
-                ( toString ans
-                , "Correct. " ++ fbackString
+                ( toString (numberOfEdges model)
+                , "Correct."
                 )
-            , format = MultipleChoice
+            , format = FillInTheBlank
             }
+        else if index == 3 then
+            let
+                f =
+                    firstNode model
+
+                l =
+                    lastNode model
+
+                ans =
+                    pathExists model.graph f l
+
+                actualPath =
+                    Maybe.withDefault [] (genericSearch model.graph f l)
+
+                fbackString =
+                    if ans then
+                        "One valid path is " ++ (toString actualPath)
+                    else
+                        "There is no path from Node " ++ toString (f) ++ " to Node " ++ toString (l)
+            in
+                { question = "True or False: There is a path from Node " ++ toString (f) ++ " to Node " ++ toString (l)
+                , distractors =
+                    [ ( toString (not ans)
+                      , "Incorrect. " ++ fbackString
+                      )
+                    ]
+                , answer =
+                    ( toString ans
+                    , "Correct. " ++ fbackString
+                    )
+                , format = MultipleChoice
+                }
+        else if index == 4 then
+            let
+                f =
+                    randomNode model []
+
+                l =
+                    randomNode model [ f ]
+
+                ans =
+                    edgeExists model.graph f l
+
+                opposite =
+                    edgeExists model.graph l f
+
+                fbackString =
+                    if ans then
+                        "There is an edge from Node " ++ toString (f) ++ " to Node " ++ toString (l)
+                    else if opposite then
+                        "There is an not an edge from Node "
+                            ++ toString (f)
+                            ++ " to Node "
+                            ++ toString (l)
+                            ++ ", but there is an edge from Node "
+                            ++ toString (l)
+                            ++ " to Node "
+                            ++ toString (f)
+                    else
+                        "There is no edge between Node " ++ toString (f) ++ " and Node " ++ toString (l)
+            in
+                { question = "True or False: There is an edge from Node " ++ toString (f) ++ " to Node " ++ toString (l)
+                , distractors =
+                    [ ( toString (not ans)
+                      , "Incorrect. " ++ fbackString
+                      )
+                    ]
+                , answer =
+                    ( toString ans
+                    , "Correct. " ++ fbackString
+                    )
+                , format = MultipleChoice
+                }
+        else if index == 5 && directional then
+            let
+                n =
+                    randomNode model []
+
+                deg =
+                    degree model.graph n
+
+                inDeg =
+                    inDegree model.graph n
+
+                outDeg =
+                    outDegree model.graph n
+            in
+                { question = "What is the in-degree of Node " ++ toString n ++ "?"
+                , distractors =
+                    [ ( toString deg
+                      , "Incorrect. You identified the number of edges entering and leaving the node (the degree). You should only count the number of edges entering the node (the in-degree)"
+                      )
+                    , ( toString outDeg
+                      , "Incorrect. You identified the number of edges leaving the node (the out-degree), not the number of edges entering the node (the in-degree)"
+                      )
+                    , ( toString (inDeg + outDeg)
+                      , "Incorrect. You double-counted the bi-directional edges."
+                      )
+                    , ( ""
+                      , "Incorrect. A node's in-degree is the number of edges entering (to) the node. A bidirectional node only is counted once."
+                      )
+                    ]
+                , answer =
+                    ( toString (inDeg)
+                    , "Correct."
+                    )
+                , format = FillInTheBlank
+                }
+        else if index == 6 && directional then
+            let
+                n =
+                    randomNode model []
+
+                deg =
+                    degree model.graph n
+
+                inDeg =
+                    inDegree model.graph n
+
+                outDeg =
+                    outDegree model.graph n
+            in
+                { question = "What is the out-degree of Node " ++ toString n ++ "?"
+                , distractors =
+                    [ ( toString deg
+                      , "Incorrect. You identified the number of edges entering and leaving the node (the degree). You should only count the number of edges leaving the node (the out-degree)"
+                      )
+                    , ( toString inDeg
+                      , "Incorrect. You identified the number of edges entering the node (the in-degree), not the number of edges leaving the node (the out-degree)"
+                      )
+                    , ( toString (inDeg + outDeg)
+                      , "Incorrect. You double-counted the bi-directional edges."
+                      )
+                    , ( ""
+                      , "Incorrect. A node's out-degree is the number of edges leaving (from) the node. A bidirectional node only is counted once."
+                      )
+                    ]
+                , answer =
+                    ( toString (outDeg)
+                    , "Correct."
+                    )
+                , format = FillInTheBlank
+                }
+        else
+            let
+                n =
+                    randomNode model []
+
+                deg =
+                    degree model.graph n
+
+                inDeg =
+                    inDegree model.graph n
+
+                outDeg =
+                    outDegree model.graph n
+            in
+                { question = "What is the degree of Node " ++ toString n ++ "?"
+                , distractors =
+                    [ ( toString inDeg
+                      , "Incorrect. You identified the number of edges entering the node (the in-degree) but did not count the number of edges leaving the node (the out-degree)"
+                      )
+                    , ( toString outDeg
+                      , "Incorrect. You identified the number of edges leaving the node (the out-degree) but did not count the number of edges entering the node (the in-degree)"
+                      )
+                    , ( toString (inDeg + outDeg)
+                      , "Incorrect. You double-counted the bi-directional edges."
+                      )
+                    , ( ""
+                      , "Incorrect. A node's degree is the number of edges entering (to) or exiting (from) the node. A bidirectional node only is only counted once."
+                      )
+                    ]
+                , answer =
+                    ( toString (deg)
+                    , "Correct."
+                    )
+                , format = FillInTheBlank
+                }
 
 
 randomNode : Model -> List NodeId -> NodeId
@@ -934,6 +1043,27 @@ edgeExists graph n1 n2 =
             (not graph.directional) && List.any (\e -> e.from == n2 && e.to == n1) graph.edges
     in
         n1_to_n2 || n2_to_n1_bi || n2_to_n1_non
+
+
+degree : Graph -> NodeId -> Int
+degree graph node =
+    graph.edges
+        |> List.filter (\e -> e.from == node || e.to == node)
+        |> List.length
+
+
+inDegree : Graph -> NodeId -> Int
+inDegree graph node =
+    graph.edges
+        |> List.filter (\e -> (e.to == node) || (e.from == node && e.direction == BiDirectional))
+        |> List.length
+
+
+outDegree : Graph -> NodeId -> Int
+outDegree graph node =
+    graph.edges
+        |> List.filter (\e -> (e.from == node) || (e.to == node && e.direction == BiDirectional))
+        |> List.length
 
 
 numberOfNodes : Model -> Int
