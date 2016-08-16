@@ -351,7 +351,7 @@ var _user$project$Question$questionByIndex = F2(
 														'?')))),
 										distractors: _elm_lang$core$Native_List.fromArray(
 											[
-												{ctor: '_Tuple2', _0: '', _1: 'Incorrect. An edge\'s weight is the number displayed on top of the edge.'}
+												{ctor: '_Tuple2', _0: '', _1: 'Incorrect. An edge\'s weight is the number displayed on top of (or next to) the edge.'}
 											]),
 										answer: {
 											ctor: '_Tuple2',

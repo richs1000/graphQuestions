@@ -6,7 +6,8 @@ var _user$project$Main$view = function (model) {
 		_elm_lang$html$Html$button,
 		_elm_lang$core$Native_List.fromArray(
 			[
-				_elm_lang$html$Html_Events$onClick(_user$project$Types$Reset)
+				_elm_lang$html$Html_Events$onClick(_user$project$Types$Reset),
+				_user$project$View$buttonStyle
 			]),
 		_elm_lang$core$Native_List.fromArray(
 			[
@@ -23,7 +24,8 @@ var _user$project$Main$view = function (model) {
 				_elm_lang$html$Html$button,
 				_elm_lang$core$Native_List.fromArray(
 					[
-						_elm_lang$html$Html_Events$onClick(_user$project$Types$ToggleWeighted)
+						_elm_lang$html$Html_Events$onClick(_user$project$Types$ToggleWeighted),
+						_user$project$View$buttonStyle
 					]),
 				_elm_lang$core$Native_List.fromArray(
 					[
@@ -33,7 +35,8 @@ var _user$project$Main$view = function (model) {
 				_elm_lang$html$Html$button,
 				_elm_lang$core$Native_List.fromArray(
 					[
-						_elm_lang$html$Html_Events$onClick(_user$project$Types$ToggleDirectional)
+						_elm_lang$html$Html_Events$onClick(_user$project$Types$ToggleDirectional),
+						_user$project$View$buttonStyle
 					]),
 				_elm_lang$core$Native_List.fromArray(
 					[
@@ -43,7 +46,8 @@ var _user$project$Main$view = function (model) {
 				_elm_lang$html$Html$button,
 				_elm_lang$core$Native_List.fromArray(
 					[
-						_elm_lang$html$Html_Events$onClick(_user$project$Types$BreadthFirstSearch)
+						_elm_lang$html$Html_Events$onClick(_user$project$Types$BreadthFirstSearch),
+						_user$project$View$buttonStyle
 					]),
 				_elm_lang$core$Native_List.fromArray(
 					[
@@ -154,7 +158,7 @@ var _user$project$Main$update = F2(
 					_1: A2(
 						_elm_lang$core$Random$generate,
 						_user$project$Types$NewQuestion,
-						A2(_elm_lang$core$Random$int, 1, 7))
+						A2(_elm_lang$core$Random$int, 1, 8))
 				};
 			case 'NewQuestion':
 				return {

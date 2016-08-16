@@ -22,11 +22,19 @@ var _user$project$QuestionView$radio = F2(
 							_elm_lang$html$Html_Events$onCheck(
 							function (_p0) {
 								return _user$project$Types$UserInput(name);
-							})
+							}),
+							_user$project$View$radioStyle
 						]),
 					_elm_lang$core$Native_List.fromArray(
 						[])),
-					_elm_lang$html$Html$text(name)
+					A2(
+					_elm_lang$html$Html$span,
+					_elm_lang$core$Native_List.fromArray(
+						[_user$project$View$questionStyle]),
+					_elm_lang$core$Native_List.fromArray(
+						[
+							_elm_lang$html$Html$text(name)
+						]))
 				]));
 	});
 var _user$project$QuestionView$displayQuestion = function (model) {
@@ -48,10 +56,18 @@ var _user$project$QuestionView$displayQuestion = function (model) {
 					A2(
 					_elm_lang$html$Html$div,
 					_elm_lang$core$Native_List.fromArray(
-						[]),
+						[_user$project$View$questionStyle]),
 					_elm_lang$core$Native_List.fromArray(
 						[
 							_elm_lang$html$Html$text(question)
+						])),
+					A2(
+					_elm_lang$html$Html$div,
+					_elm_lang$core$Native_List.fromArray(
+						[]),
+					_elm_lang$core$Native_List.fromArray(
+						[
+							_elm_lang$html$Html$text('s')
 						])),
 					A2(
 					_elm_lang$html$Html$input,
@@ -60,7 +76,8 @@ var _user$project$QuestionView$displayQuestion = function (model) {
 							_elm_lang$html$Html_Attributes$type$('text'),
 							_elm_lang$html$Html_Attributes$placeholder('Answer here...'),
 							_elm_lang$html$Html_Events$onInput(_user$project$Types$UserInput),
-							_elm_lang$html$Html_Attributes$value(model.userInput)
+							_elm_lang$html$Html_Attributes$value(model.userInput),
+							_user$project$View$inputStyle
 						]),
 					_elm_lang$core$Native_List.fromArray(
 						[])),
@@ -68,7 +85,8 @@ var _user$project$QuestionView$displayQuestion = function (model) {
 					_elm_lang$html$Html$button,
 					_elm_lang$core$Native_List.fromArray(
 						[
-							_elm_lang$html$Html_Attributes$type$('submit')
+							_elm_lang$html$Html_Attributes$type$('submit'),
+							_user$project$View$buttonStyle
 						]),
 					_elm_lang$core$Native_List.fromArray(
 						[
@@ -87,17 +105,25 @@ var _user$project$QuestionView$displayQuestion = function (model) {
 					A2(
 					_elm_lang$html$Html$div,
 					_elm_lang$core$Native_List.fromArray(
+						[_user$project$View$questionStyle]),
+					_elm_lang$core$Native_List.fromArray(
+						[
+							_elm_lang$html$Html$text(question)
+						])),
+					A2(
+					_elm_lang$html$Html$div,
+					_elm_lang$core$Native_List.fromArray(
 						[]),
 					_elm_lang$core$Native_List.fromArray(
 						[
-							A2(
-							_elm_lang$html$Html$span,
-							_elm_lang$core$Native_List.fromArray(
-								[]),
-							_elm_lang$core$Native_List.fromArray(
-								[
-									_elm_lang$html$Html$text(question)
-								])),
+							_elm_lang$html$Html$text('s')
+						])),
+					A2(
+					_elm_lang$html$Html$div,
+					_elm_lang$core$Native_List.fromArray(
+						[]),
+					_elm_lang$core$Native_List.fromArray(
+						[
 							A2(_user$project$QuestionView$radio, 'True', model),
 							A2(_user$project$QuestionView$radio, 'False', model)
 						])),
@@ -105,7 +131,8 @@ var _user$project$QuestionView$displayQuestion = function (model) {
 					_elm_lang$html$Html$button,
 					_elm_lang$core$Native_List.fromArray(
 						[
-							_elm_lang$html$Html_Attributes$type$('submit')
+							_elm_lang$html$Html_Attributes$type$('submit'),
+							_user$project$View$buttonStyle
 						]),
 					_elm_lang$core$Native_List.fromArray(
 						[
@@ -135,10 +162,18 @@ var _user$project$QuestionView$questionForm = function (model) {
 					A2(
 					_elm_lang$html$Html$div,
 					_elm_lang$core$Native_List.fromArray(
-						[]),
+						[_user$project$View$questionStyle]),
 					_elm_lang$core$Native_List.fromArray(
 						[
 							_elm_lang$html$Html$text(model.feedback)
+						])),
+					A2(
+					_elm_lang$html$Html$div,
+					_elm_lang$core$Native_List.fromArray(
+						[]),
+					_elm_lang$core$Native_List.fromArray(
+						[
+							_elm_lang$html$Html$text('s')
 						])),
 					A2(
 					_elm_lang$html$Html$input,
@@ -147,7 +182,9 @@ var _user$project$QuestionView$questionForm = function (model) {
 							_elm_lang$html$Html_Attributes$type$('text'),
 							_elm_lang$html$Html_Attributes$placeholder('Answer here...'),
 							_elm_lang$html$Html_Events$onInput(_user$project$Types$UserInput),
-							_elm_lang$html$Html_Attributes$value(model.userInput)
+							_elm_lang$html$Html_Attributes$value(model.userInput),
+							_elm_lang$html$Html_Attributes$disabled(true),
+							_user$project$View$inputStyle
 						]),
 					_elm_lang$core$Native_List.fromArray(
 						[])),
@@ -155,7 +192,8 @@ var _user$project$QuestionView$questionForm = function (model) {
 					_elm_lang$html$Html$button,
 					_elm_lang$core$Native_List.fromArray(
 						[
-							_elm_lang$html$Html_Attributes$type$('submit')
+							_elm_lang$html$Html_Attributes$type$('submit'),
+							_user$project$View$buttonStyle
 						]),
 					_elm_lang$core$Native_List.fromArray(
 						[

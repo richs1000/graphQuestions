@@ -229,7 +229,7 @@ var _user$project$GraphView$drawGraph = function (graph) {
 		_user$project$GraphView$drawEdges(graph));
 };
 var _user$project$GraphView$imageOfGraph = function (model) {
-	var graphHeight = (_user$project$View$viewConstants.nodeSeparation + _user$project$View$viewConstants.nodeRadius) * _user$project$View$viewConstants.nodesPerCol;
+	var graphHeight = (((_user$project$View$viewConstants.nodeSeparation + _user$project$View$viewConstants.nodeRadius) * (_user$project$View$viewConstants.nodesPerCol - 1)) + _user$project$View$viewConstants.nodeRadius) + ((_user$project$View$viewConstants.nodeSeparation / 2) | 0);
 	var graphWidth = (_user$project$View$viewConstants.nodeSeparation + _user$project$View$viewConstants.nodeRadius) * _user$project$View$viewConstants.nodesPerRow;
 	return A2(
 		_elm_lang$svg$Svg$svg,

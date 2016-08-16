@@ -203,7 +203,7 @@ questionByIndex model index =
                 { question = "What is the weight of the edge from Node " ++ toString f ++ " to Node " ++ toString t ++ "?"
                 , distractors =
                     [ ( ""
-                      , "Incorrect. An edge's weight is the number displayed on top of the edge."
+                      , "Incorrect. An edge's weight is the number displayed on top of (or next to) the edge."
                       )
                     ]
                 , answer =

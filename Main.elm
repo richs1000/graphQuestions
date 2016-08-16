@@ -60,15 +60,15 @@ view : Model -> Html Msg
 view model =
     let
         resetBtn =
-            button [ onClick Reset ] [ Html.text "Reset" ]
+            button [ onClick Reset, buttonStyle ] [ Html.text "Reset" ]
 
         buttons =
             if model.debug then
                 div []
                     [ resetBtn
-                    , button [ onClick ToggleWeighted ] [ Html.text "Toggle Weighted" ]
-                    , button [ onClick ToggleDirectional ] [ Html.text "Toggle Directional" ]
-                    , button [ onClick BreadthFirstSearch ] [ Html.text "BFS" ]
+                    , button [ onClick ToggleWeighted, buttonStyle ] [ Html.text "Toggle Weighted" ]
+                    , button [ onClick ToggleDirectional, buttonStyle ] [ Html.text "Toggle Directional" ]
+                    , button [ onClick BreadthFirstSearch, buttonStyle ] [ Html.text "BFS" ]
                     ]
             else
                 div [] [ resetBtn ]
@@ -129,7 +129,7 @@ update msg model =
                         (replaceWeights edges newWeights)
                 in
                     ( updateGraph model nodes newEdges directional weighted
-                    , Random.generate NewQuestion (Random.int 1 7)
+                    , Random.generate NewQuestion (Random.int 1 8)
                     )
 
             -- New Question Flow: NewQuestion -> UserInput -> Submit -> GiveFeedback -> New Graph Flow

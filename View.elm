@@ -3,6 +3,7 @@ module View exposing (..)
 import Html exposing (..)
 import Html.Attributes exposing (..)
 
+
 scoreboardStyle : Html.Attribute msg
 scoreboardStyle =
     Html.Attributes.style
@@ -12,6 +13,49 @@ scoreboardStyle =
         , ( "height", "40px" )
         , ( "margin-left", "6px" )
         , ( "margin-right", "6px" )
+        ]
+
+
+questionStyle : Html.Attribute msg
+questionStyle =
+    Html.Attributes.style
+        [ ( "width", "100%" )
+        , ( "height", "40px" )
+        , ( "padding", "10px" )
+        , ( "font-size", "2em" )
+        , ( "margin", "4px" )
+          -- , ( "line-height", "3" )
+        ]
+
+
+buttonStyle : Html.Attribute msg
+buttonStyle =
+    Html.Attributes.style
+        [ ( "text-align", "center" )
+        , ( "font-size", "16px" )
+        , ( "padding", "15px 32px" )
+        , ( "margin", "2px" )
+          -- , ( "display", "inline-block" )
+        ]
+
+
+radioStyle : Html.Attribute msg
+radioStyle =
+    Html.Attributes.style
+        [ ( "width", "40px" )
+        , ( "height", "40px" )
+        , ( "border-radius", "50%" )
+        ]
+
+
+inputStyle : Html.Attribute msg
+inputStyle =
+    Html.Attributes.style
+        [ ( "width", "100%" )
+        , ( "height", "40px" )
+        , ( "padding", "10px" )
+        , ( "font-size", "2em" )
+        , ( "margin", "8px" )
         ]
 
 
@@ -38,7 +82,7 @@ viewConstants =
     , nodeRadius = 20
     , nodeOffset = 30
     , weightOffset = 7
-    , graphUpperLeft = ( 20, 20 )
+    , graphUpperLeft = ( 40, 20 )
     , nodesPerRow = 4
     , nodesPerCol = 4
     , historySquareSize = 25

@@ -14,7 +14,11 @@ imageOfGraph model =
             ((viewConstants.nodeSeparation + viewConstants.nodeRadius) * viewConstants.nodesPerRow)
 
         graphHeight =
-            ((viewConstants.nodeSeparation + viewConstants.nodeRadius) * viewConstants.nodesPerCol)
+            ((viewConstants.nodeSeparation + viewConstants.nodeRadius)
+                * (viewConstants.nodesPerCol - 1)
+                + viewConstants.nodeRadius
+                + (viewConstants.nodeSeparation // 2)
+            )
     in
         Svg.svg
             [ version "1.1"

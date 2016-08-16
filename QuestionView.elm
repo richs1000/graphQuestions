@@ -4,6 +4,7 @@ import Html exposing (..)
 import Html.Attributes exposing (..)
 import Html.Events exposing (..)
 import Types exposing (..)
+import View exposing (..)
 
 
 displayQuestion : Model -> Html Msg
@@ -15,32 +16,35 @@ displayQuestion model =
         case format of
             FillInTheBlank ->
                 Html.form [ onSubmit Submit ]
-                    [ div [] [ Html.text question ]
+                    [ div [ questionStyle ] [ Html.text question ]
+                    , div [] [ Html.text "s" ]
                     , input
                         [ Html.Attributes.type' "text"
                         , placeholder "Answer here..."
                         , onInput UserInput
                         , value model.userInput
+                        , inputStyle
                         ]
                         []
                     , button
-                        [ Html.Attributes.type' "submit" ]
+                        [ Html.Attributes.type' "submit"
+                        , buttonStyle
+                        ]
                         [ Html.text "Submit" ]
                     ]
 
             MultipleChoice ->
-                -- let
-                --     buttons =
-                --         createButtons model
-                -- in
                 Html.form [ onSubmit Submit ]
-                    [ div []
-                        [ span [] [ Html.text question ]
-                        , radio "True" model
+                    [ div [ questionStyle ] [ Html.text question ]
+                    , div [] [ Html.text "s" ]
+                    , div []
+                        [ radio "True" model
                         , radio "False" model
                         ]
                     , button
-                        [ Html.Attributes.type' "submit" ]
+                        [ Html.Attributes.type' "submit"
+                        , buttonStyle
+                        ]
                         [ Html.text "Submit" ]
                     ]
 
@@ -53,8 +57,14 @@ radio name model =
     in
         label []
             [ br [] []
-            , input [ Html.Attributes.type' "radio", checked isSelected, onCheck (\_ -> UserInput name) ] []
-            , Html.text name
+            , input
+                [ Html.Attributes.type' "radio"
+                , checked isSelected
+                , onCheck (\_ -> UserInput name)
+                , radioStyle
+                ]
+                []
+            , span [ questionStyle ] [ Html.text name ]
             ]
 
 
@@ -72,15 +82,20 @@ questionForm model =
             -- Answer has been submitted, so display the feedback
             Just _ ->
                 Html.form [ onSubmit GiveFeedback ]
-                    [ div [] [ Html.text model.feedback ]
+                    [ div [ questionStyle ] [ Html.text model.feedback ]
+                    , div [] [ Html.text "s" ]
                     , input
                         [ Html.Attributes.type' "text"
                         , placeholder "Answer here..."
                         , onInput UserInput
                         , value model.userInput
+                        , disabled True
+                        , inputStyle
                         ]
                         []
                     , button
-                        [ Html.Attributes.type' "submit" ]
+                        [ Html.Attributes.type' "submit"
+                        , buttonStyle
+                        ]
                         [ Html.text "Next Question" ]
                     ]
