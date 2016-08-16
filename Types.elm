@@ -16,20 +16,6 @@ type alias Model =
     }
 
 
-initModel : Model
-initModel =
-    { graph = emptyGraph
-    , debug = True
-    , userInput = ""
-    , history = List.repeat historyLength Nothing
-    , bfs = Nothing
-    , success = Nothing
-    , question = emptyQuestion
-    , feedback = ""
-    , randomValues = []
-    }
-
-
 
 -- HISTORY
 
@@ -128,40 +114,6 @@ emptyGraph =
 
 
 -- VIEW
-
-
-type alias Pixels =
-    Int
-
-
-type alias ViewConstants =
-    { nodeSeparation : Pixels
-    , nodeRadius : Pixels
-    , nodeOffset : Pixels
-    , weightOffset : Pixels
-    , graphUpperLeft : ( Pixels, Pixels )
-    , nodesPerRow : Int
-    , nodesPerCol : Int
-    , historySquareSize : Int
-    , historySquareSeparation : Int
-    }
-
-
-viewConstants : ViewConstants
-viewConstants =
-    { nodeSeparation = 100
-    , nodeRadius = 20
-    , nodeOffset = 30
-    , weightOffset = 7
-    , graphUpperLeft = ( 20, 20 )
-    , nodesPerRow = 4
-    , nodesPerCol = 4
-    , historySquareSize = 25
-    , historySquareSeparation = 5
-    }
-
-
-
 -- UPDATE
 
 

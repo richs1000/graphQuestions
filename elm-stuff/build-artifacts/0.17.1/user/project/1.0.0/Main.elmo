@@ -1,1379 +1,5 @@
-var _user$project$Main$lastNode = function (model) {
-	var _p0 = model.graph;
-	var nodes = _p0.nodes;
-	var edges = _p0.edges;
-	var directional = _p0.directional;
-	var weighted = _p0.weighted;
-	var nodes$ = _elm_lang$core$List$reverse(nodes);
-	var _p1 = nodes$;
-	if (_p1.ctor === '[]') {
-		return 0;
-	} else {
-		return _p1._0;
-	}
-};
-var _user$project$Main$firstNode = function (model) {
-	var _p2 = model.graph;
-	var nodes = _p2.nodes;
-	var edges = _p2.edges;
-	var directional = _p2.directional;
-	var weighted = _p2.weighted;
-	var _p3 = nodes;
-	if (_p3.ctor === '[]') {
-		return 0;
-	} else {
-		return _p3._0;
-	}
-};
-var _user$project$Main$numberOfEdges = function (model) {
-	var _p4 = model.graph;
-	var nodes = _p4.nodes;
-	var edges = _p4.edges;
-	var directional = _p4.directional;
-	var weighted = _p4.weighted;
-	return _elm_lang$core$List$length(edges);
-};
-var _user$project$Main$numberOfNodes = function (model) {
-	var _p5 = model.graph;
-	var nodes = _p5.nodes;
-	var edges = _p5.edges;
-	var directional = _p5.directional;
-	var weighted = _p5.weighted;
-	return _elm_lang$core$List$length(nodes);
-};
-var _user$project$Main$outDegree = F2(
-	function (graph, node) {
-		return _elm_lang$core$List$length(
-			A2(
-				_elm_lang$core$List$filter,
-				function (e) {
-					return _elm_lang$core$Native_Utils.eq(e.from, node) || (_elm_lang$core$Native_Utils.eq(e.to, node) && _elm_lang$core$Native_Utils.eq(e.direction, _user$project$Types$BiDirectional));
-				},
-				graph.edges));
-	});
-var _user$project$Main$inDegree = F2(
-	function (graph, node) {
-		return _elm_lang$core$List$length(
-			A2(
-				_elm_lang$core$List$filter,
-				function (e) {
-					return _elm_lang$core$Native_Utils.eq(e.to, node) || (_elm_lang$core$Native_Utils.eq(e.from, node) && _elm_lang$core$Native_Utils.eq(e.direction, _user$project$Types$BiDirectional));
-				},
-				graph.edges));
-	});
-var _user$project$Main$degree = F2(
-	function (graph, node) {
-		return _elm_lang$core$List$length(
-			A2(
-				_elm_lang$core$List$filter,
-				function (e) {
-					return _elm_lang$core$Native_Utils.eq(e.from, node) || _elm_lang$core$Native_Utils.eq(e.to, node);
-				},
-				graph.edges));
-	});
-var _user$project$Main$edgeExists = F3(
-	function (graph, n1, n2) {
-		var n2_to_n1_non = _elm_lang$core$Basics$not(graph.directional) && A2(
-			_elm_lang$core$List$any,
-			function (e) {
-				return _elm_lang$core$Native_Utils.eq(e.from, n2) && _elm_lang$core$Native_Utils.eq(e.to, n1);
-			},
-			graph.edges);
-		var n2_to_n1_bi = A2(
-			_elm_lang$core$List$any,
-			function (e) {
-				return _elm_lang$core$Native_Utils.eq(e.from, n2) && (_elm_lang$core$Native_Utils.eq(e.to, n1) && _elm_lang$core$Native_Utils.eq(e.direction, _user$project$Types$BiDirectional));
-			},
-			graph.edges);
-		var n1_to_n2 = A2(
-			_elm_lang$core$List$any,
-			function (e) {
-				return _elm_lang$core$Native_Utils.eq(e.from, n1) && _elm_lang$core$Native_Utils.eq(e.to, n2);
-			},
-			graph.edges);
-		return n1_to_n2 || (n2_to_n1_bi || n2_to_n1_non);
-	});
-var _user$project$Main$visited = F3(
-	function (openList, closedList, node) {
-		return A2(_elm_lang$core$List$member, node, openList) || A2(_elm_lang$core$List$member, node, closedList);
-	});
-var _user$project$Main$unwindSearchTree = F2(
-	function (searchTree, lastNode) {
-		unwindSearchTree:
-		while (true) {
-			var _p6 = searchTree;
-			if (_p6.ctor === '[]') {
-				return _elm_lang$core$Native_List.fromArray(
-					[]);
-			} else {
-				var _p8 = _p6._1;
-				var _p7 = _p6._0._0;
-				if (A2(
-					_elm_lang$core$List$member,
-					lastNode,
-					A2(_elm_lang$core$Debug$log, 'kids', _p6._0._1))) {
-					return A2(
-						_elm_lang$core$List_ops['::'],
-						_p7,
-						A2(_user$project$Main$unwindSearchTree, _p8, _p7));
-				} else {
-					var _v3 = _p8,
-						_v4 = lastNode;
-					searchTree = _v3;
-					lastNode = _v4;
-					continue unwindSearchTree;
-				}
-			}
-		}
-	});
-var _user$project$Main$genericSearch = F3(
-	function (graph, startNode, endNode) {
-		var searchHelper = F3(
-			function (openList, closedList, searchTree) {
-				searchHelper:
-				while (true) {
-					var _p9 = openList;
-					if (_p9.ctor === '[]') {
-						return _elm_lang$core$Maybe$Nothing;
-					} else {
-						var _p11 = _p9._0;
-						if (_elm_lang$core$Native_Utils.eq(_p11, endNode)) {
-							return _elm_lang$core$Maybe$Just(
-								_elm_lang$core$List$reverse(
-									A2(
-										_elm_lang$core$List_ops['::'],
-										endNode,
-										A2(_user$project$Main$unwindSearchTree, searchTree, endNode))));
-						} else {
-							var neighbors = A2(
-								_elm_lang$core$List$filter,
-								function (n) {
-									return _elm_lang$core$Basics$not(
-										A3(_user$project$Main$visited, openList, closedList, n));
-								},
-								A2(
-									_elm_lang$core$List$filter,
-									A2(_user$project$Main$edgeExists, graph, _p11),
-									graph.nodes));
-							var openList$ = A2(_elm_lang$core$List$append, _p9._1, neighbors);
-							var searchTree$ = A2(
-								_elm_lang$core$Debug$log,
-								'search tree: ',
-								A2(
-									_elm_lang$core$List_ops['::'],
-									{ctor: '_Tuple2', _0: _p11, _1: neighbors},
-									searchTree));
-							var _p10 = neighbors;
-							if (_p10.ctor === '[]') {
-								var _v7 = openList$,
-									_v8 = A2(_elm_lang$core$List_ops['::'], _p11, closedList),
-									_v9 = searchTree$;
-								openList = _v7;
-								closedList = _v8;
-								searchTree = _v9;
-								continue searchHelper;
-							} else {
-								var _v10 = openList$,
-									_v11 = A2(_elm_lang$core$List_ops['::'], _p11, closedList),
-									_v12 = searchTree$;
-								openList = _v10;
-								closedList = _v11;
-								searchTree = _v12;
-								continue searchHelper;
-							}
-						}
-					}
-				}
-			});
-		return A3(
-			searchHelper,
-			_elm_lang$core$Native_List.fromArray(
-				[startNode]),
-			_elm_lang$core$Native_List.fromArray(
-				[]),
-			_elm_lang$core$Native_List.fromArray(
-				[]));
-	});
-var _user$project$Main$breadthFirstSearch = F3(
-	function (graph, startNode, endNode) {
-		return A3(_user$project$Main$genericSearch, graph, startNode, endNode);
-	});
-var _user$project$Main$pathExists = F3(
-	function (graph, startNode, endNode) {
-		var s = A3(_user$project$Main$breadthFirstSearch, graph, startNode, endNode);
-		var _p12 = s;
-		if (_p12.ctor === 'Nothing') {
-			return false;
-		} else {
-			return true;
-		}
-	});
-var _user$project$Main$mergeDuplicates = function (edges) {
-	var _p13 = edges;
-	if (_p13.ctor === '[]') {
-		return _elm_lang$core$Native_List.fromArray(
-			[]);
-	} else {
-		var _p16 = _p13._0;
-		var _p14 = A2(
-			_elm_lang$core$List$partition,
-			function (ee) {
-				return _elm_lang$core$Native_Utils.eq(_p16.to, ee.from) && _elm_lang$core$Native_Utils.eq(_p16.from, ee.to);
-			},
-			_p13._1);
-		var rev = _p14._0;
-		var notRev = _p14._1;
-		var _p15 = rev;
-		if (_p15.ctor === '[]') {
-			return A2(
-				_elm_lang$core$List_ops['::'],
-				_p16,
-				_user$project$Main$mergeDuplicates(notRev));
-		} else {
-			return A2(
-				_elm_lang$core$List_ops['::'],
-				_elm_lang$core$Native_Utils.update(
-					_p16,
-					{direction: _user$project$Types$BiDirectional}),
-				_user$project$Main$mergeDuplicates(notRev));
-		}
-	}
-};
-var _user$project$Main$findFeedback = F3(
-	function (answer, response, distractors) {
-		findFeedback:
-		while (true) {
-			var _p17 = distractors;
-			if (_p17.ctor === '[]') {
-				return A2(_elm_lang$core$Basics_ops['++'], 'Incorrect. The answer is ', answer);
-			} else {
-				var _p18 = _p17._0;
-				if (_elm_lang$core$Native_Utils.eq(
-					_elm_lang$core$Basics$fst(_p18),
-					response) || _elm_lang$core$Native_Utils.eq(
-					_elm_lang$core$Basics$fst(_p18),
-					'')) {
-					return A2(
-						_elm_lang$core$Basics_ops['++'],
-						_elm_lang$core$Basics$snd(_p18),
-						A2(_elm_lang$core$Basics_ops['++'], ' The answer is ', answer));
-				} else {
-					var _v17 = answer,
-						_v18 = response,
-						_v19 = _p17._1;
-					answer = _v17;
-					response = _v18;
-					distractors = _v19;
-					continue findFeedback;
-				}
-			}
-		}
-	});
-var _user$project$Main$checkAnswer = function (model) {
-	var _p19 = model.question;
-	var question = _p19.question;
-	var distractors = _p19.distractors;
-	var answer = _p19.answer;
-	var newHistory = A2(_elm_lang$core$List$take, _user$project$Types$historyLength - 1, model.history);
-	return _elm_lang$core$Native_Utils.eq(
-		_elm_lang$core$Basics$fst(answer),
-		model.userInput) ? _elm_lang$core$Native_Utils.update(
-		model,
-		{
-			success: _elm_lang$core$Maybe$Just(true),
-			history: A2(
-				_elm_lang$core$List_ops['::'],
-				_elm_lang$core$Maybe$Just(true),
-				newHistory),
-			feedback: _elm_lang$core$Basics$snd(answer)
-		}) : _elm_lang$core$Native_Utils.update(
-		model,
-		{
-			success: _elm_lang$core$Maybe$Just(false),
-			history: A2(
-				_elm_lang$core$List_ops['::'],
-				_elm_lang$core$Maybe$Just(false),
-				newHistory),
-			feedback: A3(
-				_user$project$Main$findFeedback,
-				_elm_lang$core$Basics$fst(answer),
-				model.userInput,
-				distractors)
-		});
-};
-var _user$project$Main$randomNode = F2(
-	function (model, alreadyChosen) {
-		var graph = model.graph;
-		var validNodes = A2(
-			_elm_lang$core$List$filter,
-			function (n) {
-				return _elm_lang$core$Basics$not(
-					A2(_elm_lang$core$List$member, n, alreadyChosen));
-			},
-			A2(
-				_elm_lang$core$List$filter,
-				function (n) {
-					return A2(_elm_lang$core$List$member, n, graph.nodes);
-				},
-				model.randomValues));
-		var rNode = _elm_lang$core$List$head(validNodes);
-		var _p20 = rNode;
-		if (_p20.ctor === 'Nothing') {
-			return 0;
-		} else {
-			return _p20._0;
-		}
-	});
-var _user$project$Main$questionByIndex = F2(
-	function (model, index) {
-		var _p21 = model.graph;
-		var nodes = _p21.nodes;
-		var edges = _p21.edges;
-		var directional = _p21.directional;
-		var weighted = _p21.weighted;
-		if (_elm_lang$core$Native_Utils.eq(index, 1)) {
-			return {
-				question: 'How many nodes are in the graph above?',
-				distractors: _elm_lang$core$Native_List.fromArray(
-					[
-						{
-						ctor: '_Tuple2',
-						_0: _elm_lang$core$Basics$toString(
-							_user$project$Main$numberOfEdges(model)),
-						_1: 'That is the number of edges. Nodes are the labeled circles in the picture above.'
-					},
-						{ctor: '_Tuple2', _0: '', _1: 'Incorrect. Nodes are the labeled circles in the picture above. A node is still part of a graph even if it is not connected by an edge to any other nodes'}
-					]),
-				answer: {
-					ctor: '_Tuple2',
-					_0: _elm_lang$core$Basics$toString(
-						_user$project$Main$numberOfNodes(model)),
-					_1: 'Correct.'
-				},
-				format: _user$project$Types$FillInTheBlank
-			};
-		} else {
-			if (_elm_lang$core$Native_Utils.eq(index, 2)) {
-				return {
-					question: 'How many edges are in the graph above?',
-					distractors: _elm_lang$core$Native_List.fromArray(
-						[
-							{
-							ctor: '_Tuple2',
-							_0: _elm_lang$core$Basics$toString(
-								_user$project$Main$numberOfNodes(model)),
-							_1: 'That is the number of nodes. Edges are the lines connecting circles in the picture above. A bi-directional edge (i.e., an edge with two arrows) still counts as a single edge.'
-						},
-							{ctor: '_Tuple2', _0: '', _1: 'Incorrect. Edges are the lines connecting circles in the picture above. A bi-directional edge (i.e., an edge with two arrows) still counts as a single edge.'}
-						]),
-					answer: {
-						ctor: '_Tuple2',
-						_0: _elm_lang$core$Basics$toString(
-							_user$project$Main$numberOfEdges(model)),
-						_1: 'Correct.'
-					},
-					format: _user$project$Types$FillInTheBlank
-				};
-			} else {
-				if (_elm_lang$core$Native_Utils.eq(index, 3)) {
-					var l = _user$project$Main$lastNode(model);
-					var f = _user$project$Main$firstNode(model);
-					var ans = A3(_user$project$Main$pathExists, model.graph, f, l);
-					var actualPath = A2(
-						_elm_lang$core$Maybe$withDefault,
-						_elm_lang$core$Native_List.fromArray(
-							[]),
-						A3(_user$project$Main$genericSearch, model.graph, f, l));
-					var fbackString = ans ? A2(
-						_elm_lang$core$Basics_ops['++'],
-						'One valid path is ',
-						_elm_lang$core$Basics$toString(actualPath)) : A2(
-						_elm_lang$core$Basics_ops['++'],
-						'There is no path from Node ',
-						A2(
-							_elm_lang$core$Basics_ops['++'],
-							_elm_lang$core$Basics$toString(f),
-							A2(
-								_elm_lang$core$Basics_ops['++'],
-								' to Node ',
-								_elm_lang$core$Basics$toString(l))));
-					return {
-						question: A2(
-							_elm_lang$core$Basics_ops['++'],
-							'True or False: There is a path from Node ',
-							A2(
-								_elm_lang$core$Basics_ops['++'],
-								_elm_lang$core$Basics$toString(f),
-								A2(
-									_elm_lang$core$Basics_ops['++'],
-									' to Node ',
-									_elm_lang$core$Basics$toString(l)))),
-						distractors: _elm_lang$core$Native_List.fromArray(
-							[
-								{
-								ctor: '_Tuple2',
-								_0: _elm_lang$core$Basics$toString(
-									_elm_lang$core$Basics$not(ans)),
-								_1: A2(_elm_lang$core$Basics_ops['++'], 'Incorrect. ', fbackString)
-							}
-							]),
-						answer: {
-							ctor: '_Tuple2',
-							_0: _elm_lang$core$Basics$toString(ans),
-							_1: A2(_elm_lang$core$Basics_ops['++'], 'Correct. ', fbackString)
-						},
-						format: _user$project$Types$MultipleChoice
-					};
-				} else {
-					if (_elm_lang$core$Native_Utils.eq(index, 4)) {
-						var f = A2(
-							_user$project$Main$randomNode,
-							model,
-							_elm_lang$core$Native_List.fromArray(
-								[]));
-						var l = A2(
-							_user$project$Main$randomNode,
-							model,
-							_elm_lang$core$Native_List.fromArray(
-								[f]));
-						var ans = A3(_user$project$Main$edgeExists, model.graph, f, l);
-						var opposite = A3(_user$project$Main$edgeExists, model.graph, l, f);
-						var fbackString = ans ? A2(
-							_elm_lang$core$Basics_ops['++'],
-							'There is an edge from Node ',
-							A2(
-								_elm_lang$core$Basics_ops['++'],
-								_elm_lang$core$Basics$toString(f),
-								A2(
-									_elm_lang$core$Basics_ops['++'],
-									' to Node ',
-									_elm_lang$core$Basics$toString(l)))) : (opposite ? A2(
-							_elm_lang$core$Basics_ops['++'],
-							'There is an not an edge from Node ',
-							A2(
-								_elm_lang$core$Basics_ops['++'],
-								_elm_lang$core$Basics$toString(f),
-								A2(
-									_elm_lang$core$Basics_ops['++'],
-									' to Node ',
-									A2(
-										_elm_lang$core$Basics_ops['++'],
-										_elm_lang$core$Basics$toString(l),
-										A2(
-											_elm_lang$core$Basics_ops['++'],
-											', but there is an edge from Node ',
-											A2(
-												_elm_lang$core$Basics_ops['++'],
-												_elm_lang$core$Basics$toString(l),
-												A2(
-													_elm_lang$core$Basics_ops['++'],
-													' to Node ',
-													_elm_lang$core$Basics$toString(f)))))))) : A2(
-							_elm_lang$core$Basics_ops['++'],
-							'There is no edge between Node ',
-							A2(
-								_elm_lang$core$Basics_ops['++'],
-								_elm_lang$core$Basics$toString(f),
-								A2(
-									_elm_lang$core$Basics_ops['++'],
-									' and Node ',
-									_elm_lang$core$Basics$toString(l)))));
-						return {
-							question: A2(
-								_elm_lang$core$Basics_ops['++'],
-								'True or False: There is an edge from Node ',
-								A2(
-									_elm_lang$core$Basics_ops['++'],
-									_elm_lang$core$Basics$toString(f),
-									A2(
-										_elm_lang$core$Basics_ops['++'],
-										' to Node ',
-										_elm_lang$core$Basics$toString(l)))),
-							distractors: _elm_lang$core$Native_List.fromArray(
-								[
-									{
-									ctor: '_Tuple2',
-									_0: _elm_lang$core$Basics$toString(
-										_elm_lang$core$Basics$not(ans)),
-									_1: A2(_elm_lang$core$Basics_ops['++'], 'Incorrect. ', fbackString)
-								}
-								]),
-							answer: {
-								ctor: '_Tuple2',
-								_0: _elm_lang$core$Basics$toString(ans),
-								_1: A2(_elm_lang$core$Basics_ops['++'], 'Correct. ', fbackString)
-							},
-							format: _user$project$Types$MultipleChoice
-						};
-					} else {
-						if (_elm_lang$core$Native_Utils.eq(index, 5) && directional) {
-							var n = A2(
-								_user$project$Main$randomNode,
-								model,
-								_elm_lang$core$Native_List.fromArray(
-									[]));
-							var deg = A2(_user$project$Main$degree, model.graph, n);
-							var inDeg = A2(_user$project$Main$inDegree, model.graph, n);
-							var outDeg = A2(_user$project$Main$outDegree, model.graph, n);
-							return {
-								question: A2(
-									_elm_lang$core$Basics_ops['++'],
-									'What is the in-degree of Node ',
-									A2(
-										_elm_lang$core$Basics_ops['++'],
-										_elm_lang$core$Basics$toString(n),
-										'?')),
-								distractors: _elm_lang$core$Native_List.fromArray(
-									[
-										{
-										ctor: '_Tuple2',
-										_0: _elm_lang$core$Basics$toString(deg),
-										_1: 'Incorrect. You identified the number of edges entering and leaving the node (the degree). You should only count the number of edges entering the node (the in-degree)'
-									},
-										{
-										ctor: '_Tuple2',
-										_0: _elm_lang$core$Basics$toString(outDeg),
-										_1: 'Incorrect. You identified the number of edges leaving the node (the out-degree), not the number of edges entering the node (the in-degree)'
-									},
-										{
-										ctor: '_Tuple2',
-										_0: _elm_lang$core$Basics$toString(inDeg + outDeg),
-										_1: 'Incorrect. You double-counted the bi-directional edges.'
-									},
-										{ctor: '_Tuple2', _0: '', _1: 'Incorrect. A node\'s in-degree is the number of edges entering (to) the node. A bidirectional node only is counted once.'}
-									]),
-								answer: {
-									ctor: '_Tuple2',
-									_0: _elm_lang$core$Basics$toString(inDeg),
-									_1: 'Correct.'
-								},
-								format: _user$project$Types$FillInTheBlank
-							};
-						} else {
-							if (_elm_lang$core$Native_Utils.eq(index, 6) && directional) {
-								var n = A2(
-									_user$project$Main$randomNode,
-									model,
-									_elm_lang$core$Native_List.fromArray(
-										[]));
-								var deg = A2(_user$project$Main$degree, model.graph, n);
-								var inDeg = A2(_user$project$Main$inDegree, model.graph, n);
-								var outDeg = A2(_user$project$Main$outDegree, model.graph, n);
-								return {
-									question: A2(
-										_elm_lang$core$Basics_ops['++'],
-										'What is the out-degree of Node ',
-										A2(
-											_elm_lang$core$Basics_ops['++'],
-											_elm_lang$core$Basics$toString(n),
-											'?')),
-									distractors: _elm_lang$core$Native_List.fromArray(
-										[
-											{
-											ctor: '_Tuple2',
-											_0: _elm_lang$core$Basics$toString(deg),
-											_1: 'Incorrect. You identified the number of edges entering and leaving the node (the degree). You should only count the number of edges leaving the node (the out-degree)'
-										},
-											{
-											ctor: '_Tuple2',
-											_0: _elm_lang$core$Basics$toString(inDeg),
-											_1: 'Incorrect. You identified the number of edges entering the node (the in-degree), not the number of edges leaving the node (the out-degree)'
-										},
-											{
-											ctor: '_Tuple2',
-											_0: _elm_lang$core$Basics$toString(inDeg + outDeg),
-											_1: 'Incorrect. You double-counted the bi-directional edges.'
-										},
-											{ctor: '_Tuple2', _0: '', _1: 'Incorrect. A node\'s out-degree is the number of edges leaving (from) the node. A bidirectional node only is counted once.'}
-										]),
-									answer: {
-										ctor: '_Tuple2',
-										_0: _elm_lang$core$Basics$toString(outDeg),
-										_1: 'Correct.'
-									},
-									format: _user$project$Types$FillInTheBlank
-								};
-							} else {
-								var n = A2(
-									_user$project$Main$randomNode,
-									model,
-									_elm_lang$core$Native_List.fromArray(
-										[]));
-								var deg = A2(_user$project$Main$degree, model.graph, n);
-								var inDeg = A2(_user$project$Main$inDegree, model.graph, n);
-								var outDeg = A2(_user$project$Main$outDegree, model.graph, n);
-								return {
-									question: A2(
-										_elm_lang$core$Basics_ops['++'],
-										'What is the degree of Node ',
-										A2(
-											_elm_lang$core$Basics_ops['++'],
-											_elm_lang$core$Basics$toString(n),
-											'?')),
-									distractors: _elm_lang$core$Native_List.fromArray(
-										[
-											{
-											ctor: '_Tuple2',
-											_0: _elm_lang$core$Basics$toString(inDeg),
-											_1: 'Incorrect. You identified the number of edges entering the node (the in-degree) but did not count the number of edges leaving the node (the out-degree)'
-										},
-											{
-											ctor: '_Tuple2',
-											_0: _elm_lang$core$Basics$toString(outDeg),
-											_1: 'Incorrect. You identified the number of edges leaving the node (the out-degree) but did not count the number of edges entering the node (the in-degree)'
-										},
-											{
-											ctor: '_Tuple2',
-											_0: _elm_lang$core$Basics$toString(inDeg + outDeg),
-											_1: 'Incorrect. You double-counted the bi-directional edges.'
-										},
-											{ctor: '_Tuple2', _0: '', _1: 'Incorrect. A node\'s degree is the number of edges entering (to) or exiting (from) the node. A bidirectional node only is only counted once.'}
-										]),
-									answer: {
-										ctor: '_Tuple2',
-										_0: _elm_lang$core$Basics$toString(deg),
-										_1: 'Correct.'
-									},
-									format: _user$project$Types$FillInTheBlank
-								};
-							}
-						}
-					}
-				}
-			}
-		}
-	});
-var _user$project$Main$newQuestion = F2(
-	function (model, index) {
-		var newQuestion = A2(_user$project$Main$questionByIndex, model, index);
-		var _p22 = model.graph;
-		var nodes = _p22.nodes;
-		var edges = _p22.edges;
-		var directional = _p22.directional;
-		var weighted = _p22.weighted;
-		return _elm_lang$core$Native_Utils.update(
-			model,
-			{question: newQuestion, success: _elm_lang$core$Maybe$Nothing, userInput: ''});
-	});
-var _user$project$Main$createEdgesFromNode = F2(
-	function (fromNode, neighbors) {
-		var _p23 = neighbors;
-		if (_p23.ctor === '[]') {
-			return _elm_lang$core$Native_List.fromArray(
-				[]);
-		} else {
-			return A2(
-				_elm_lang$core$List_ops['::'],
-				A4(_user$project$Types$Edge, fromNode, _p23._0, 0, _user$project$Types$UniDirectional),
-				A2(_user$project$Main$createEdgesFromNode, fromNode, _p23._1));
-		}
-	});
-var _user$project$Main$stripList = function (maybes) {
-	stripList:
-	while (true) {
-		var _p24 = maybes;
-		if (_p24.ctor === '[]') {
-			return _elm_lang$core$Native_List.fromArray(
-				[]);
-		} else {
-			if (_p24._0.ctor === 'Just') {
-				return A2(
-					_elm_lang$core$List_ops['::'],
-					_p24._0._0,
-					_user$project$Main$stripList(_p24._1));
-			} else {
-				var _v23 = _p24._1;
-				maybes = _v23;
-				continue stripList;
-			}
-		}
-	}
-};
-var _user$project$Main$closestNeighbor = F4(
-	function (allNodes, fromNode, pred, offset) {
-		var closestNeighborHelper = function (nodeId) {
-			closestNeighborHelper:
-			while (true) {
-				if ((_elm_lang$core$Native_Utils.cmp(nodeId, 0) < 0) || (_elm_lang$core$Native_Utils.cmp(nodeId, _user$project$Types$viewConstants.nodesPerRow * _user$project$Types$viewConstants.nodesPerCol) > -1)) {
-					return _elm_lang$core$Maybe$Nothing;
-				} else {
-					if (A2(_elm_lang$core$List$member, nodeId, allNodes) && A2(pred, fromNode, nodeId)) {
-						return _elm_lang$core$Maybe$Just(nodeId);
-					} else {
-						var _v24 = nodeId + offset;
-						nodeId = _v24;
-						continue closestNeighborHelper;
-					}
-				}
-			}
-		};
-		return closestNeighborHelper(fromNode + offset);
-	});
-var _user$project$Main$updateGraph = F5(
-	function (model, ns, es, d, w) {
-		return _elm_lang$core$Native_Utils.update(
-			model,
-			{
-				graph: {nodes: ns, edges: es, directional: d, weighted: w}
-			});
-	});
 var _user$project$Main$subscriptions = function (model) {
 	return _elm_lang$core$Platform_Sub$none;
-};
-var _user$project$Main$arrowHeads = _elm_lang$core$Native_List.fromArray(
-	[
-		A2(
-		_elm_lang$svg$Svg$defs,
-		_elm_lang$core$Native_List.fromArray(
-			[]),
-		_elm_lang$core$Native_List.fromArray(
-			[
-				A2(
-				_elm_lang$svg$Svg$marker,
-				_elm_lang$core$Native_List.fromArray(
-					[
-						_elm_lang$svg$Svg_Attributes$id('ArrowHeadEnd'),
-						_elm_lang$svg$Svg_Attributes$viewBox('0 0 10 10'),
-						_elm_lang$svg$Svg_Attributes$refX('1'),
-						_elm_lang$svg$Svg_Attributes$refY('5'),
-						_elm_lang$svg$Svg_Attributes$markerWidth('6'),
-						_elm_lang$svg$Svg_Attributes$markerHeight('6'),
-						_elm_lang$svg$Svg_Attributes$orient('auto')
-					]),
-				_elm_lang$core$Native_List.fromArray(
-					[
-						A2(
-						_elm_lang$svg$Svg$path,
-						_elm_lang$core$Native_List.fromArray(
-							[
-								_elm_lang$svg$Svg_Attributes$d('M 0 0 L 10 5 L 0 10 z')
-							]),
-						_elm_lang$core$Native_List.fromArray(
-							[]))
-					])),
-				A2(
-				_elm_lang$svg$Svg$marker,
-				_elm_lang$core$Native_List.fromArray(
-					[
-						_elm_lang$svg$Svg_Attributes$id('ArrowHeadStart'),
-						_elm_lang$svg$Svg_Attributes$viewBox('0 0 10 10'),
-						_elm_lang$svg$Svg_Attributes$refX('9'),
-						_elm_lang$svg$Svg_Attributes$refY('5'),
-						_elm_lang$svg$Svg_Attributes$markerWidth('6'),
-						_elm_lang$svg$Svg_Attributes$markerHeight('6'),
-						_elm_lang$svg$Svg_Attributes$orient('auto')
-					]),
-				_elm_lang$core$Native_List.fromArray(
-					[
-						A2(
-						_elm_lang$svg$Svg$path,
-						_elm_lang$core$Native_List.fromArray(
-							[
-								_elm_lang$svg$Svg_Attributes$d('M 10 10 L 0 5 L 10 0 z')
-							]),
-						_elm_lang$core$Native_List.fromArray(
-							[]))
-					]))
-			]))
-	]);
-var _user$project$Main$adjustPixel = F2(
-	function (p1, p2) {
-		return (_elm_lang$core$Native_Utils.cmp(p1, p2) < 0) ? (p1 + _user$project$Types$viewConstants.nodeOffset) : (_elm_lang$core$Native_Utils.eq(p1, p2) ? p1 : (p1 - _user$project$Types$viewConstants.nodeOffset));
-	});
-var _user$project$Main$edgeLine = F6(
-	function (x_1, y_1, x_2, y_2, directional, direction) {
-		var lineStyle = _elm_lang$core$Native_List.fromArray(
-			[
-				_elm_lang$svg$Svg_Attributes$x1(
-				_elm_lang$core$Basics$toString(
-					A2(_user$project$Main$adjustPixel, x_1, x_2))),
-				_elm_lang$svg$Svg_Attributes$y1(
-				_elm_lang$core$Basics$toString(
-					A2(_user$project$Main$adjustPixel, y_1, y_2))),
-				_elm_lang$svg$Svg_Attributes$x2(
-				_elm_lang$core$Basics$toString(
-					A2(_user$project$Main$adjustPixel, x_2, x_1))),
-				_elm_lang$svg$Svg_Attributes$y2(
-				_elm_lang$core$Basics$toString(
-					A2(_user$project$Main$adjustPixel, y_2, y_1))),
-				_elm_lang$svg$Svg_Attributes$fill('none'),
-				_elm_lang$svg$Svg_Attributes$stroke('black'),
-				_elm_lang$svg$Svg_Attributes$strokeWidth('2')
-			]);
-		var uniArrow = _elm_lang$core$Native_List.fromArray(
-			[
-				_elm_lang$svg$Svg_Attributes$markerEnd('url(#ArrowHeadEnd)')
-			]);
-		var biArrow = _elm_lang$core$Native_List.fromArray(
-			[
-				_elm_lang$svg$Svg_Attributes$markerStart('url(#ArrowHeadStart)'),
-				_elm_lang$svg$Svg_Attributes$markerEnd('url(#ArrowHeadEnd)')
-			]);
-		var lineStyle$ = (directional && _elm_lang$core$Native_Utils.eq(direction, _user$project$Types$BiDirectional)) ? A2(_elm_lang$core$List$append, lineStyle, biArrow) : ((directional && _elm_lang$core$Native_Utils.eq(direction, _user$project$Types$UniDirectional)) ? A2(_elm_lang$core$List$append, lineStyle, uniArrow) : lineStyle);
-		return A2(
-			_elm_lang$svg$Svg$line,
-			lineStyle$,
-			_elm_lang$core$Native_List.fromArray(
-				[]));
-	});
-var _user$project$Main$edgeWeight = F5(
-	function (weight, x_1, y_1, x_2, y_2) {
-		var yOffset = _elm_lang$core$Native_Utils.eq(y_1, y_2) ? (3 * _user$project$Types$viewConstants.weightOffset) : 0;
-		var midY = (((y_1 + y_2) / 2) | 0) + yOffset;
-		var xOffset = _elm_lang$core$Native_Utils.eq(x_1, x_2) ? _user$project$Types$viewConstants.weightOffset : 0;
-		var midX = (((x_1 + x_2) / 2) | 0) + xOffset;
-		return A2(
-			_elm_lang$svg$Svg$text$,
-			_elm_lang$core$Native_List.fromArray(
-				[
-					_elm_lang$svg$Svg_Attributes$x(
-					_elm_lang$core$Basics$toString(midX)),
-					_elm_lang$svg$Svg_Attributes$y(
-					_elm_lang$core$Basics$toString(midY)),
-					_elm_lang$svg$Svg_Attributes$fontSize('18'),
-					_elm_lang$svg$Svg_Attributes$textAnchor('middle'),
-					_elm_lang$svg$Svg_Attributes$fill('red')
-				]),
-			_elm_lang$core$Native_List.fromArray(
-				[
-					_elm_lang$svg$Svg$text(
-					_elm_lang$core$Basics$toString(weight))
-				]));
-	});
-var _user$project$Main$nodeY = function (nodeId) {
-	var row = (nodeId / _user$project$Types$viewConstants.nodesPerCol) | 0;
-	var y0 = _elm_lang$core$Basics$snd(_user$project$Types$viewConstants.graphUpperLeft);
-	return y0 + (row * (_user$project$Types$viewConstants.nodeRadius + _user$project$Types$viewConstants.nodeSeparation));
-};
-var _user$project$Main$sameRow = F2(
-	function (n1, n2) {
-		return _elm_lang$core$Native_Utils.eq(
-			_user$project$Main$nodeY(n1),
-			_user$project$Main$nodeY(n2));
-	});
-var _user$project$Main$nodeRow = function (nodeId) {
-	return (nodeId / _user$project$Types$viewConstants.nodesPerCol) | 0;
-};
-var _user$project$Main$nodeX = function (nodeId) {
-	var col = A2(_elm_lang$core$Basics$rem, nodeId, _user$project$Types$viewConstants.nodesPerCol);
-	var x0 = _elm_lang$core$Basics$fst(_user$project$Types$viewConstants.graphUpperLeft);
-	return x0 + (col * (_user$project$Types$viewConstants.nodeRadius + _user$project$Types$viewConstants.nodeSeparation));
-};
-var _user$project$Main$sameCol = F2(
-	function (n1, n2) {
-		return _elm_lang$core$Native_Utils.eq(
-			_user$project$Main$nodeX(n1),
-			_user$project$Main$nodeX(n2));
-	});
-var _user$project$Main$findNeighbors = F2(
-	function (nodes, node) {
-		return _elm_lang$core$Native_List.fromArray(
-			[
-				A4(_user$project$Main$closestNeighbor, nodes, node, _user$project$Main$sameRow, 1),
-				A4(_user$project$Main$closestNeighbor, nodes, node, _user$project$Main$sameRow, -1),
-				A4(_user$project$Main$closestNeighbor, nodes, node, _user$project$Main$sameCol, _user$project$Types$viewConstants.nodesPerRow),
-				A4(_user$project$Main$closestNeighbor, nodes, node, _user$project$Main$sameCol, 0 - _user$project$Types$viewConstants.nodesPerRow)
-			]);
-	});
-var _user$project$Main$createAllEdges = function (nodes) {
-	var createAllEdgesHelper = F2(
-		function (allNodes, nodes) {
-			var _p25 = nodes;
-			if (_p25.ctor === '[]') {
-				return _elm_lang$core$Native_List.fromArray(
-					[]);
-			} else {
-				var _p26 = _p25._0;
-				return A2(
-					_elm_lang$core$List$append,
-					A2(
-						_user$project$Main$createEdgesFromNode,
-						_p26,
-						_user$project$Main$stripList(
-							A2(_user$project$Main$findNeighbors, allNodes, _p26))),
-					A2(createAllEdgesHelper, allNodes, _p25._1));
-			}
-		});
-	return A2(createAllEdgesHelper, nodes, nodes);
-};
-var _user$project$Main$drawNode = function (nodeId) {
-	return _elm_lang$core$Native_List.fromArray(
-		[
-			A2(
-			_elm_lang$svg$Svg$circle,
-			_elm_lang$core$Native_List.fromArray(
-				[
-					_elm_lang$svg$Svg_Attributes$cx(
-					_elm_lang$core$Basics$toString(
-						_user$project$Main$nodeX(nodeId))),
-					_elm_lang$svg$Svg_Attributes$cy(
-					_elm_lang$core$Basics$toString(
-						_user$project$Main$nodeY(nodeId))),
-					_elm_lang$svg$Svg_Attributes$r(
-					_elm_lang$core$Basics$toString(_user$project$Types$viewConstants.nodeRadius)),
-					_elm_lang$svg$Svg_Attributes$fill('blue')
-				]),
-			_elm_lang$core$Native_List.fromArray(
-				[])),
-			A2(
-			_elm_lang$svg$Svg$text$,
-			_elm_lang$core$Native_List.fromArray(
-				[
-					_elm_lang$svg$Svg_Attributes$x(
-					_elm_lang$core$Basics$toString(
-						_user$project$Main$nodeX(nodeId))),
-					_elm_lang$svg$Svg_Attributes$y(
-					_elm_lang$core$Basics$toString(
-						_user$project$Main$nodeY(nodeId))),
-					_elm_lang$svg$Svg_Attributes$fontSize('14'),
-					_elm_lang$svg$Svg_Attributes$textAnchor('middle'),
-					_elm_lang$svg$Svg_Attributes$fill('white')
-				]),
-			_elm_lang$core$Native_List.fromArray(
-				[
-					_elm_lang$svg$Svg$text(
-					_elm_lang$core$Basics$toString(nodeId))
-				]))
-		]);
-};
-var _user$project$Main$drawEdge = F3(
-	function (edge, weighted, directional) {
-		var y_2 = _user$project$Main$nodeY(edge.to);
-		var x_2 = _user$project$Main$nodeX(edge.to);
-		var y_1 = _user$project$Main$nodeY(edge.from);
-		var x_1 = _user$project$Main$nodeX(edge.from);
-		var lne = _elm_lang$core$Native_List.fromArray(
-			[
-				A6(_user$project$Main$edgeLine, x_1, y_1, x_2, y_2, directional, edge.direction)
-			]);
-		return (weighted && (_elm_lang$core$Native_Utils.cmp(edge.weight, 0) > 0)) ? A2(
-			_elm_lang$core$List$append,
-			lne,
-			_elm_lang$core$Native_List.fromArray(
-				[
-					A5(_user$project$Main$edgeWeight, edge.weight, x_1, y_1, x_2, y_2)
-				])) : lne;
-	});
-var _user$project$Main$drawEdges = function (graph) {
-	var drawEdgesHelper = F3(
-		function (edges, weighted, directional) {
-			var _p27 = edges;
-			if (_p27.ctor === '[]') {
-				return _user$project$Main$arrowHeads;
-			} else {
-				return A2(
-					_elm_lang$core$List$append,
-					A3(_user$project$Main$drawEdge, _p27._0, weighted, directional),
-					A3(drawEdgesHelper, _p27._1, weighted, directional));
-			}
-		});
-	return A3(drawEdgesHelper, graph.edges, graph.weighted, graph.directional);
-};
-var _user$project$Main$nodeCol = function (nodeId) {
-	return A2(_elm_lang$core$Basics$rem, nodeId, _user$project$Types$viewConstants.nodesPerCol);
-};
-var _user$project$Main$edgesOverlap = F2(
-	function (e1, e2) {
-		return A2(_user$project$Main$sameRow, e1.from, e1.to) && (A2(_user$project$Main$sameCol, e2.from, e2.to) && ((((_elm_lang$core$Native_Utils.cmp(
-			_user$project$Main$nodeRow(e2.from),
-			_user$project$Main$nodeRow(e1.from)) < 0) && (_elm_lang$core$Native_Utils.cmp(
-			_user$project$Main$nodeRow(e1.from),
-			_user$project$Main$nodeRow(e2.to)) < 0)) || ((_elm_lang$core$Native_Utils.cmp(
-			_user$project$Main$nodeRow(e2.to),
-			_user$project$Main$nodeRow(e1.from)) < 0) && (_elm_lang$core$Native_Utils.cmp(
-			_user$project$Main$nodeRow(e1.from),
-			_user$project$Main$nodeRow(e2.from)) < 0))) && (((_elm_lang$core$Native_Utils.cmp(
-			_user$project$Main$nodeCol(e1.from),
-			_user$project$Main$nodeCol(e2.from)) < 0) && (_elm_lang$core$Native_Utils.cmp(
-			_user$project$Main$nodeCol(e2.from),
-			_user$project$Main$nodeCol(e1.to)) < 0)) || ((_elm_lang$core$Native_Utils.cmp(
-			_user$project$Main$nodeCol(e1.to),
-			_user$project$Main$nodeCol(e2.from)) < 0) && (_elm_lang$core$Native_Utils.cmp(
-			_user$project$Main$nodeCol(e2.from),
-			_user$project$Main$nodeCol(e1.from)) < 0)))));
-	});
-var _user$project$Main$removeOverlappingEdges = function (edges) {
-	var _p28 = edges;
-	if (_p28.ctor === '[]') {
-		return _elm_lang$core$Native_List.fromArray(
-			[]);
-	} else {
-		var _p30 = _p28._0;
-		var _p29 = A2(
-			_elm_lang$core$List$partition,
-			function (ee) {
-				return A2(_user$project$Main$edgesOverlap, _p30, ee) || A2(_user$project$Main$edgesOverlap, ee, _p30);
-			},
-			_p28._1);
-		var overlap = _p29._0;
-		var notOverlap = _p29._1;
-		return A2(
-			_elm_lang$core$List_ops['::'],
-			_p30,
-			_user$project$Main$removeOverlappingEdges(notOverlap));
-	}
-};
-var _user$project$Main$replaceWeights = F2(
-	function (edges, newWeights) {
-		return _user$project$Main$removeOverlappingEdges(
-			_user$project$Main$mergeDuplicates(
-				A2(
-					_elm_lang$core$List$filter,
-					function (e) {
-						return _elm_lang$core$Native_Utils.cmp(e.weight, 0) > 0;
-					},
-					A3(
-						_elm_lang$core$List$map2,
-						F2(
-							function (e, w) {
-								return {from: e.from, to: e.to, weight: w, direction: e.direction};
-							}),
-						edges,
-						newWeights))));
-	});
-var _user$project$Main$update = F2(
-	function (msg, model) {
-		var _p31 = model.graph;
-		var nodes = _p31.nodes;
-		var edges = _p31.edges;
-		var directional = _p31.directional;
-		var weighted = _p31.weighted;
-		var _p32 = msg;
-		switch (_p32.ctor) {
-			case 'Reset':
-				return {
-					ctor: '_Tuple2',
-					_0: _user$project$Types$initModel,
-					_1: A2(
-						_elm_lang$core$Random$generate,
-						_user$project$Types$NewRandomValues,
-						A2(
-							_elm_lang$core$Random$list,
-							15,
-							A2(_elm_lang$core$Random$int, 1, 15)))
-				};
-			case 'NewRandomValues':
-				return {
-					ctor: '_Tuple2',
-					_0: _elm_lang$core$Native_Utils.update(
-						model,
-						{randomValues: _p32._0}),
-					_1: A2(
-						_elm_lang$core$Random$generate,
-						_user$project$Types$NewNodes,
-						A2(
-							_elm_lang$core$Random$list,
-							15,
-							A2(_elm_lang$core$Random$int, 1, 15)))
-				};
-			case 'NewNodes':
-				var newNodes$ = _elm_lang$core$Set$toList(
-					_elm_lang$core$Set$fromList(_p32._0));
-				var newEdges = _user$project$Main$createAllEdges(newNodes$);
-				return {
-					ctor: '_Tuple2',
-					_0: A5(_user$project$Main$updateGraph, model, newNodes$, newEdges, directional, weighted),
-					_1: A2(
-						_elm_lang$core$Random$generate,
-						_user$project$Types$NewEdgeWeights,
-						A2(
-							_elm_lang$core$Random$list,
-							_elm_lang$core$List$length(newEdges),
-							A2(_elm_lang$core$Random$int, -1, 5)))
-				};
-			case 'NewEdgeWeights':
-				var newEdges = A2(_user$project$Main$replaceWeights, edges, _p32._0);
-				return {
-					ctor: '_Tuple2',
-					_0: A5(_user$project$Main$updateGraph, model, nodes, newEdges, directional, weighted),
-					_1: A2(
-						_elm_lang$core$Random$generate,
-						_user$project$Types$NewQuestion,
-						A2(_elm_lang$core$Random$int, 6, 6))
-				};
-			case 'NewQuestion':
-				return {
-					ctor: '_Tuple2',
-					_0: A2(_user$project$Main$newQuestion, model, _p32._0),
-					_1: _elm_lang$core$Platform_Cmd$none
-				};
-			case 'ToggleWeighted':
-				return {
-					ctor: '_Tuple2',
-					_0: A5(
-						_user$project$Main$updateGraph,
-						model,
-						nodes,
-						edges,
-						directional,
-						_elm_lang$core$Basics$not(weighted)),
-					_1: _elm_lang$core$Platform_Cmd$none
-				};
-			case 'ToggleDirectional':
-				return {
-					ctor: '_Tuple2',
-					_0: A5(
-						_user$project$Main$updateGraph,
-						model,
-						nodes,
-						edges,
-						_elm_lang$core$Basics$not(directional),
-						weighted),
-					_1: _elm_lang$core$Platform_Cmd$none
-				};
-			case 'UserInput':
-				return {
-					ctor: '_Tuple2',
-					_0: _elm_lang$core$Native_Utils.update(
-						model,
-						{userInput: _p32._0}),
-					_1: _elm_lang$core$Platform_Cmd$none
-				};
-			case 'Submit':
-				return _elm_lang$core$String$isEmpty(model.userInput) ? {ctor: '_Tuple2', _0: model, _1: _elm_lang$core$Platform_Cmd$none} : {
-					ctor: '_Tuple2',
-					_0: _user$project$Main$checkAnswer(model),
-					_1: _elm_lang$core$Platform_Cmd$none
-				};
-			case 'GiveFeedback':
-				return {
-					ctor: '_Tuple2',
-					_0: model,
-					_1: A2(
-						_elm_lang$core$Random$generate,
-						_user$project$Types$NewRandomValues,
-						A2(
-							_elm_lang$core$Random$list,
-							15,
-							A2(_elm_lang$core$Random$int, 1, 15)))
-				};
-			default:
-				var lastNode = _elm_lang$core$List$head(
-					_elm_lang$core$List$reverse(nodes));
-				var firstNode = _elm_lang$core$List$head(nodes);
-				var _p33 = firstNode;
-				if (_p33.ctor === 'Nothing') {
-					return {ctor: '_Tuple2', _0: model, _1: _elm_lang$core$Platform_Cmd$none};
-				} else {
-					var _p34 = lastNode;
-					if (_p34.ctor === 'Nothing') {
-						return {ctor: '_Tuple2', _0: model, _1: _elm_lang$core$Platform_Cmd$none};
-					} else {
-						return {
-							ctor: '_Tuple2',
-							_0: _elm_lang$core$Native_Utils.update(
-								model,
-								{
-									bfs: A3(_user$project$Main$breadthFirstSearch, model.graph, _p33._0, _p34._0)
-								}),
-							_1: _elm_lang$core$Platform_Cmd$none
-						};
-					}
-				}
-		}
-	});
-var _user$project$Main$drawNodes = function (graph) {
-	var drawNodesHelper = function (nodeIds) {
-		var _p35 = nodeIds;
-		if (_p35.ctor === '[]') {
-			return _elm_lang$core$Native_List.fromArray(
-				[]);
-		} else {
-			return A2(
-				_elm_lang$core$List$append,
-				_user$project$Main$drawNode(_p35._0),
-				drawNodesHelper(_p35._1));
-		}
-	};
-	return drawNodesHelper(graph.nodes);
-};
-var _user$project$Main$drawGraph = function (graph) {
-	return A2(
-		_elm_lang$core$List$append,
-		_user$project$Main$drawNodes(graph),
-		_user$project$Main$drawEdges(graph));
-};
-var _user$project$Main$imageOfGraph = function (model) {
-	var graphHeight = (_user$project$Types$viewConstants.nodeSeparation + _user$project$Types$viewConstants.nodeRadius) * _user$project$Types$viewConstants.nodesPerCol;
-	var graphWidth = (_user$project$Types$viewConstants.nodeSeparation + _user$project$Types$viewConstants.nodeRadius) * _user$project$Types$viewConstants.nodesPerRow;
-	return A2(
-		_elm_lang$svg$Svg$svg,
-		_elm_lang$core$Native_List.fromArray(
-			[
-				_elm_lang$svg$Svg_Attributes$version('1.1'),
-				_elm_lang$svg$Svg_Attributes$baseProfile('full'),
-				_elm_lang$svg$Svg_Attributes$width(
-				_elm_lang$core$Basics$toString(graphWidth)),
-				_elm_lang$svg$Svg_Attributes$height(
-				_elm_lang$core$Basics$toString(graphHeight))
-			]),
-		_user$project$Main$drawGraph(model.graph));
-};
-var _user$project$Main$radio = F2(
-	function (name, model) {
-		var isSelected = _elm_lang$core$Native_Utils.eq(model.userInput, name);
-		return A2(
-			_elm_lang$html$Html$label,
-			_elm_lang$core$Native_List.fromArray(
-				[]),
-			_elm_lang$core$Native_List.fromArray(
-				[
-					A2(
-					_elm_lang$html$Html$br,
-					_elm_lang$core$Native_List.fromArray(
-						[]),
-					_elm_lang$core$Native_List.fromArray(
-						[])),
-					A2(
-					_elm_lang$html$Html$input,
-					_elm_lang$core$Native_List.fromArray(
-						[
-							_elm_lang$html$Html_Attributes$type$('radio'),
-							_elm_lang$html$Html_Attributes$checked(isSelected),
-							_elm_lang$html$Html_Events$onCheck(
-							function (_p36) {
-								return _user$project$Types$UserInput(name);
-							})
-						]),
-					_elm_lang$core$Native_List.fromArray(
-						[])),
-					_elm_lang$html$Html$text(name)
-				]));
-	});
-var _user$project$Main$displayQuestion = function (model) {
-	var _p37 = model.question;
-	var question = _p37.question;
-	var distractors = _p37.distractors;
-	var answer = _p37.answer;
-	var format = _p37.format;
-	var _p38 = format;
-	if (_p38.ctor === 'FillInTheBlank') {
-		return A2(
-			_elm_lang$html$Html$form,
-			_elm_lang$core$Native_List.fromArray(
-				[
-					_elm_lang$html$Html_Events$onSubmit(_user$project$Types$Submit)
-				]),
-			_elm_lang$core$Native_List.fromArray(
-				[
-					A2(
-					_elm_lang$html$Html$div,
-					_elm_lang$core$Native_List.fromArray(
-						[]),
-					_elm_lang$core$Native_List.fromArray(
-						[
-							_elm_lang$html$Html$text(question)
-						])),
-					A2(
-					_elm_lang$html$Html$input,
-					_elm_lang$core$Native_List.fromArray(
-						[
-							_elm_lang$html$Html_Attributes$type$('text'),
-							_elm_lang$html$Html_Attributes$placeholder('Answer here...'),
-							_elm_lang$html$Html_Events$onInput(_user$project$Types$UserInput),
-							_elm_lang$html$Html_Attributes$value(model.userInput)
-						]),
-					_elm_lang$core$Native_List.fromArray(
-						[])),
-					A2(
-					_elm_lang$html$Html$button,
-					_elm_lang$core$Native_List.fromArray(
-						[
-							_elm_lang$html$Html_Attributes$type$('submit')
-						]),
-					_elm_lang$core$Native_List.fromArray(
-						[
-							_elm_lang$html$Html$text('Submit')
-						]))
-				]));
-	} else {
-		return A2(
-			_elm_lang$html$Html$form,
-			_elm_lang$core$Native_List.fromArray(
-				[
-					_elm_lang$html$Html_Events$onSubmit(_user$project$Types$Submit)
-				]),
-			_elm_lang$core$Native_List.fromArray(
-				[
-					A2(
-					_elm_lang$html$Html$div,
-					_elm_lang$core$Native_List.fromArray(
-						[]),
-					_elm_lang$core$Native_List.fromArray(
-						[
-							A2(
-							_elm_lang$html$Html$span,
-							_elm_lang$core$Native_List.fromArray(
-								[]),
-							_elm_lang$core$Native_List.fromArray(
-								[
-									_elm_lang$html$Html$text(question)
-								])),
-							A2(_user$project$Main$radio, 'True', model),
-							A2(_user$project$Main$radio, 'False', model)
-						])),
-					A2(
-					_elm_lang$html$Html$button,
-					_elm_lang$core$Native_List.fromArray(
-						[
-							_elm_lang$html$Html_Attributes$type$('submit')
-						]),
-					_elm_lang$core$Native_List.fromArray(
-						[
-							_elm_lang$html$Html$text('Submit')
-						]))
-				]));
-	}
-};
-var _user$project$Main$questionForm = function (model) {
-	var _p39 = model.question;
-	var question = _p39.question;
-	var distractors = _p39.distractors;
-	var answer = _p39.answer;
-	var format = _p39.format;
-	var _p40 = model.success;
-	if (_p40.ctor === 'Nothing') {
-		return _user$project$Main$displayQuestion(model);
-	} else {
-		return A2(
-			_elm_lang$html$Html$form,
-			_elm_lang$core$Native_List.fromArray(
-				[
-					_elm_lang$html$Html_Events$onSubmit(_user$project$Types$GiveFeedback)
-				]),
-			_elm_lang$core$Native_List.fromArray(
-				[
-					A2(
-					_elm_lang$html$Html$div,
-					_elm_lang$core$Native_List.fromArray(
-						[]),
-					_elm_lang$core$Native_List.fromArray(
-						[
-							_elm_lang$html$Html$text(model.feedback)
-						])),
-					A2(
-					_elm_lang$html$Html$input,
-					_elm_lang$core$Native_List.fromArray(
-						[
-							_elm_lang$html$Html_Attributes$type$('text'),
-							_elm_lang$html$Html_Attributes$placeholder('Answer here...'),
-							_elm_lang$html$Html_Events$onInput(_user$project$Types$UserInput),
-							_elm_lang$html$Html_Attributes$value(model.userInput)
-						]),
-					_elm_lang$core$Native_List.fromArray(
-						[])),
-					A2(
-					_elm_lang$html$Html$button,
-					_elm_lang$core$Native_List.fromArray(
-						[
-							_elm_lang$html$Html_Attributes$type$('submit')
-						]),
-					_elm_lang$core$Native_List.fromArray(
-						[
-							_elm_lang$html$Html$text('Next Question')
-						]))
-				]));
-	}
 };
 var _user$project$Main$view = function (model) {
 	var resetBtn = A2(
@@ -1443,9 +69,9 @@ var _user$project$Main$view = function (model) {
 					[
 						_elm_lang$html$Html$text('Mastery Quiz')
 					])),
-				_user$project$Main$imageOfGraph(model),
-				_user$project$Main$questionForm(model),
-				_user$project$View$historySection(model),
+				_user$project$GraphView$imageOfGraph(model),
+				_user$project$QuestionView$questionForm(model),
+				_user$project$HistoryView$historySection(model),
 				buttons,
 				A2(
 				_elm_lang$html$Html$p,
@@ -1458,7 +84,160 @@ var _user$project$Main$view = function (model) {
 					]))
 			]));
 };
-var _user$project$Main$init = A2(_user$project$Main$update, _user$project$Types$Reset, _user$project$Types$initModel);
+var _user$project$Main$initModel = {
+	graph: _user$project$Types$emptyGraph,
+	debug: true,
+	userInput: '',
+	history: A2(_elm_lang$core$List$repeat, _user$project$Types$historyLength, _elm_lang$core$Maybe$Nothing),
+	bfs: _elm_lang$core$Maybe$Nothing,
+	success: _elm_lang$core$Maybe$Nothing,
+	question: _user$project$Types$emptyQuestion,
+	feedback: '',
+	randomValues: _elm_lang$core$Native_List.fromArray(
+		[])
+};
+var _user$project$Main$update = F2(
+	function (msg, model) {
+		var _p0 = model.graph;
+		var nodes = _p0.nodes;
+		var edges = _p0.edges;
+		var directional = _p0.directional;
+		var weighted = _p0.weighted;
+		var _p1 = msg;
+		switch (_p1.ctor) {
+			case 'Reset':
+				return {
+					ctor: '_Tuple2',
+					_0: _user$project$Main$initModel,
+					_1: A2(
+						_elm_lang$core$Random$generate,
+						_user$project$Types$NewRandomValues,
+						A2(
+							_elm_lang$core$Random$list,
+							15,
+							A2(_elm_lang$core$Random$int, 1, 15)))
+				};
+			case 'NewRandomValues':
+				return {
+					ctor: '_Tuple2',
+					_0: _elm_lang$core$Native_Utils.update(
+						model,
+						{randomValues: _p1._0}),
+					_1: A2(
+						_elm_lang$core$Random$generate,
+						_user$project$Types$NewNodes,
+						A2(
+							_elm_lang$core$Random$list,
+							15,
+							A2(_elm_lang$core$Random$int, 1, 15)))
+				};
+			case 'NewNodes':
+				var newNodes$ = _elm_lang$core$Set$toList(
+					_elm_lang$core$Set$fromList(_p1._0));
+				var newEdges = _user$project$Graph$createAllEdges(newNodes$);
+				return {
+					ctor: '_Tuple2',
+					_0: A5(_user$project$Graph$updateGraph, model, newNodes$, newEdges, directional, weighted),
+					_1: A2(
+						_elm_lang$core$Random$generate,
+						_user$project$Types$NewEdgeWeights,
+						A2(
+							_elm_lang$core$Random$list,
+							_elm_lang$core$List$length(newEdges),
+							A2(_elm_lang$core$Random$int, -2, 5)))
+				};
+			case 'NewEdgeWeights':
+				var newEdges = A2(_user$project$Graph$replaceWeights, edges, _p1._0);
+				return {
+					ctor: '_Tuple2',
+					_0: A5(_user$project$Graph$updateGraph, model, nodes, newEdges, directional, weighted),
+					_1: A2(
+						_elm_lang$core$Random$generate,
+						_user$project$Types$NewQuestion,
+						A2(_elm_lang$core$Random$int, 1, 7))
+				};
+			case 'NewQuestion':
+				return {
+					ctor: '_Tuple2',
+					_0: A2(_user$project$Question$newQuestion, model, _p1._0),
+					_1: _elm_lang$core$Platform_Cmd$none
+				};
+			case 'UserInput':
+				return {
+					ctor: '_Tuple2',
+					_0: _elm_lang$core$Native_Utils.update(
+						model,
+						{userInput: _p1._0}),
+					_1: _elm_lang$core$Platform_Cmd$none
+				};
+			case 'Submit':
+				return _elm_lang$core$String$isEmpty(model.userInput) ? {ctor: '_Tuple2', _0: model, _1: _elm_lang$core$Platform_Cmd$none} : {
+					ctor: '_Tuple2',
+					_0: _user$project$Question$checkAnswer(model),
+					_1: _elm_lang$core$Platform_Cmd$none
+				};
+			case 'GiveFeedback':
+				return {
+					ctor: '_Tuple2',
+					_0: model,
+					_1: A2(
+						_elm_lang$core$Random$generate,
+						_user$project$Types$NewRandomValues,
+						A2(
+							_elm_lang$core$Random$list,
+							15,
+							A2(_elm_lang$core$Random$int, 1, 15)))
+				};
+			case 'ToggleWeighted':
+				return {
+					ctor: '_Tuple2',
+					_0: A5(
+						_user$project$Graph$updateGraph,
+						model,
+						nodes,
+						edges,
+						directional,
+						_elm_lang$core$Basics$not(weighted)),
+					_1: _elm_lang$core$Platform_Cmd$none
+				};
+			case 'ToggleDirectional':
+				return {
+					ctor: '_Tuple2',
+					_0: A5(
+						_user$project$Graph$updateGraph,
+						model,
+						nodes,
+						edges,
+						_elm_lang$core$Basics$not(directional),
+						weighted),
+					_1: _elm_lang$core$Platform_Cmd$none
+				};
+			default:
+				var lastNode = _elm_lang$core$List$head(
+					_elm_lang$core$List$reverse(nodes));
+				var firstNode = _elm_lang$core$List$head(nodes);
+				var _p2 = firstNode;
+				if (_p2.ctor === 'Nothing') {
+					return {ctor: '_Tuple2', _0: model, _1: _elm_lang$core$Platform_Cmd$none};
+				} else {
+					var _p3 = lastNode;
+					if (_p3.ctor === 'Nothing') {
+						return {ctor: '_Tuple2', _0: model, _1: _elm_lang$core$Platform_Cmd$none};
+					} else {
+						return {
+							ctor: '_Tuple2',
+							_0: _elm_lang$core$Native_Utils.update(
+								model,
+								{
+									bfs: A3(_user$project$Search$breadthFirstSearch, model.graph, _p2._0, _p3._0)
+								}),
+							_1: _elm_lang$core$Platform_Cmd$none
+						};
+					}
+				}
+		}
+	});
+var _user$project$Main$init = A2(_user$project$Main$update, _user$project$Types$Reset, _user$project$Main$initModel);
 var _user$project$Main$main = {
 	main: _elm_lang$html$Html_App$program(
 		{init: _user$project$Main$init, view: _user$project$Main$view, update: _user$project$Main$update, subscriptions: _user$project$Main$subscriptions})

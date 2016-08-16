@@ -1,7 +1,3 @@
-var _user$project$Search$visited = F3(
-	function (openList, closedList, node) {
-		return A2(_elm_lang$core$List$member, node, openList) || A2(_elm_lang$core$List$member, node, closedList);
-	});
 var _user$project$Search$unwindSearchTree = F2(
 	function (searchTree, lastNode) {
 		unwindSearchTree:
@@ -54,11 +50,11 @@ var _user$project$Search$genericSearch = F3(
 								_elm_lang$core$List$filter,
 								function (n) {
 									return _elm_lang$core$Basics$not(
-										A3(_user$project$Search$visited, openList, closedList, n));
+										A3(_user$project$Graph$visited, openList, closedList, n));
 								},
 								A2(
 									_elm_lang$core$List$filter,
-									A2(_user$project$Graph$canReach, graph, _p5),
+									A2(_user$project$Graph$edgeExists, graph, _p5),
 									graph.nodes));
 							var openList$ = A2(_elm_lang$core$List$append, _p3._1, neighbors);
 							var searchTree$ = A2(
@@ -102,4 +98,14 @@ var _user$project$Search$genericSearch = F3(
 var _user$project$Search$breadthFirstSearch = F3(
 	function (graph, startNode, endNode) {
 		return A3(_user$project$Search$genericSearch, graph, startNode, endNode);
+	});
+var _user$project$Search$pathExists = F3(
+	function (graph, startNode, endNode) {
+		var s = A3(_user$project$Search$breadthFirstSearch, graph, startNode, endNode);
+		var _p6 = s;
+		if (_p6.ctor === 'Nothing') {
+			return false;
+		} else {
+			return true;
+		}
 	});

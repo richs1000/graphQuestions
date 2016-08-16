@@ -2,10 +2,6 @@ module View exposing (..)
 
 import Html exposing (..)
 import Html.Attributes exposing (..)
-import Svg exposing (..)
-import Svg.Attributes exposing (..)
-import Types exposing (..)
-
 
 scoreboardStyle : Html.Attribute msg
 scoreboardStyle =
@@ -19,59 +15,32 @@ scoreboardStyle =
         ]
 
 
-historySection : Model -> Html Msg
-historySection model =
-    Svg.svg
-        [ version "1.1"
-        , baseProfile "full"
-        , Svg.Attributes.width
-            (toString
-                (historyLength
-                    * (viewConstants.historySquareSize + viewConstants.historySquareSeparation)
-                )
-            )
-        , Svg.Attributes.height "50"
-        ]
-        (historyList model.history 0)
+type alias Pixels =
+    Int
 
 
-historySquare : Maybe Bool -> Int -> Svg a
-historySquare h i =
-    let
-        base =
-            [ Svg.Attributes.width (toString viewConstants.historySquareSize)
-            , Svg.Attributes.height (toString viewConstants.historySquareSize)
-            , y "10"
-            ]
-
-        incorrect =
-            List.append base [ fill "red" ]
-
-        correct =
-            List.append base [ fill "green" ]
-
-        nothing =
-            List.append base [ fill "white" ]
-
-        myX =
-            10 + (viewConstants.historySquareSize + viewConstants.historySquareSeparation) * i
-    in
-        case h of
-            Just True ->
-                rect (List.append [ x (toString myX) ] correct) []
-
-            Just False ->
-                rect (List.append [ x (toString myX) ] incorrect) []
-
-            Nothing ->
-                rect (List.append [ x (toString myX) ] nothing) []
+type alias ViewConstants =
+    { nodeSeparation : Pixels
+    , nodeRadius : Pixels
+    , nodeOffset : Pixels
+    , weightOffset : Pixels
+    , graphUpperLeft : ( Pixels, Pixels )
+    , nodesPerRow : Int
+    , nodesPerCol : Int
+    , historySquareSize : Int
+    , historySquareSeparation : Int
+    }
 
 
-historyList : HistoryList -> Int -> List (Svg a)
-historyList history index =
-    case history of
-        h :: hs ->
-            (historySquare h index) :: (historyList hs (index + 1))
-
-        [] ->
-            []
+viewConstants : ViewConstants
+viewConstants =
+    { nodeSeparation = 100
+    , nodeRadius = 20
+    , nodeOffset = 30
+    , weightOffset = 7
+    , graphUpperLeft = ( 20, 20 )
+    , nodesPerRow = 4
+    , nodesPerCol = 4
+    , historySquareSize = 25
+    , historySquareSeparation = 5
+    }
