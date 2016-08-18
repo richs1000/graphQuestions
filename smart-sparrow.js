@@ -29,12 +29,11 @@ app.ports.updateMastery.subscribe(function(mastery) {
     model.set('mastery', mastery);
 });
 
-
-
-
 $(document).ready(function() {
 	// let smart sparrow know that the sim is ready to accept values
 	//pipit.Controller.notifyOnReady();
   // app.ports.ssData.send( {num : 3, den : 5, weighted : true, directed : false });
+  model.numerator = model.get('numerator');
+  model.denominator = model.set('denominator');
   app.ports.ssData.send( model );
 });
