@@ -48,8 +48,6 @@ initModel =
     , mastery = False
     , numerator = 0
     , denominator = 0
-    , weighted = False
-    , directional = False
     }
 
 
@@ -107,7 +105,7 @@ subscriptions model =
 update : Msg -> Model -> ( Model, Cmd Msg )
 update msg model =
     let
-        { nodes, edges, directional, weighted } =
+        { nodes, edges, directed, weighted } =
             model.graph
     in
         case msg of
@@ -127,7 +125,7 @@ update msg model =
                     newEdges =
                         (createAllEdges newNodes')
                 in
-                    ( updateGraph model newNodes' newEdges directional weighted
+                    ( updateGraph model newNodes' newEdges directed weighted
                     , Random.generate NewEdgeWeights (Random.list (List.length newEdges) (Random.int -2 5))
                     )
 
@@ -136,7 +134,7 @@ update msg model =
                     newEdges =
                         (replaceWeights edges newWeights)
                 in
-                    ( updateGraph model nodes newEdges directional weighted
+                    ( updateGraph model nodes newEdges directed weighted
                     , Random.generate NewQuestion (Random.int 1 8)
                     )
 
@@ -162,10 +160,10 @@ update msg model =
 
             -- Debug actions
             ToggleWeighted ->
-                ( updateGraph model nodes edges directional (not weighted), Cmd.none )
+                ( updateGraph model nodes edges directed (not weighted), Cmd.none )
 
             ToggleDirectional ->
-                ( updateGraph model nodes edges (not directional) weighted, Cmd.none )
+                ( updateGraph model nodes edges (not directed) weighted, Cmd.none )
 
             BreadthFirstSearch ->
                 let
@@ -196,13 +194,12 @@ update msg model =
                         model.graph
 
                     graph' =
-                        { graph | weighted = ssd.weighted, directional = ssd.directed }
+                        { graph | weighted = ssd.weighted, directed = ssd.directed }
                 in
                     ( { model
-                        | numerator = ssd.num
-                        , denominator = ssd.den
-                        , weighted = ssd.weighted
-                        , directional = ssd.directed
+                        | mastery = ssd.mastery
+                        , numerator = ssd.numerator
+                        , denominator = ssd.denominator
                         , graph = graph'
                       }
                     , Random.generate NewRandomValues (Random.list 15 (Random.int 1 15))

@@ -65,7 +65,7 @@ var _user$project$Question$questionByIndex = F2(
 		var _p3 = model.graph;
 		var nodes = _p3.nodes;
 		var edges = _p3.edges;
-		var directional = _p3.directional;
+		var directed = _p3.directed;
 		var weighted = _p3.weighted;
 		if (_elm_lang$core$Native_Utils.eq(index, 1)) {
 			return {
@@ -242,7 +242,7 @@ var _user$project$Question$questionByIndex = F2(
 							format: _user$project$Types$MultipleChoice
 						};
 					} else {
-						if (_elm_lang$core$Native_Utils.eq(index, 5) && directional) {
+						if (_elm_lang$core$Native_Utils.eq(index, 5) && directed) {
 							var n = A2(
 								_user$project$Graph$randomNode,
 								model,
@@ -286,7 +286,7 @@ var _user$project$Question$questionByIndex = F2(
 								format: _user$project$Types$FillInTheBlank
 							};
 						} else {
-							if (_elm_lang$core$Native_Utils.eq(index, 6) && directional) {
+							if (_elm_lang$core$Native_Utils.eq(index, 6) && directed) {
 								var n = A2(
 									_user$project$Graph$randomNode,
 									model,
@@ -417,7 +417,7 @@ var _user$project$Question$newQuestion = F2(
 		var _p4 = model.graph;
 		var nodes = _p4.nodes;
 		var edges = _p4.edges;
-		var directional = _p4.directional;
+		var directed = _p4.directed;
 		var weighted = _p4.weighted;
 		return _elm_lang$core$Native_Utils.update(
 			model,

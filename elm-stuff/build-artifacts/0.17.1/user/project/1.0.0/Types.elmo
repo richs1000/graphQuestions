@@ -3,7 +3,7 @@ var _user$project$Types$emptyGraph = {
 		[]),
 	edges: _elm_lang$core$Native_List.fromArray(
 		[]),
-	directional: true,
+	directed: true,
 	weighted: true
 };
 var _user$project$Types$historyLength = 10;
@@ -19,11 +19,7 @@ var _user$project$Types$Model = function (a) {
 									return function (j) {
 										return function (k) {
 											return function (l) {
-												return function (m) {
-													return function (n) {
-														return {graph: a, debug: b, userInput: c, history: d, bfs: e, question: f, success: g, feedback: h, randomValues: i, mastery: j, numerator: k, denominator: l, weighted: m, directional: n};
-													};
-												};
+												return {graph: a, debug: b, userInput: c, history: d, bfs: e, question: f, success: g, feedback: h, randomValues: i, mastery: j, numerator: k, denominator: l};
 											};
 										};
 									};
@@ -46,11 +42,11 @@ var _user$project$Types$Edge = F4(
 	});
 var _user$project$Types$Graph = F4(
 	function (a, b, c, d) {
-		return {nodes: a, edges: b, directional: c, weighted: d};
+		return {nodes: a, edges: b, directed: c, weighted: d};
 	});
-var _user$project$Types$SSData = F4(
-	function (a, b, c, d) {
-		return {num: a, den: b, weighted: c, directed: d};
+var _user$project$Types$SSData = F5(
+	function (a, b, c, d, e) {
+		return {mastery: a, numerator: b, denominator: c, weighted: d, directed: e};
 	});
 var _user$project$Types$MultipleChoice = {ctor: 'MultipleChoice'};
 var _user$project$Types$FillInTheBlank = {ctor: 'FillInTheBlank'};

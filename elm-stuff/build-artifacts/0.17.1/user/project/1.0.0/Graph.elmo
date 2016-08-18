@@ -81,7 +81,7 @@ var _user$project$Graph$lastNode = function (model) {
 	var _p6 = model.graph;
 	var nodes = _p6.nodes;
 	var edges = _p6.edges;
-	var directional = _p6.directional;
+	var directed = _p6.directed;
 	var weighted = _p6.weighted;
 	var nodes$ = _elm_lang$core$List$reverse(nodes);
 	var _p7 = nodes$;
@@ -95,7 +95,7 @@ var _user$project$Graph$firstNode = function (model) {
 	var _p8 = model.graph;
 	var nodes = _p8.nodes;
 	var edges = _p8.edges;
-	var directional = _p8.directional;
+	var directed = _p8.directed;
 	var weighted = _p8.weighted;
 	var _p9 = nodes;
 	if (_p9.ctor === '[]') {
@@ -108,7 +108,7 @@ var _user$project$Graph$numberOfEdges = function (model) {
 	var _p10 = model.graph;
 	var nodes = _p10.nodes;
 	var edges = _p10.edges;
-	var directional = _p10.directional;
+	var directed = _p10.directed;
 	var weighted = _p10.weighted;
 	return _elm_lang$core$List$length(edges);
 };
@@ -116,7 +116,7 @@ var _user$project$Graph$numberOfNodes = function (model) {
 	var _p11 = model.graph;
 	var nodes = _p11.nodes;
 	var edges = _p11.edges;
-	var directional = _p11.directional;
+	var directed = _p11.directed;
 	var weighted = _p11.weighted;
 	return _elm_lang$core$List$length(nodes);
 };
@@ -152,7 +152,7 @@ var _user$project$Graph$degree = F2(
 	});
 var _user$project$Graph$edgeExists = F3(
 	function (graph, n1, n2) {
-		var n2_to_n1_non = _elm_lang$core$Basics$not(graph.directional) && A2(
+		var n2_to_n1_non = _elm_lang$core$Basics$not(graph.directed) && A2(
 			_elm_lang$core$List$any,
 			function (e) {
 				return _elm_lang$core$Native_Utils.eq(e.from, n2) && _elm_lang$core$Native_Utils.eq(e.to, n1);
@@ -181,7 +181,7 @@ var _user$project$Graph$updateGraph = F5(
 		return _elm_lang$core$Native_Utils.update(
 			model,
 			{
-				graph: {nodes: ns, edges: es, directional: d, weighted: w}
+				graph: {nodes: ns, edges: es, directed: d, weighted: w}
 			});
 	});
 var _user$project$Graph$stripList = function (maybes) {

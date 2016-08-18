@@ -112,16 +112,14 @@ var _user$project$GraphQuestions$initModel = {
 		[]),
 	mastery: false,
 	numerator: 0,
-	denominator: 0,
-	weighted: false,
-	directional: false
+	denominator: 0
 };
 var _user$project$GraphQuestions$update = F2(
 	function (msg, model) {
 		var _p0 = model.graph;
 		var nodes = _p0.nodes;
 		var edges = _p0.edges;
-		var directional = _p0.directional;
+		var directed = _p0.directed;
 		var weighted = _p0.weighted;
 		var _p1 = msg;
 		switch (_p1.ctor) {
@@ -157,7 +155,7 @@ var _user$project$GraphQuestions$update = F2(
 				var newEdges = _user$project$Graph$createAllEdges(newNodes$);
 				return {
 					ctor: '_Tuple2',
-					_0: A5(_user$project$Graph$updateGraph, model, newNodes$, newEdges, directional, weighted),
+					_0: A5(_user$project$Graph$updateGraph, model, newNodes$, newEdges, directed, weighted),
 					_1: A2(
 						_elm_lang$core$Random$generate,
 						_user$project$Types$NewEdgeWeights,
@@ -170,7 +168,7 @@ var _user$project$GraphQuestions$update = F2(
 				var newEdges = A2(_user$project$Graph$replaceWeights, edges, _p1._0);
 				return {
 					ctor: '_Tuple2',
-					_0: A5(_user$project$Graph$updateGraph, model, nodes, newEdges, directional, weighted),
+					_0: A5(_user$project$Graph$updateGraph, model, nodes, newEdges, directed, weighted),
 					_1: A2(
 						_elm_lang$core$Random$generate,
 						_user$project$Types$NewQuestion,
@@ -216,7 +214,7 @@ var _user$project$GraphQuestions$update = F2(
 						model,
 						nodes,
 						edges,
-						directional,
+						directed,
 						_elm_lang$core$Basics$not(weighted)),
 					_1: _elm_lang$core$Platform_Cmd$none
 				};
@@ -228,7 +226,7 @@ var _user$project$GraphQuestions$update = F2(
 						model,
 						nodes,
 						edges,
-						_elm_lang$core$Basics$not(directional),
+						_elm_lang$core$Basics$not(directed),
 						weighted),
 					_1: _elm_lang$core$Platform_Cmd$none
 				};
@@ -268,12 +266,12 @@ var _user$project$GraphQuestions$update = F2(
 				var graph = model.graph;
 				var graph$ = _elm_lang$core$Native_Utils.update(
 					graph,
-					{weighted: _p4.weighted, directional: _p4.directed});
+					{weighted: _p4.weighted, directed: _p4.directed});
 				return {
 					ctor: '_Tuple2',
 					_0: _elm_lang$core$Native_Utils.update(
 						model,
-						{numerator: _p4.num, denominator: _p4.den, weighted: _p4.weighted, directional: _p4.directed, graph: graph$}),
+						{mastery: _p4.mastery, numerator: _p4.numerator, denominator: _p4.denominator, graph: graph$}),
 					_1: A2(
 						_elm_lang$core$Random$generate,
 						_user$project$Types$NewRandomValues,

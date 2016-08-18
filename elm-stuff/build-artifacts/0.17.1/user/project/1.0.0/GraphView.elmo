@@ -59,7 +59,7 @@ var _user$project$GraphView$adjustPixel = F2(
 		return (_elm_lang$core$Native_Utils.cmp(p1, p2) < 0) ? (p1 + _user$project$View$viewConstants.nodeOffset) : (_elm_lang$core$Native_Utils.eq(p1, p2) ? p1 : (p1 - _user$project$View$viewConstants.nodeOffset));
 	});
 var _user$project$GraphView$edgeLine = F6(
-	function (x_1, y_1, x_2, y_2, directional, direction) {
+	function (x_1, y_1, x_2, y_2, directed, direction) {
 		var lineStyle = _elm_lang$core$Native_List.fromArray(
 			[
 				_elm_lang$svg$Svg_Attributes$x1(
@@ -87,7 +87,7 @@ var _user$project$GraphView$edgeLine = F6(
 				_elm_lang$svg$Svg_Attributes$markerStart('url(#ArrowHeadStart)'),
 				_elm_lang$svg$Svg_Attributes$markerEnd('url(#ArrowHeadEnd)')
 			]);
-		var lineStyle$ = (directional && _elm_lang$core$Native_Utils.eq(direction, _user$project$Types$BiDirectional)) ? A2(_elm_lang$core$List$append, lineStyle, biArrow) : ((directional && _elm_lang$core$Native_Utils.eq(direction, _user$project$Types$UniDirectional)) ? A2(_elm_lang$core$List$append, lineStyle, uniArrow) : lineStyle);
+		var lineStyle$ = (directed && _elm_lang$core$Native_Utils.eq(direction, _user$project$Types$BiDirectional)) ? A2(_elm_lang$core$List$append, lineStyle, biArrow) : ((directed && _elm_lang$core$Native_Utils.eq(direction, _user$project$Types$UniDirectional)) ? A2(_elm_lang$core$List$append, lineStyle, uniArrow) : lineStyle);
 		return A2(
 			_elm_lang$svg$Svg$line,
 			lineStyle$,
@@ -172,14 +172,14 @@ var _user$project$GraphView$drawNode = function (nodeId) {
 		]);
 };
 var _user$project$GraphView$drawEdge = F3(
-	function (edge, weighted, directional) {
+	function (edge, weighted, directed) {
 		var y_2 = _user$project$GraphView$nodeY(edge.to);
 		var x_2 = _user$project$GraphView$nodeX(edge.to);
 		var y_1 = _user$project$GraphView$nodeY(edge.from);
 		var x_1 = _user$project$GraphView$nodeX(edge.from);
 		var lne = _elm_lang$core$Native_List.fromArray(
 			[
-				A6(_user$project$GraphView$edgeLine, x_1, y_1, x_2, y_2, directional, edge.direction)
+				A6(_user$project$GraphView$edgeLine, x_1, y_1, x_2, y_2, directed, edge.direction)
 			]);
 		return (weighted && (_elm_lang$core$Native_Utils.cmp(edge.weight, 0) > 0)) ? A2(
 			_elm_lang$core$List$append,
@@ -191,18 +191,18 @@ var _user$project$GraphView$drawEdge = F3(
 	});
 var _user$project$GraphView$drawEdges = function (graph) {
 	var drawEdgesHelper = F3(
-		function (edges, weighted, directional) {
+		function (edges, weighted, directed) {
 			var _p0 = edges;
 			if (_p0.ctor === '[]') {
 				return _user$project$GraphView$arrowHeads;
 			} else {
 				return A2(
 					_elm_lang$core$List$append,
-					A3(_user$project$GraphView$drawEdge, _p0._0, weighted, directional),
-					A3(drawEdgesHelper, _p0._1, weighted, directional));
+					A3(_user$project$GraphView$drawEdge, _p0._0, weighted, directed),
+					A3(drawEdgesHelper, _p0._1, weighted, directed));
 			}
 		});
-	return A3(drawEdgesHelper, graph.edges, graph.weighted, graph.directional);
+	return A3(drawEdgesHelper, graph.edges, graph.weighted, graph.directed);
 };
 var _user$project$GraphView$nodeCol = function (nodeId) {
 	return A2(_elm_lang$core$Basics$rem, nodeId, _user$project$View$viewConstants.nodesPerCol);

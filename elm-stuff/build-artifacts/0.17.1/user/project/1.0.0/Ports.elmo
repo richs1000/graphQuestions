@@ -7,22 +7,27 @@ var _user$project$Ports$ssData = _elm_lang$core$Native_Platform.incomingPort(
 	'ssData',
 	A2(
 		_elm_lang$core$Json_Decode$andThen,
-		A2(_elm_lang$core$Json_Decode_ops[':='], 'num', _elm_lang$core$Json_Decode$int),
-		function (num) {
+		A2(_elm_lang$core$Json_Decode_ops[':='], 'mastery', _elm_lang$core$Json_Decode$bool),
+		function (mastery) {
 			return A2(
 				_elm_lang$core$Json_Decode$andThen,
-				A2(_elm_lang$core$Json_Decode_ops[':='], 'den', _elm_lang$core$Json_Decode$int),
-				function (den) {
+				A2(_elm_lang$core$Json_Decode_ops[':='], 'numerator', _elm_lang$core$Json_Decode$int),
+				function (numerator) {
 					return A2(
 						_elm_lang$core$Json_Decode$andThen,
-						A2(_elm_lang$core$Json_Decode_ops[':='], 'weighted', _elm_lang$core$Json_Decode$bool),
-						function (weighted) {
+						A2(_elm_lang$core$Json_Decode_ops[':='], 'denominator', _elm_lang$core$Json_Decode$int),
+						function (denominator) {
 							return A2(
 								_elm_lang$core$Json_Decode$andThen,
-								A2(_elm_lang$core$Json_Decode_ops[':='], 'directed', _elm_lang$core$Json_Decode$bool),
-								function (directed) {
-									return _elm_lang$core$Json_Decode$succeed(
-										{num: num, den: den, weighted: weighted, directed: directed});
+								A2(_elm_lang$core$Json_Decode_ops[':='], 'weighted', _elm_lang$core$Json_Decode$bool),
+								function (weighted) {
+									return A2(
+										_elm_lang$core$Json_Decode$andThen,
+										A2(_elm_lang$core$Json_Decode_ops[':='], 'directed', _elm_lang$core$Json_Decode$bool),
+										function (directed) {
+											return _elm_lang$core$Json_Decode$succeed(
+												{mastery: mastery, numerator: numerator, denominator: denominator, weighted: weighted, directed: directed});
+										});
 								});
 						});
 				});

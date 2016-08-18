@@ -9207,7 +9207,7 @@ var _user$project$Types$emptyGraph = {
 		[]),
 	edges: _elm_lang$core$Native_List.fromArray(
 		[]),
-	directional: true,
+	directed: true,
 	weighted: true
 };
 var _user$project$Types$historyLength = 10;
@@ -9223,11 +9223,7 @@ var _user$project$Types$Model = function (a) {
 									return function (j) {
 										return function (k) {
 											return function (l) {
-												return function (m) {
-													return function (n) {
-														return {graph: a, debug: b, userInput: c, history: d, bfs: e, question: f, success: g, feedback: h, randomValues: i, mastery: j, numerator: k, denominator: l, weighted: m, directional: n};
-													};
-												};
+												return {graph: a, debug: b, userInput: c, history: d, bfs: e, question: f, success: g, feedback: h, randomValues: i, mastery: j, numerator: k, denominator: l};
 											};
 										};
 									};
@@ -9250,11 +9246,11 @@ var _user$project$Types$Edge = F4(
 	});
 var _user$project$Types$Graph = F4(
 	function (a, b, c, d) {
-		return {nodes: a, edges: b, directional: c, weighted: d};
+		return {nodes: a, edges: b, directed: c, weighted: d};
 	});
-var _user$project$Types$SSData = F4(
-	function (a, b, c, d) {
-		return {num: a, den: b, weighted: c, directed: d};
+var _user$project$Types$SSData = F5(
+	function (a, b, c, d, e) {
+		return {mastery: a, numerator: b, denominator: c, weighted: d, directed: e};
 	});
 var _user$project$Types$MultipleChoice = {ctor: 'MultipleChoice'};
 var _user$project$Types$FillInTheBlank = {ctor: 'FillInTheBlank'};
@@ -9377,7 +9373,7 @@ var _user$project$Graph$lastNode = function (model) {
 	var _p6 = model.graph;
 	var nodes = _p6.nodes;
 	var edges = _p6.edges;
-	var directional = _p6.directional;
+	var directed = _p6.directed;
 	var weighted = _p6.weighted;
 	var nodes$ = _elm_lang$core$List$reverse(nodes);
 	var _p7 = nodes$;
@@ -9391,7 +9387,7 @@ var _user$project$Graph$firstNode = function (model) {
 	var _p8 = model.graph;
 	var nodes = _p8.nodes;
 	var edges = _p8.edges;
-	var directional = _p8.directional;
+	var directed = _p8.directed;
 	var weighted = _p8.weighted;
 	var _p9 = nodes;
 	if (_p9.ctor === '[]') {
@@ -9404,7 +9400,7 @@ var _user$project$Graph$numberOfEdges = function (model) {
 	var _p10 = model.graph;
 	var nodes = _p10.nodes;
 	var edges = _p10.edges;
-	var directional = _p10.directional;
+	var directed = _p10.directed;
 	var weighted = _p10.weighted;
 	return _elm_lang$core$List$length(edges);
 };
@@ -9412,7 +9408,7 @@ var _user$project$Graph$numberOfNodes = function (model) {
 	var _p11 = model.graph;
 	var nodes = _p11.nodes;
 	var edges = _p11.edges;
-	var directional = _p11.directional;
+	var directed = _p11.directed;
 	var weighted = _p11.weighted;
 	return _elm_lang$core$List$length(nodes);
 };
@@ -9448,7 +9444,7 @@ var _user$project$Graph$degree = F2(
 	});
 var _user$project$Graph$edgeExists = F3(
 	function (graph, n1, n2) {
-		var n2_to_n1_non = _elm_lang$core$Basics$not(graph.directional) && A2(
+		var n2_to_n1_non = _elm_lang$core$Basics$not(graph.directed) && A2(
 			_elm_lang$core$List$any,
 			function (e) {
 				return _elm_lang$core$Native_Utils.eq(e.from, n2) && _elm_lang$core$Native_Utils.eq(e.to, n1);
@@ -9477,7 +9473,7 @@ var _user$project$Graph$updateGraph = F5(
 		return _elm_lang$core$Native_Utils.update(
 			model,
 			{
-				graph: {nodes: ns, edges: es, directional: d, weighted: w}
+				graph: {nodes: ns, edges: es, directed: d, weighted: w}
 			});
 	});
 var _user$project$Graph$stripList = function (maybes) {
@@ -10046,7 +10042,7 @@ var _user$project$GraphView$adjustPixel = F2(
 		return (_elm_lang$core$Native_Utils.cmp(p1, p2) < 0) ? (p1 + _user$project$View$viewConstants.nodeOffset) : (_elm_lang$core$Native_Utils.eq(p1, p2) ? p1 : (p1 - _user$project$View$viewConstants.nodeOffset));
 	});
 var _user$project$GraphView$edgeLine = F6(
-	function (x_1, y_1, x_2, y_2, directional, direction) {
+	function (x_1, y_1, x_2, y_2, directed, direction) {
 		var lineStyle = _elm_lang$core$Native_List.fromArray(
 			[
 				_elm_lang$svg$Svg_Attributes$x1(
@@ -10074,7 +10070,7 @@ var _user$project$GraphView$edgeLine = F6(
 				_elm_lang$svg$Svg_Attributes$markerStart('url(#ArrowHeadStart)'),
 				_elm_lang$svg$Svg_Attributes$markerEnd('url(#ArrowHeadEnd)')
 			]);
-		var lineStyle$ = (directional && _elm_lang$core$Native_Utils.eq(direction, _user$project$Types$BiDirectional)) ? A2(_elm_lang$core$List$append, lineStyle, biArrow) : ((directional && _elm_lang$core$Native_Utils.eq(direction, _user$project$Types$UniDirectional)) ? A2(_elm_lang$core$List$append, lineStyle, uniArrow) : lineStyle);
+		var lineStyle$ = (directed && _elm_lang$core$Native_Utils.eq(direction, _user$project$Types$BiDirectional)) ? A2(_elm_lang$core$List$append, lineStyle, biArrow) : ((directed && _elm_lang$core$Native_Utils.eq(direction, _user$project$Types$UniDirectional)) ? A2(_elm_lang$core$List$append, lineStyle, uniArrow) : lineStyle);
 		return A2(
 			_elm_lang$svg$Svg$line,
 			lineStyle$,
@@ -10159,14 +10155,14 @@ var _user$project$GraphView$drawNode = function (nodeId) {
 		]);
 };
 var _user$project$GraphView$drawEdge = F3(
-	function (edge, weighted, directional) {
+	function (edge, weighted, directed) {
 		var y_2 = _user$project$GraphView$nodeY(edge.to);
 		var x_2 = _user$project$GraphView$nodeX(edge.to);
 		var y_1 = _user$project$GraphView$nodeY(edge.from);
 		var x_1 = _user$project$GraphView$nodeX(edge.from);
 		var lne = _elm_lang$core$Native_List.fromArray(
 			[
-				A6(_user$project$GraphView$edgeLine, x_1, y_1, x_2, y_2, directional, edge.direction)
+				A6(_user$project$GraphView$edgeLine, x_1, y_1, x_2, y_2, directed, edge.direction)
 			]);
 		return (weighted && (_elm_lang$core$Native_Utils.cmp(edge.weight, 0) > 0)) ? A2(
 			_elm_lang$core$List$append,
@@ -10178,18 +10174,18 @@ var _user$project$GraphView$drawEdge = F3(
 	});
 var _user$project$GraphView$drawEdges = function (graph) {
 	var drawEdgesHelper = F3(
-		function (edges, weighted, directional) {
+		function (edges, weighted, directed) {
 			var _p0 = edges;
 			if (_p0.ctor === '[]') {
 				return _user$project$GraphView$arrowHeads;
 			} else {
 				return A2(
 					_elm_lang$core$List$append,
-					A3(_user$project$GraphView$drawEdge, _p0._0, weighted, directional),
-					A3(drawEdgesHelper, _p0._1, weighted, directional));
+					A3(_user$project$GraphView$drawEdge, _p0._0, weighted, directed),
+					A3(drawEdgesHelper, _p0._1, weighted, directed));
 			}
 		});
-	return A3(drawEdgesHelper, graph.edges, graph.weighted, graph.directional);
+	return A3(drawEdgesHelper, graph.edges, graph.weighted, graph.directed);
 };
 var _user$project$GraphView$nodeCol = function (nodeId) {
 	return A2(_elm_lang$core$Basics$rem, nodeId, _user$project$View$viewConstants.nodesPerCol);
@@ -10411,7 +10407,7 @@ var _user$project$Question$questionByIndex = F2(
 		var _p3 = model.graph;
 		var nodes = _p3.nodes;
 		var edges = _p3.edges;
-		var directional = _p3.directional;
+		var directed = _p3.directed;
 		var weighted = _p3.weighted;
 		if (_elm_lang$core$Native_Utils.eq(index, 1)) {
 			return {
@@ -10588,7 +10584,7 @@ var _user$project$Question$questionByIndex = F2(
 							format: _user$project$Types$MultipleChoice
 						};
 					} else {
-						if (_elm_lang$core$Native_Utils.eq(index, 5) && directional) {
+						if (_elm_lang$core$Native_Utils.eq(index, 5) && directed) {
 							var n = A2(
 								_user$project$Graph$randomNode,
 								model,
@@ -10632,7 +10628,7 @@ var _user$project$Question$questionByIndex = F2(
 								format: _user$project$Types$FillInTheBlank
 							};
 						} else {
-							if (_elm_lang$core$Native_Utils.eq(index, 6) && directional) {
+							if (_elm_lang$core$Native_Utils.eq(index, 6) && directed) {
 								var n = A2(
 									_user$project$Graph$randomNode,
 									model,
@@ -10763,7 +10759,7 @@ var _user$project$Question$newQuestion = F2(
 		var _p4 = model.graph;
 		var nodes = _p4.nodes;
 		var edges = _p4.edges;
-		var directional = _p4.directional;
+		var directed = _p4.directed;
 		var weighted = _p4.weighted;
 		return _elm_lang$core$Native_Utils.update(
 			model,
@@ -10779,22 +10775,27 @@ var _user$project$Ports$ssData = _elm_lang$core$Native_Platform.incomingPort(
 	'ssData',
 	A2(
 		_elm_lang$core$Json_Decode$andThen,
-		A2(_elm_lang$core$Json_Decode_ops[':='], 'num', _elm_lang$core$Json_Decode$int),
-		function (num) {
+		A2(_elm_lang$core$Json_Decode_ops[':='], 'mastery', _elm_lang$core$Json_Decode$bool),
+		function (mastery) {
 			return A2(
 				_elm_lang$core$Json_Decode$andThen,
-				A2(_elm_lang$core$Json_Decode_ops[':='], 'den', _elm_lang$core$Json_Decode$int),
-				function (den) {
+				A2(_elm_lang$core$Json_Decode_ops[':='], 'numerator', _elm_lang$core$Json_Decode$int),
+				function (numerator) {
 					return A2(
 						_elm_lang$core$Json_Decode$andThen,
-						A2(_elm_lang$core$Json_Decode_ops[':='], 'weighted', _elm_lang$core$Json_Decode$bool),
-						function (weighted) {
+						A2(_elm_lang$core$Json_Decode_ops[':='], 'denominator', _elm_lang$core$Json_Decode$int),
+						function (denominator) {
 							return A2(
 								_elm_lang$core$Json_Decode$andThen,
-								A2(_elm_lang$core$Json_Decode_ops[':='], 'directed', _elm_lang$core$Json_Decode$bool),
-								function (directed) {
-									return _elm_lang$core$Json_Decode$succeed(
-										{num: num, den: den, weighted: weighted, directed: directed});
+								A2(_elm_lang$core$Json_Decode_ops[':='], 'weighted', _elm_lang$core$Json_Decode$bool),
+								function (weighted) {
+									return A2(
+										_elm_lang$core$Json_Decode$andThen,
+										A2(_elm_lang$core$Json_Decode_ops[':='], 'directed', _elm_lang$core$Json_Decode$bool),
+										function (directed) {
+											return _elm_lang$core$Json_Decode$succeed(
+												{mastery: mastery, numerator: numerator, denominator: denominator, weighted: weighted, directed: directed});
+										});
 								});
 						});
 				});
@@ -10914,16 +10915,14 @@ var _user$project$GraphQuestions$initModel = {
 		[]),
 	mastery: false,
 	numerator: 0,
-	denominator: 0,
-	weighted: false,
-	directional: false
+	denominator: 0
 };
 var _user$project$GraphQuestions$update = F2(
 	function (msg, model) {
 		var _p0 = model.graph;
 		var nodes = _p0.nodes;
 		var edges = _p0.edges;
-		var directional = _p0.directional;
+		var directed = _p0.directed;
 		var weighted = _p0.weighted;
 		var _p1 = msg;
 		switch (_p1.ctor) {
@@ -10959,7 +10958,7 @@ var _user$project$GraphQuestions$update = F2(
 				var newEdges = _user$project$Graph$createAllEdges(newNodes$);
 				return {
 					ctor: '_Tuple2',
-					_0: A5(_user$project$Graph$updateGraph, model, newNodes$, newEdges, directional, weighted),
+					_0: A5(_user$project$Graph$updateGraph, model, newNodes$, newEdges, directed, weighted),
 					_1: A2(
 						_elm_lang$core$Random$generate,
 						_user$project$Types$NewEdgeWeights,
@@ -10972,7 +10971,7 @@ var _user$project$GraphQuestions$update = F2(
 				var newEdges = A2(_user$project$Graph$replaceWeights, edges, _p1._0);
 				return {
 					ctor: '_Tuple2',
-					_0: A5(_user$project$Graph$updateGraph, model, nodes, newEdges, directional, weighted),
+					_0: A5(_user$project$Graph$updateGraph, model, nodes, newEdges, directed, weighted),
 					_1: A2(
 						_elm_lang$core$Random$generate,
 						_user$project$Types$NewQuestion,
@@ -11018,7 +11017,7 @@ var _user$project$GraphQuestions$update = F2(
 						model,
 						nodes,
 						edges,
-						directional,
+						directed,
 						_elm_lang$core$Basics$not(weighted)),
 					_1: _elm_lang$core$Platform_Cmd$none
 				};
@@ -11030,7 +11029,7 @@ var _user$project$GraphQuestions$update = F2(
 						model,
 						nodes,
 						edges,
-						_elm_lang$core$Basics$not(directional),
+						_elm_lang$core$Basics$not(directed),
 						weighted),
 					_1: _elm_lang$core$Platform_Cmd$none
 				};
@@ -11070,12 +11069,12 @@ var _user$project$GraphQuestions$update = F2(
 				var graph = model.graph;
 				var graph$ = _elm_lang$core$Native_Utils.update(
 					graph,
-					{weighted: _p4.weighted, directional: _p4.directed});
+					{weighted: _p4.weighted, directed: _p4.directed});
 				return {
 					ctor: '_Tuple2',
 					_0: _elm_lang$core$Native_Utils.update(
 						model,
-						{numerator: _p4.num, denominator: _p4.den, weighted: _p4.weighted, directional: _p4.directed, graph: graph$}),
+						{mastery: _p4.mastery, numerator: _p4.numerator, denominator: _p4.denominator, graph: graph$}),
 					_1: A2(
 						_elm_lang$core$Random$generate,
 						_user$project$Types$NewRandomValues,
