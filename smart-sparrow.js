@@ -29,6 +29,10 @@ app.ports.updateMastery.subscribe(function(mastery) {
     model.set('mastery', mastery);
 });
 
+model.on('change:numerator', function(){
+    alert ("numerator = ", model.get("numerator"));
+  });
+
 $(document).ready(function() {
 	// let smart sparrow know that the sim is ready to accept values
 	//pipit.Controller.notifyOnReady();
