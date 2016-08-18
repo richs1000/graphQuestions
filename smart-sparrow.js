@@ -4,8 +4,8 @@
 // };
 var model = new pipit.CapiAdapter.CapiModel({
     mastery: false,
-    numerator: 3,
-    denominator: 5,
+    numerator: 30,
+    denominator: 50,
     weighted: true,
     directed: true
 });
@@ -37,8 +37,8 @@ $(document).ready(function() {
 	// let smart sparrow know that the sim is ready to accept values
 	//pipit.Controller.notifyOnReady();
   // app.ports.ssData.send( {num : 3, den : 5, weighted : true, directed : false });
-  alert ("here i am")
   model.numerator = model.get('numerator');
+  alert("in ready, numerator = " + model.numerator);
   model.denominator = model.set('denominator');
   app.ports.ssData.send( model );
 });
