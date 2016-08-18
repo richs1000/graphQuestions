@@ -10,6 +10,16 @@ var model = new pipit.CapiAdapter.CapiModel({
     directed: true
 });
 
+//Tells pipit to expose the following attributes
+pipit.CapiAdapter.expose('mastery', model);
+pipit.CapiAdapter.expose('numerator', model);
+pipit.CapiAdapter.expose('denominator', model);
+pipit.CapiAdapter.expose('weighted', model);
+pipit.CapiAdapter.expose('directed', model);
+
+// Tells pipit that the sim model is ready
+pipit.Controller.notifyOnReady();
+
 var node = document.getElementById('my-thing');
 var app = Elm.GraphQuestions.embed(node);
 
@@ -20,15 +30,6 @@ app.ports.updateMastery.subscribe(function(mastery) {
     model.set('mastery', dataModel.mastery);
 });
 
-//Tells pipit to expose the following attributes
-pipit.CapiAdapter.expose('mastery', model);
-pipit.CapiAdapter.expose('numerator', model);
-pipit.CapiAdapter.expose('denominator', model);
-pipit.CapiAdapter.expose('weighted', model);
-pipit.CapiAdapter.expose('directed', model);
-
-// Tells pipit that the sim model is ready
-pipit.Controller.notifyOnReady();
 
 
 
