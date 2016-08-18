@@ -6,6 +6,7 @@ import Html.Events exposing (..)
 import Random exposing (..)
 import Set exposing (..)
 import String exposing (..)
+import Debug
 import Types exposing (..)
 import View exposing (..)
 import QuestionView exposing (..)
@@ -194,7 +195,8 @@ update msg model =
                         model.graph
 
                     graph' =
-                        { graph | weighted = ssd.weighted, directed = ssd.directed }
+                        Debug.log "got values from smart sparrow: "
+                            { graph | weighted = ssd.weighted, directed = ssd.directed }
                 in
                     ( { model
                         | mastery = ssd.mastery

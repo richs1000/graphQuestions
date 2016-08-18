@@ -24,10 +24,9 @@ var node = document.getElementById('my-thing');
 var app = Elm.GraphQuestions.embed(node);
 
 app.ports.updateMastery.subscribe(function(mastery) {
-    dataModel.mastery = mastery
-    alert ("mastery = " + dataModel.mastery);
+    alert ("mastery = " + mastery);
     //app.ports.suggestions.send(suggestions);
-    model.set('mastery', dataModel.mastery);
+    model.set('mastery', mastery);
 });
 
 

@@ -264,9 +264,12 @@ var _user$project$GraphQuestions$update = F2(
 			default:
 				var _p4 = _p1._0;
 				var graph = model.graph;
-				var graph$ = _elm_lang$core$Native_Utils.update(
-					graph,
-					{weighted: _p4.weighted, directed: _p4.directed});
+				var graph$ = A2(
+					_elm_lang$core$Debug$log,
+					'got values from smart sparrow: ',
+					_elm_lang$core$Native_Utils.update(
+						graph,
+						{weighted: _p4.weighted, directed: _p4.directed}));
 				return {
 					ctor: '_Tuple2',
 					_0: _elm_lang$core$Native_Utils.update(
