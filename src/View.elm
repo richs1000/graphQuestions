@@ -20,7 +20,7 @@ questionStyle : Html.Attribute msg
 questionStyle =
     Html.Attributes.style
         [ ( "width", "100%" )
-        , ( "height", "40px" )
+          -- , ( "height", "40px" )
         , ( "padding", "10px" )
         , ( "font-size", "2em" )
         , ( "margin", "4px" )

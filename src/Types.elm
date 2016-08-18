@@ -13,6 +13,11 @@ type alias Model =
     , success : Maybe Bool
     , feedback : String
     , randomValues : List Int
+    , mastery : Bool
+    , numerator : Int
+    , denominator : Int
+    , weighted : Bool
+    , directional : Bool
     }
 
 
@@ -126,6 +131,14 @@ emptyGraph =
 -- UPDATE
 
 
+type alias SSData =
+    { num : Int
+    , den : Int
+    , weighted : Bool
+    , directed : Bool
+    }
+
+
 type Msg
     = Reset
     | NewRandomValues (List Int)
@@ -138,3 +151,5 @@ type Msg
     | BreadthFirstSearch
     | ToggleWeighted
     | ToggleDirectional
+    | UpdateMastery
+    | GetValuesFromSS SSData

@@ -17,7 +17,6 @@ displayQuestion model =
             FillInTheBlank ->
                 Html.form [ onSubmit Submit ]
                     [ div [ questionStyle ] [ Html.text question ]
-                    , div [] [ Html.text "s" ]
                     , input
                         [ Html.Attributes.type' "text"
                         , placeholder "Answer here..."
@@ -36,7 +35,6 @@ displayQuestion model =
             MultipleChoice ->
                 Html.form [ onSubmit Submit ]
                     [ div [ questionStyle ] [ Html.text question ]
-                    , div [] [ Html.text "s" ]
                     , div []
                         [ radio "True" model
                         , radio "False" model
@@ -83,7 +81,6 @@ questionForm model =
             Just _ ->
                 Html.form [ onSubmit GiveFeedback ]
                     [ div [ questionStyle ] [ Html.text model.feedback ]
-                    , div [] [ Html.text "s" ]
                     , input
                         [ Html.Attributes.type' "text"
                         , placeholder "Answer here..."

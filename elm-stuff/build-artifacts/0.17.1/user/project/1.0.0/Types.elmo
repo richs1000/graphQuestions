@@ -7,10 +7,35 @@ var _user$project$Types$emptyGraph = {
 	weighted: true
 };
 var _user$project$Types$historyLength = 10;
-var _user$project$Types$Model = F9(
-	function (a, b, c, d, e, f, g, h, i) {
-		return {graph: a, debug: b, userInput: c, history: d, bfs: e, question: f, success: g, feedback: h, randomValues: i};
-	});
+var _user$project$Types$Model = function (a) {
+	return function (b) {
+		return function (c) {
+			return function (d) {
+				return function (e) {
+					return function (f) {
+						return function (g) {
+							return function (h) {
+								return function (i) {
+									return function (j) {
+										return function (k) {
+											return function (l) {
+												return function (m) {
+													return function (n) {
+														return {graph: a, debug: b, userInput: c, history: d, bfs: e, question: f, success: g, feedback: h, randomValues: i, mastery: j, numerator: k, denominator: l, weighted: m, directional: n};
+													};
+												};
+											};
+										};
+									};
+								};
+							};
+						};
+					};
+				};
+			};
+		};
+	};
+};
 var _user$project$Types$Question = F4(
 	function (a, b, c, d) {
 		return {question: a, distractors: b, answer: c, format: d};
@@ -22,6 +47,10 @@ var _user$project$Types$Edge = F4(
 var _user$project$Types$Graph = F4(
 	function (a, b, c, d) {
 		return {nodes: a, edges: b, directional: c, weighted: d};
+	});
+var _user$project$Types$SSData = F4(
+	function (a, b, c, d) {
+		return {num: a, den: b, weighted: c, directed: d};
 	});
 var _user$project$Types$MultipleChoice = {ctor: 'MultipleChoice'};
 var _user$project$Types$FillInTheBlank = {ctor: 'FillInTheBlank'};
@@ -35,6 +64,10 @@ var _user$project$Types$emptyQuestion = {
 var _user$project$Types$BiDirectional = {ctor: 'BiDirectional'};
 var _user$project$Types$UniDirectional = {ctor: 'UniDirectional'};
 var _user$project$Types$emptyEdge = {from: 0, to: 0, weight: 0, direction: _user$project$Types$UniDirectional};
+var _user$project$Types$GetValuesFromSS = function (a) {
+	return {ctor: 'GetValuesFromSS', _0: a};
+};
+var _user$project$Types$UpdateMastery = {ctor: 'UpdateMastery'};
 var _user$project$Types$ToggleDirectional = {ctor: 'ToggleDirectional'};
 var _user$project$Types$ToggleWeighted = {ctor: 'ToggleWeighted'};
 var _user$project$Types$BreadthFirstSearch = {ctor: 'BreadthFirstSearch'};

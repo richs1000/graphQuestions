@@ -1,4 +1,4 @@
-module Main exposing (..)
+module GraphQuestions exposing (..)
 
 import Html exposing (..)
 import Html.App as Html
@@ -14,6 +14,7 @@ import GraphView exposing (..)
 import Graph exposing (..)
 import Search exposing (..)
 import Question exposing (..)
+import Ports exposing (..)
 
 
 -- MAIN
@@ -44,6 +45,11 @@ initModel =
     , question = emptyQuestion
     , feedback = ""
     , randomValues = []
+    , mastery = False
+    , numerator = 0
+    , denominator = 0
+    , weighted = False
+    , directional = False
     }
 
 
@@ -69,6 +75,7 @@ view model =
                     , button [ onClick ToggleWeighted, buttonStyle ] [ Html.text "Toggle Weighted" ]
                     , button [ onClick ToggleDirectional, buttonStyle ] [ Html.text "Toggle Directional" ]
                     , button [ onClick BreadthFirstSearch, buttonStyle ] [ Html.text "BFS" ]
+                    , button [ onClick UpdateMastery, buttonStyle ] [ Html.text "Mastery" ]
                     ]
             else
                 div [] [ resetBtn ]
@@ -84,12 +91,13 @@ view model =
 
 
 
+-- PORTS
 -- SUBSCRIPTIONS
 
 
 subscriptions : Model -> Sub Msg
 subscriptions model =
-    Sub.none
+    ssData GetValuesFromSS
 
 
 
@@ -178,3 +186,24 @@ update msg model =
 
                                 Just finish ->
                                     ( { model | bfs = (breadthFirstSearch model.graph start finish) }, Cmd.none )
+
+            UpdateMastery ->
+                ( { model | mastery = True }, updateMastery True )
+
+            GetValuesFromSS ssd ->
+                let
+                    graph =
+                        model.graph
+
+                    graph' =
+                        { graph | weighted = ssd.weighted, directional = ssd.directed }
+                in
+                    ( { model
+                        | numerator = ssd.num
+                        , denominator = ssd.den
+                        , weighted = ssd.weighted
+                        , directional = ssd.directed
+                        , graph = graph'
+                      }
+                    , Random.generate NewRandomValues (Random.list 15 (Random.int 1 15))
+                    )

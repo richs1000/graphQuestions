@@ -62,14 +62,6 @@ var _user$project$QuestionView$displayQuestion = function (model) {
 							_elm_lang$html$Html$text(question)
 						])),
 					A2(
-					_elm_lang$html$Html$div,
-					_elm_lang$core$Native_List.fromArray(
-						[]),
-					_elm_lang$core$Native_List.fromArray(
-						[
-							_elm_lang$html$Html$text('s')
-						])),
-					A2(
 					_elm_lang$html$Html$input,
 					_elm_lang$core$Native_List.fromArray(
 						[
@@ -109,14 +101,6 @@ var _user$project$QuestionView$displayQuestion = function (model) {
 					_elm_lang$core$Native_List.fromArray(
 						[
 							_elm_lang$html$Html$text(question)
-						])),
-					A2(
-					_elm_lang$html$Html$div,
-					_elm_lang$core$Native_List.fromArray(
-						[]),
-					_elm_lang$core$Native_List.fromArray(
-						[
-							_elm_lang$html$Html$text('s')
 						])),
 					A2(
 					_elm_lang$html$Html$div,
@@ -166,14 +150,6 @@ var _user$project$QuestionView$questionForm = function (model) {
 					_elm_lang$core$Native_List.fromArray(
 						[
 							_elm_lang$html$Html$text(model.feedback)
-						])),
-					A2(
-					_elm_lang$html$Html$div,
-					_elm_lang$core$Native_List.fromArray(
-						[]),
-					_elm_lang$core$Native_List.fromArray(
-						[
-							_elm_lang$html$Html$text('s')
 						])),
 					A2(
 					_elm_lang$html$Html$input,

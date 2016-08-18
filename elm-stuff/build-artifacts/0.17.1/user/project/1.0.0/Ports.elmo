@@ -1,0 +1,29 @@
+var _user$project$Ports$updateMastery = _elm_lang$core$Native_Platform.outgoingPort(
+	'updateMastery',
+	function (v) {
+		return v;
+	});
+var _user$project$Ports$ssData = _elm_lang$core$Native_Platform.incomingPort(
+	'ssData',
+	A2(
+		_elm_lang$core$Json_Decode$andThen,
+		A2(_elm_lang$core$Json_Decode_ops[':='], 'num', _elm_lang$core$Json_Decode$int),
+		function (num) {
+			return A2(
+				_elm_lang$core$Json_Decode$andThen,
+				A2(_elm_lang$core$Json_Decode_ops[':='], 'den', _elm_lang$core$Json_Decode$int),
+				function (den) {
+					return A2(
+						_elm_lang$core$Json_Decode$andThen,
+						A2(_elm_lang$core$Json_Decode_ops[':='], 'weighted', _elm_lang$core$Json_Decode$bool),
+						function (weighted) {
+							return A2(
+								_elm_lang$core$Json_Decode$andThen,
+								A2(_elm_lang$core$Json_Decode_ops[':='], 'directed', _elm_lang$core$Json_Decode$bool),
+								function (directed) {
+									return _elm_lang$core$Json_Decode$succeed(
+										{num: num, den: den, weighted: weighted, directed: directed});
+								});
+						});
+				});
+		}));

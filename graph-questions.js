@@ -3510,17 +3510,40 @@ var incomingPortMap = F2(function subMap(tagger, finalTagger)
 
 function setupIncomingPort(name, callback)
 {
+	var sentBeforeInit = [];
 	var subs = _elm_lang$core$Native_List.Nil;
 	var converter = effectManagers[name].converter;
+	var currentOnEffects = preInitOnEffects;
+	var currentSend = preInitSend;
 
 	// CREATE MANAGER
 
 	var init = _elm_lang$core$Native_Scheduler.succeed(null);
 
-	function onEffects(router, subList, state)
+	function preInitOnEffects(router, subList, state)
+	{
+		var postInitResult = postInitOnEffects(router, subList, state);
+
+		for(var i = 0; i < sentBeforeInit.length; i++)
+		{
+			postInitSend(sentBeforeInit[i]);
+		}
+
+		sentBeforeInit = null; // to release objects held in queue
+		currentSend = postInitSend;
+		currentOnEffects = postInitOnEffects;
+		return postInitResult;
+	}
+
+	function postInitOnEffects(router, subList, state)
 	{
 		subs = subList;
 		return init;
+	}
+
+	function onEffects(router, subList, state)
+	{
+		return currentOnEffects(router, subList, state);
 	}
 
 	effectManagers[name].init = init;
@@ -3528,9 +3551,14 @@ function setupIncomingPort(name, callback)
 
 	// PUBLIC API
 
-	function send(value)
+	function preInitSend(value)
 	{
-		var result = A2(_elm_lang$core$Json_Decode$decodeValue, converter, value);
+		sentBeforeInit.push(value);
+	}
+
+	function postInitSend(incomingValue)
+	{
+		var result = A2(_elm_lang$core$Json_Decode$decodeValue, converter, incomingValue);
 		if (result.ctor === 'Err')
 		{
 			throw new Error('Trying to send an unexpected type of value through port `' + name + '`:\n' + result._0);
@@ -3543,6 +3571,11 @@ function setupIncomingPort(name, callback)
 			callback(temp._0(value));
 			temp = temp._1;
 		}
+	}
+
+	function send(incomingValue)
+	{
+		currentSend(incomingValue);
 	}
 
 	return { send: send };
@@ -3567,6 +3600,7 @@ return {
 };
 
 }();
+
 var _elm_lang$core$Platform$hack = _elm_lang$core$Native_Scheduler.succeed;
 var _elm_lang$core$Platform$sendToSelf = _elm_lang$core$Native_Platform.sendToSelf;
 var _elm_lang$core$Platform$sendToApp = _elm_lang$core$Native_Platform.sendToApp;
@@ -9177,10 +9211,35 @@ var _user$project$Types$emptyGraph = {
 	weighted: true
 };
 var _user$project$Types$historyLength = 10;
-var _user$project$Types$Model = F9(
-	function (a, b, c, d, e, f, g, h, i) {
-		return {graph: a, debug: b, userInput: c, history: d, bfs: e, question: f, success: g, feedback: h, randomValues: i};
-	});
+var _user$project$Types$Model = function (a) {
+	return function (b) {
+		return function (c) {
+			return function (d) {
+				return function (e) {
+					return function (f) {
+						return function (g) {
+							return function (h) {
+								return function (i) {
+									return function (j) {
+										return function (k) {
+											return function (l) {
+												return function (m) {
+													return function (n) {
+														return {graph: a, debug: b, userInput: c, history: d, bfs: e, question: f, success: g, feedback: h, randomValues: i, mastery: j, numerator: k, denominator: l, weighted: m, directional: n};
+													};
+												};
+											};
+										};
+									};
+								};
+							};
+						};
+					};
+				};
+			};
+		};
+	};
+};
 var _user$project$Types$Question = F4(
 	function (a, b, c, d) {
 		return {question: a, distractors: b, answer: c, format: d};
@@ -9192,6 +9251,10 @@ var _user$project$Types$Edge = F4(
 var _user$project$Types$Graph = F4(
 	function (a, b, c, d) {
 		return {nodes: a, edges: b, directional: c, weighted: d};
+	});
+var _user$project$Types$SSData = F4(
+	function (a, b, c, d) {
+		return {num: a, den: b, weighted: c, directed: d};
 	});
 var _user$project$Types$MultipleChoice = {ctor: 'MultipleChoice'};
 var _user$project$Types$FillInTheBlank = {ctor: 'FillInTheBlank'};
@@ -9205,6 +9268,10 @@ var _user$project$Types$emptyQuestion = {
 var _user$project$Types$BiDirectional = {ctor: 'BiDirectional'};
 var _user$project$Types$UniDirectional = {ctor: 'UniDirectional'};
 var _user$project$Types$emptyEdge = {from: 0, to: 0, weight: 0, direction: _user$project$Types$UniDirectional};
+var _user$project$Types$GetValuesFromSS = function (a) {
+	return {ctor: 'GetValuesFromSS', _0: a};
+};
+var _user$project$Types$UpdateMastery = {ctor: 'UpdateMastery'};
 var _user$project$Types$ToggleDirectional = {ctor: 'ToggleDirectional'};
 var _user$project$Types$ToggleWeighted = {ctor: 'ToggleWeighted'};
 var _user$project$Types$BreadthFirstSearch = {ctor: 'BreadthFirstSearch'};
@@ -9615,7 +9682,6 @@ var _user$project$View$questionStyle = _elm_lang$html$Html_Attributes$style(
 	_elm_lang$core$Native_List.fromArray(
 		[
 			{ctor: '_Tuple2', _0: 'width', _1: '100%'},
-			{ctor: '_Tuple2', _0: 'height', _1: '40px'},
 			{ctor: '_Tuple2', _0: 'padding', _1: '10px'},
 			{ctor: '_Tuple2', _0: 'font-size', _1: '2em'},
 			{ctor: '_Tuple2', _0: 'margin', _1: '4px'}
@@ -9634,6 +9700,290 @@ var _user$project$View$ViewConstants = F9(
 	function (a, b, c, d, e, f, g, h, i) {
 		return {nodeSeparation: a, nodeRadius: b, nodeOffset: c, weightOffset: d, graphUpperLeft: e, nodesPerRow: f, nodesPerCol: g, historySquareSize: h, historySquareSeparation: i};
 	});
+
+var _user$project$QuestionView$radio = F2(
+	function (name, model) {
+		var isSelected = _elm_lang$core$Native_Utils.eq(model.userInput, name);
+		return A2(
+			_elm_lang$html$Html$label,
+			_elm_lang$core$Native_List.fromArray(
+				[]),
+			_elm_lang$core$Native_List.fromArray(
+				[
+					A2(
+					_elm_lang$html$Html$br,
+					_elm_lang$core$Native_List.fromArray(
+						[]),
+					_elm_lang$core$Native_List.fromArray(
+						[])),
+					A2(
+					_elm_lang$html$Html$input,
+					_elm_lang$core$Native_List.fromArray(
+						[
+							_elm_lang$html$Html_Attributes$type$('radio'),
+							_elm_lang$html$Html_Attributes$checked(isSelected),
+							_elm_lang$html$Html_Events$onCheck(
+							function (_p0) {
+								return _user$project$Types$UserInput(name);
+							}),
+							_user$project$View$radioStyle
+						]),
+					_elm_lang$core$Native_List.fromArray(
+						[])),
+					A2(
+					_elm_lang$html$Html$span,
+					_elm_lang$core$Native_List.fromArray(
+						[_user$project$View$questionStyle]),
+					_elm_lang$core$Native_List.fromArray(
+						[
+							_elm_lang$html$Html$text(name)
+						]))
+				]));
+	});
+var _user$project$QuestionView$displayQuestion = function (model) {
+	var _p1 = model.question;
+	var question = _p1.question;
+	var distractors = _p1.distractors;
+	var answer = _p1.answer;
+	var format = _p1.format;
+	var _p2 = format;
+	if (_p2.ctor === 'FillInTheBlank') {
+		return A2(
+			_elm_lang$html$Html$form,
+			_elm_lang$core$Native_List.fromArray(
+				[
+					_elm_lang$html$Html_Events$onSubmit(_user$project$Types$Submit)
+				]),
+			_elm_lang$core$Native_List.fromArray(
+				[
+					A2(
+					_elm_lang$html$Html$div,
+					_elm_lang$core$Native_List.fromArray(
+						[_user$project$View$questionStyle]),
+					_elm_lang$core$Native_List.fromArray(
+						[
+							_elm_lang$html$Html$text(question)
+						])),
+					A2(
+					_elm_lang$html$Html$input,
+					_elm_lang$core$Native_List.fromArray(
+						[
+							_elm_lang$html$Html_Attributes$type$('text'),
+							_elm_lang$html$Html_Attributes$placeholder('Answer here...'),
+							_elm_lang$html$Html_Events$onInput(_user$project$Types$UserInput),
+							_elm_lang$html$Html_Attributes$value(model.userInput),
+							_user$project$View$inputStyle
+						]),
+					_elm_lang$core$Native_List.fromArray(
+						[])),
+					A2(
+					_elm_lang$html$Html$button,
+					_elm_lang$core$Native_List.fromArray(
+						[
+							_elm_lang$html$Html_Attributes$type$('submit'),
+							_user$project$View$buttonStyle
+						]),
+					_elm_lang$core$Native_List.fromArray(
+						[
+							_elm_lang$html$Html$text('Submit')
+						]))
+				]));
+	} else {
+		return A2(
+			_elm_lang$html$Html$form,
+			_elm_lang$core$Native_List.fromArray(
+				[
+					_elm_lang$html$Html_Events$onSubmit(_user$project$Types$Submit)
+				]),
+			_elm_lang$core$Native_List.fromArray(
+				[
+					A2(
+					_elm_lang$html$Html$div,
+					_elm_lang$core$Native_List.fromArray(
+						[_user$project$View$questionStyle]),
+					_elm_lang$core$Native_List.fromArray(
+						[
+							_elm_lang$html$Html$text(question)
+						])),
+					A2(
+					_elm_lang$html$Html$div,
+					_elm_lang$core$Native_List.fromArray(
+						[]),
+					_elm_lang$core$Native_List.fromArray(
+						[
+							A2(_user$project$QuestionView$radio, 'True', model),
+							A2(_user$project$QuestionView$radio, 'False', model)
+						])),
+					A2(
+					_elm_lang$html$Html$button,
+					_elm_lang$core$Native_List.fromArray(
+						[
+							_elm_lang$html$Html_Attributes$type$('submit'),
+							_user$project$View$buttonStyle
+						]),
+					_elm_lang$core$Native_List.fromArray(
+						[
+							_elm_lang$html$Html$text('Submit')
+						]))
+				]));
+	}
+};
+var _user$project$QuestionView$questionForm = function (model) {
+	var _p3 = model.question;
+	var question = _p3.question;
+	var distractors = _p3.distractors;
+	var answer = _p3.answer;
+	var format = _p3.format;
+	var _p4 = model.success;
+	if (_p4.ctor === 'Nothing') {
+		return _user$project$QuestionView$displayQuestion(model);
+	} else {
+		return A2(
+			_elm_lang$html$Html$form,
+			_elm_lang$core$Native_List.fromArray(
+				[
+					_elm_lang$html$Html_Events$onSubmit(_user$project$Types$GiveFeedback)
+				]),
+			_elm_lang$core$Native_List.fromArray(
+				[
+					A2(
+					_elm_lang$html$Html$div,
+					_elm_lang$core$Native_List.fromArray(
+						[_user$project$View$questionStyle]),
+					_elm_lang$core$Native_List.fromArray(
+						[
+							_elm_lang$html$Html$text(model.feedback)
+						])),
+					A2(
+					_elm_lang$html$Html$input,
+					_elm_lang$core$Native_List.fromArray(
+						[
+							_elm_lang$html$Html_Attributes$type$('text'),
+							_elm_lang$html$Html_Attributes$placeholder('Answer here...'),
+							_elm_lang$html$Html_Events$onInput(_user$project$Types$UserInput),
+							_elm_lang$html$Html_Attributes$value(model.userInput),
+							_elm_lang$html$Html_Attributes$disabled(true),
+							_user$project$View$inputStyle
+						]),
+					_elm_lang$core$Native_List.fromArray(
+						[])),
+					A2(
+					_elm_lang$html$Html$button,
+					_elm_lang$core$Native_List.fromArray(
+						[
+							_elm_lang$html$Html_Attributes$type$('submit'),
+							_user$project$View$buttonStyle
+						]),
+					_elm_lang$core$Native_List.fromArray(
+						[
+							_elm_lang$html$Html$text('Next Question')
+						]))
+				]));
+	}
+};
+
+var _user$project$HistoryView$historySquare = F2(
+	function (h, i) {
+		var myX = 10 + ((_user$project$View$viewConstants.historySquareSize + _user$project$View$viewConstants.historySquareSeparation) * i);
+		var base = _elm_lang$core$Native_List.fromArray(
+			[
+				_elm_lang$svg$Svg_Attributes$width(
+				_elm_lang$core$Basics$toString(_user$project$View$viewConstants.historySquareSize)),
+				_elm_lang$svg$Svg_Attributes$height(
+				_elm_lang$core$Basics$toString(_user$project$View$viewConstants.historySquareSize)),
+				_elm_lang$svg$Svg_Attributes$y('10')
+			]);
+		var incorrect = A2(
+			_elm_lang$core$List$append,
+			base,
+			_elm_lang$core$Native_List.fromArray(
+				[
+					_elm_lang$svg$Svg_Attributes$fill('red')
+				]));
+		var correct = A2(
+			_elm_lang$core$List$append,
+			base,
+			_elm_lang$core$Native_List.fromArray(
+				[
+					_elm_lang$svg$Svg_Attributes$fill('green')
+				]));
+		var nothing = A2(
+			_elm_lang$core$List$append,
+			base,
+			_elm_lang$core$Native_List.fromArray(
+				[
+					_elm_lang$svg$Svg_Attributes$fill('white')
+				]));
+		var _p0 = h;
+		if (_p0.ctor === 'Just') {
+			if (_p0._0 === true) {
+				return A2(
+					_elm_lang$svg$Svg$rect,
+					A2(
+						_elm_lang$core$List$append,
+						_elm_lang$core$Native_List.fromArray(
+							[
+								_elm_lang$svg$Svg_Attributes$x(
+								_elm_lang$core$Basics$toString(myX))
+							]),
+						correct),
+					_elm_lang$core$Native_List.fromArray(
+						[]));
+			} else {
+				return A2(
+					_elm_lang$svg$Svg$rect,
+					A2(
+						_elm_lang$core$List$append,
+						_elm_lang$core$Native_List.fromArray(
+							[
+								_elm_lang$svg$Svg_Attributes$x(
+								_elm_lang$core$Basics$toString(myX))
+							]),
+						incorrect),
+					_elm_lang$core$Native_List.fromArray(
+						[]));
+			}
+		} else {
+			return A2(
+				_elm_lang$svg$Svg$rect,
+				A2(
+					_elm_lang$core$List$append,
+					_elm_lang$core$Native_List.fromArray(
+						[
+							_elm_lang$svg$Svg_Attributes$x(
+							_elm_lang$core$Basics$toString(myX))
+						]),
+					nothing),
+				_elm_lang$core$Native_List.fromArray(
+					[]));
+		}
+	});
+var _user$project$HistoryView$historyList = F2(
+	function (history, index) {
+		var _p1 = history;
+		if (_p1.ctor === '::') {
+			return A2(
+				_elm_lang$core$List_ops['::'],
+				A2(_user$project$HistoryView$historySquare, _p1._0, index),
+				A2(_user$project$HistoryView$historyList, _p1._1, index + 1));
+		} else {
+			return _elm_lang$core$Native_List.fromArray(
+				[]);
+		}
+	});
+var _user$project$HistoryView$historySection = function (model) {
+	return A2(
+		_elm_lang$svg$Svg$svg,
+		_elm_lang$core$Native_List.fromArray(
+			[
+				_elm_lang$svg$Svg_Attributes$version('1.1'),
+				_elm_lang$svg$Svg_Attributes$baseProfile('full'),
+				_elm_lang$svg$Svg_Attributes$width(
+				_elm_lang$core$Basics$toString(_user$project$Types$historyLength * (_user$project$View$viewConstants.historySquareSize + _user$project$View$viewConstants.historySquareSeparation))),
+				_elm_lang$svg$Svg_Attributes$height('50')
+			]),
+		A2(_user$project$HistoryView$historyList, model.history, 0));
+};
 
 var _user$project$GraphView$arrowHeads = _elm_lang$core$Native_List.fromArray(
 	[
@@ -9880,314 +10230,6 @@ var _user$project$GraphView$imageOfGraph = function (model) {
 				_elm_lang$core$Basics$toString(graphHeight))
 			]),
 		_user$project$GraphView$drawGraph(model.graph));
-};
-
-var _user$project$HistoryView$historySquare = F2(
-	function (h, i) {
-		var myX = 10 + ((_user$project$View$viewConstants.historySquareSize + _user$project$View$viewConstants.historySquareSeparation) * i);
-		var base = _elm_lang$core$Native_List.fromArray(
-			[
-				_elm_lang$svg$Svg_Attributes$width(
-				_elm_lang$core$Basics$toString(_user$project$View$viewConstants.historySquareSize)),
-				_elm_lang$svg$Svg_Attributes$height(
-				_elm_lang$core$Basics$toString(_user$project$View$viewConstants.historySquareSize)),
-				_elm_lang$svg$Svg_Attributes$y('10')
-			]);
-		var incorrect = A2(
-			_elm_lang$core$List$append,
-			base,
-			_elm_lang$core$Native_List.fromArray(
-				[
-					_elm_lang$svg$Svg_Attributes$fill('red')
-				]));
-		var correct = A2(
-			_elm_lang$core$List$append,
-			base,
-			_elm_lang$core$Native_List.fromArray(
-				[
-					_elm_lang$svg$Svg_Attributes$fill('green')
-				]));
-		var nothing = A2(
-			_elm_lang$core$List$append,
-			base,
-			_elm_lang$core$Native_List.fromArray(
-				[
-					_elm_lang$svg$Svg_Attributes$fill('white')
-				]));
-		var _p0 = h;
-		if (_p0.ctor === 'Just') {
-			if (_p0._0 === true) {
-				return A2(
-					_elm_lang$svg$Svg$rect,
-					A2(
-						_elm_lang$core$List$append,
-						_elm_lang$core$Native_List.fromArray(
-							[
-								_elm_lang$svg$Svg_Attributes$x(
-								_elm_lang$core$Basics$toString(myX))
-							]),
-						correct),
-					_elm_lang$core$Native_List.fromArray(
-						[]));
-			} else {
-				return A2(
-					_elm_lang$svg$Svg$rect,
-					A2(
-						_elm_lang$core$List$append,
-						_elm_lang$core$Native_List.fromArray(
-							[
-								_elm_lang$svg$Svg_Attributes$x(
-								_elm_lang$core$Basics$toString(myX))
-							]),
-						incorrect),
-					_elm_lang$core$Native_List.fromArray(
-						[]));
-			}
-		} else {
-			return A2(
-				_elm_lang$svg$Svg$rect,
-				A2(
-					_elm_lang$core$List$append,
-					_elm_lang$core$Native_List.fromArray(
-						[
-							_elm_lang$svg$Svg_Attributes$x(
-							_elm_lang$core$Basics$toString(myX))
-						]),
-					nothing),
-				_elm_lang$core$Native_List.fromArray(
-					[]));
-		}
-	});
-var _user$project$HistoryView$historyList = F2(
-	function (history, index) {
-		var _p1 = history;
-		if (_p1.ctor === '::') {
-			return A2(
-				_elm_lang$core$List_ops['::'],
-				A2(_user$project$HistoryView$historySquare, _p1._0, index),
-				A2(_user$project$HistoryView$historyList, _p1._1, index + 1));
-		} else {
-			return _elm_lang$core$Native_List.fromArray(
-				[]);
-		}
-	});
-var _user$project$HistoryView$historySection = function (model) {
-	return A2(
-		_elm_lang$svg$Svg$svg,
-		_elm_lang$core$Native_List.fromArray(
-			[
-				_elm_lang$svg$Svg_Attributes$version('1.1'),
-				_elm_lang$svg$Svg_Attributes$baseProfile('full'),
-				_elm_lang$svg$Svg_Attributes$width(
-				_elm_lang$core$Basics$toString(_user$project$Types$historyLength * (_user$project$View$viewConstants.historySquareSize + _user$project$View$viewConstants.historySquareSeparation))),
-				_elm_lang$svg$Svg_Attributes$height('50')
-			]),
-		A2(_user$project$HistoryView$historyList, model.history, 0));
-};
-
-var _user$project$QuestionView$radio = F2(
-	function (name, model) {
-		var isSelected = _elm_lang$core$Native_Utils.eq(model.userInput, name);
-		return A2(
-			_elm_lang$html$Html$label,
-			_elm_lang$core$Native_List.fromArray(
-				[]),
-			_elm_lang$core$Native_List.fromArray(
-				[
-					A2(
-					_elm_lang$html$Html$br,
-					_elm_lang$core$Native_List.fromArray(
-						[]),
-					_elm_lang$core$Native_List.fromArray(
-						[])),
-					A2(
-					_elm_lang$html$Html$input,
-					_elm_lang$core$Native_List.fromArray(
-						[
-							_elm_lang$html$Html_Attributes$type$('radio'),
-							_elm_lang$html$Html_Attributes$checked(isSelected),
-							_elm_lang$html$Html_Events$onCheck(
-							function (_p0) {
-								return _user$project$Types$UserInput(name);
-							}),
-							_user$project$View$radioStyle
-						]),
-					_elm_lang$core$Native_List.fromArray(
-						[])),
-					A2(
-					_elm_lang$html$Html$span,
-					_elm_lang$core$Native_List.fromArray(
-						[_user$project$View$questionStyle]),
-					_elm_lang$core$Native_List.fromArray(
-						[
-							_elm_lang$html$Html$text(name)
-						]))
-				]));
-	});
-var _user$project$QuestionView$displayQuestion = function (model) {
-	var _p1 = model.question;
-	var question = _p1.question;
-	var distractors = _p1.distractors;
-	var answer = _p1.answer;
-	var format = _p1.format;
-	var _p2 = format;
-	if (_p2.ctor === 'FillInTheBlank') {
-		return A2(
-			_elm_lang$html$Html$form,
-			_elm_lang$core$Native_List.fromArray(
-				[
-					_elm_lang$html$Html_Events$onSubmit(_user$project$Types$Submit)
-				]),
-			_elm_lang$core$Native_List.fromArray(
-				[
-					A2(
-					_elm_lang$html$Html$div,
-					_elm_lang$core$Native_List.fromArray(
-						[_user$project$View$questionStyle]),
-					_elm_lang$core$Native_List.fromArray(
-						[
-							_elm_lang$html$Html$text(question)
-						])),
-					A2(
-					_elm_lang$html$Html$div,
-					_elm_lang$core$Native_List.fromArray(
-						[]),
-					_elm_lang$core$Native_List.fromArray(
-						[
-							_elm_lang$html$Html$text('s')
-						])),
-					A2(
-					_elm_lang$html$Html$input,
-					_elm_lang$core$Native_List.fromArray(
-						[
-							_elm_lang$html$Html_Attributes$type$('text'),
-							_elm_lang$html$Html_Attributes$placeholder('Answer here...'),
-							_elm_lang$html$Html_Events$onInput(_user$project$Types$UserInput),
-							_elm_lang$html$Html_Attributes$value(model.userInput),
-							_user$project$View$inputStyle
-						]),
-					_elm_lang$core$Native_List.fromArray(
-						[])),
-					A2(
-					_elm_lang$html$Html$button,
-					_elm_lang$core$Native_List.fromArray(
-						[
-							_elm_lang$html$Html_Attributes$type$('submit'),
-							_user$project$View$buttonStyle
-						]),
-					_elm_lang$core$Native_List.fromArray(
-						[
-							_elm_lang$html$Html$text('Submit')
-						]))
-				]));
-	} else {
-		return A2(
-			_elm_lang$html$Html$form,
-			_elm_lang$core$Native_List.fromArray(
-				[
-					_elm_lang$html$Html_Events$onSubmit(_user$project$Types$Submit)
-				]),
-			_elm_lang$core$Native_List.fromArray(
-				[
-					A2(
-					_elm_lang$html$Html$div,
-					_elm_lang$core$Native_List.fromArray(
-						[_user$project$View$questionStyle]),
-					_elm_lang$core$Native_List.fromArray(
-						[
-							_elm_lang$html$Html$text(question)
-						])),
-					A2(
-					_elm_lang$html$Html$div,
-					_elm_lang$core$Native_List.fromArray(
-						[]),
-					_elm_lang$core$Native_List.fromArray(
-						[
-							_elm_lang$html$Html$text('s')
-						])),
-					A2(
-					_elm_lang$html$Html$div,
-					_elm_lang$core$Native_List.fromArray(
-						[]),
-					_elm_lang$core$Native_List.fromArray(
-						[
-							A2(_user$project$QuestionView$radio, 'True', model),
-							A2(_user$project$QuestionView$radio, 'False', model)
-						])),
-					A2(
-					_elm_lang$html$Html$button,
-					_elm_lang$core$Native_List.fromArray(
-						[
-							_elm_lang$html$Html_Attributes$type$('submit'),
-							_user$project$View$buttonStyle
-						]),
-					_elm_lang$core$Native_List.fromArray(
-						[
-							_elm_lang$html$Html$text('Submit')
-						]))
-				]));
-	}
-};
-var _user$project$QuestionView$questionForm = function (model) {
-	var _p3 = model.question;
-	var question = _p3.question;
-	var distractors = _p3.distractors;
-	var answer = _p3.answer;
-	var format = _p3.format;
-	var _p4 = model.success;
-	if (_p4.ctor === 'Nothing') {
-		return _user$project$QuestionView$displayQuestion(model);
-	} else {
-		return A2(
-			_elm_lang$html$Html$form,
-			_elm_lang$core$Native_List.fromArray(
-				[
-					_elm_lang$html$Html_Events$onSubmit(_user$project$Types$GiveFeedback)
-				]),
-			_elm_lang$core$Native_List.fromArray(
-				[
-					A2(
-					_elm_lang$html$Html$div,
-					_elm_lang$core$Native_List.fromArray(
-						[_user$project$View$questionStyle]),
-					_elm_lang$core$Native_List.fromArray(
-						[
-							_elm_lang$html$Html$text(model.feedback)
-						])),
-					A2(
-					_elm_lang$html$Html$div,
-					_elm_lang$core$Native_List.fromArray(
-						[]),
-					_elm_lang$core$Native_List.fromArray(
-						[
-							_elm_lang$html$Html$text('s')
-						])),
-					A2(
-					_elm_lang$html$Html$input,
-					_elm_lang$core$Native_List.fromArray(
-						[
-							_elm_lang$html$Html_Attributes$type$('text'),
-							_elm_lang$html$Html_Attributes$placeholder('Answer here...'),
-							_elm_lang$html$Html_Events$onInput(_user$project$Types$UserInput),
-							_elm_lang$html$Html_Attributes$value(model.userInput),
-							_elm_lang$html$Html_Attributes$disabled(true),
-							_user$project$View$inputStyle
-						]),
-					_elm_lang$core$Native_List.fromArray(
-						[])),
-					A2(
-					_elm_lang$html$Html$button,
-					_elm_lang$core$Native_List.fromArray(
-						[
-							_elm_lang$html$Html_Attributes$type$('submit'),
-							_user$project$View$buttonStyle
-						]),
-					_elm_lang$core$Native_List.fromArray(
-						[
-							_elm_lang$html$Html$text('Next Question')
-						]))
-				]));
-	}
 };
 
 var _user$project$Search$unwindSearchTree = F2(
@@ -10728,10 +10770,40 @@ var _user$project$Question$newQuestion = F2(
 			{question: newQuestion, success: _elm_lang$core$Maybe$Nothing, userInput: ''});
 	});
 
-var _user$project$Main$subscriptions = function (model) {
-	return _elm_lang$core$Platform_Sub$none;
+var _user$project$Ports$updateMastery = _elm_lang$core$Native_Platform.outgoingPort(
+	'updateMastery',
+	function (v) {
+		return v;
+	});
+var _user$project$Ports$ssData = _elm_lang$core$Native_Platform.incomingPort(
+	'ssData',
+	A2(
+		_elm_lang$core$Json_Decode$andThen,
+		A2(_elm_lang$core$Json_Decode_ops[':='], 'num', _elm_lang$core$Json_Decode$int),
+		function (num) {
+			return A2(
+				_elm_lang$core$Json_Decode$andThen,
+				A2(_elm_lang$core$Json_Decode_ops[':='], 'den', _elm_lang$core$Json_Decode$int),
+				function (den) {
+					return A2(
+						_elm_lang$core$Json_Decode$andThen,
+						A2(_elm_lang$core$Json_Decode_ops[':='], 'weighted', _elm_lang$core$Json_Decode$bool),
+						function (weighted) {
+							return A2(
+								_elm_lang$core$Json_Decode$andThen,
+								A2(_elm_lang$core$Json_Decode_ops[':='], 'directed', _elm_lang$core$Json_Decode$bool),
+								function (directed) {
+									return _elm_lang$core$Json_Decode$succeed(
+										{num: num, den: den, weighted: weighted, directed: directed});
+								});
+						});
+				});
+		}));
+
+var _user$project$GraphQuestions$subscriptions = function (model) {
+	return _user$project$Ports$ssData(_user$project$Types$GetValuesFromSS);
 };
-var _user$project$Main$view = function (model) {
+var _user$project$GraphQuestions$view = function (model) {
 	var resetBtn = A2(
 		_elm_lang$html$Html$button,
 		_elm_lang$core$Native_List.fromArray(
@@ -10782,6 +10854,17 @@ var _user$project$Main$view = function (model) {
 				_elm_lang$core$Native_List.fromArray(
 					[
 						_elm_lang$html$Html$text('BFS')
+					])),
+				A2(
+				_elm_lang$html$Html$button,
+				_elm_lang$core$Native_List.fromArray(
+					[
+						_elm_lang$html$Html_Events$onClick(_user$project$Types$UpdateMastery),
+						_user$project$View$buttonStyle
+					]),
+				_elm_lang$core$Native_List.fromArray(
+					[
+						_elm_lang$html$Html$text('Mastery')
 					]))
 			])) : A2(
 		_elm_lang$html$Html$div,
@@ -10818,7 +10901,7 @@ var _user$project$Main$view = function (model) {
 					]))
 			]));
 };
-var _user$project$Main$initModel = {
+var _user$project$GraphQuestions$initModel = {
 	graph: _user$project$Types$emptyGraph,
 	debug: true,
 	userInput: '',
@@ -10828,9 +10911,14 @@ var _user$project$Main$initModel = {
 	question: _user$project$Types$emptyQuestion,
 	feedback: '',
 	randomValues: _elm_lang$core$Native_List.fromArray(
-		[])
+		[]),
+	mastery: false,
+	numerator: 0,
+	denominator: 0,
+	weighted: false,
+	directional: false
 };
-var _user$project$Main$update = F2(
+var _user$project$GraphQuestions$update = F2(
 	function (msg, model) {
 		var _p0 = model.graph;
 		var nodes = _p0.nodes;
@@ -10842,7 +10930,7 @@ var _user$project$Main$update = F2(
 			case 'Reset':
 				return {
 					ctor: '_Tuple2',
-					_0: _user$project$Main$initModel,
+					_0: _user$project$GraphQuestions$initModel,
 					_1: A2(
 						_elm_lang$core$Random$generate,
 						_user$project$Types$NewRandomValues,
@@ -10946,7 +11034,7 @@ var _user$project$Main$update = F2(
 						weighted),
 					_1: _elm_lang$core$Platform_Cmd$none
 				};
-			default:
+			case 'BreadthFirstSearch':
 				var lastNode = _elm_lang$core$List$head(
 					_elm_lang$core$List$reverse(nodes));
 				var firstNode = _elm_lang$core$List$head(nodes);
@@ -10969,17 +11057,44 @@ var _user$project$Main$update = F2(
 						};
 					}
 				}
+			case 'UpdateMastery':
+				return {
+					ctor: '_Tuple2',
+					_0: _elm_lang$core$Native_Utils.update(
+						model,
+						{mastery: true}),
+					_1: _user$project$Ports$updateMastery(true)
+				};
+			default:
+				var _p4 = _p1._0;
+				var graph = model.graph;
+				var graph$ = _elm_lang$core$Native_Utils.update(
+					graph,
+					{weighted: _p4.weighted, directional: _p4.directed});
+				return {
+					ctor: '_Tuple2',
+					_0: _elm_lang$core$Native_Utils.update(
+						model,
+						{numerator: _p4.num, denominator: _p4.den, weighted: _p4.weighted, directional: _p4.directed, graph: graph$}),
+					_1: A2(
+						_elm_lang$core$Random$generate,
+						_user$project$Types$NewRandomValues,
+						A2(
+							_elm_lang$core$Random$list,
+							15,
+							A2(_elm_lang$core$Random$int, 1, 15)))
+				};
 		}
 	});
-var _user$project$Main$init = A2(_user$project$Main$update, _user$project$Types$Reset, _user$project$Main$initModel);
-var _user$project$Main$main = {
+var _user$project$GraphQuestions$init = A2(_user$project$GraphQuestions$update, _user$project$Types$Reset, _user$project$GraphQuestions$initModel);
+var _user$project$GraphQuestions$main = {
 	main: _elm_lang$html$Html_App$program(
-		{init: _user$project$Main$init, view: _user$project$Main$view, update: _user$project$Main$update, subscriptions: _user$project$Main$subscriptions})
+		{init: _user$project$GraphQuestions$init, view: _user$project$GraphQuestions$view, update: _user$project$GraphQuestions$update, subscriptions: _user$project$GraphQuestions$subscriptions})
 };
 
 var Elm = {};
-Elm['Main'] = Elm['Main'] || {};
-_elm_lang$core$Native_Platform.addPublicModule(Elm['Main'], 'Main', typeof _user$project$Main$main === 'undefined' ? null : _user$project$Main$main);
+Elm['GraphQuestions'] = Elm['GraphQuestions'] || {};
+_elm_lang$core$Native_Platform.addPublicModule(Elm['GraphQuestions'], 'GraphQuestions', typeof _user$project$GraphQuestions$main === 'undefined' ? null : _user$project$GraphQuestions$main);
 
 if (typeof define === "function" && define['amd'])
 {

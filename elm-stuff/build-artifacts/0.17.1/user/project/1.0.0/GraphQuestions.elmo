@@ -1,7 +1,7 @@
-var _user$project$Main$subscriptions = function (model) {
-	return _elm_lang$core$Platform_Sub$none;
+var _user$project$GraphQuestions$subscriptions = function (model) {
+	return _user$project$Ports$ssData(_user$project$Types$GetValuesFromSS);
 };
-var _user$project$Main$view = function (model) {
+var _user$project$GraphQuestions$view = function (model) {
 	var resetBtn = A2(
 		_elm_lang$html$Html$button,
 		_elm_lang$core$Native_List.fromArray(
@@ -52,6 +52,17 @@ var _user$project$Main$view = function (model) {
 				_elm_lang$core$Native_List.fromArray(
 					[
 						_elm_lang$html$Html$text('BFS')
+					])),
+				A2(
+				_elm_lang$html$Html$button,
+				_elm_lang$core$Native_List.fromArray(
+					[
+						_elm_lang$html$Html_Events$onClick(_user$project$Types$UpdateMastery),
+						_user$project$View$buttonStyle
+					]),
+				_elm_lang$core$Native_List.fromArray(
+					[
+						_elm_lang$html$Html$text('Mastery')
 					]))
 			])) : A2(
 		_elm_lang$html$Html$div,
@@ -88,7 +99,7 @@ var _user$project$Main$view = function (model) {
 					]))
 			]));
 };
-var _user$project$Main$initModel = {
+var _user$project$GraphQuestions$initModel = {
 	graph: _user$project$Types$emptyGraph,
 	debug: true,
 	userInput: '',
@@ -98,9 +109,14 @@ var _user$project$Main$initModel = {
 	question: _user$project$Types$emptyQuestion,
 	feedback: '',
 	randomValues: _elm_lang$core$Native_List.fromArray(
-		[])
+		[]),
+	mastery: false,
+	numerator: 0,
+	denominator: 0,
+	weighted: false,
+	directional: false
 };
-var _user$project$Main$update = F2(
+var _user$project$GraphQuestions$update = F2(
 	function (msg, model) {
 		var _p0 = model.graph;
 		var nodes = _p0.nodes;
@@ -112,7 +128,7 @@ var _user$project$Main$update = F2(
 			case 'Reset':
 				return {
 					ctor: '_Tuple2',
-					_0: _user$project$Main$initModel,
+					_0: _user$project$GraphQuestions$initModel,
 					_1: A2(
 						_elm_lang$core$Random$generate,
 						_user$project$Types$NewRandomValues,
@@ -216,7 +232,7 @@ var _user$project$Main$update = F2(
 						weighted),
 					_1: _elm_lang$core$Platform_Cmd$none
 				};
-			default:
+			case 'BreadthFirstSearch':
 				var lastNode = _elm_lang$core$List$head(
 					_elm_lang$core$List$reverse(nodes));
 				var firstNode = _elm_lang$core$List$head(nodes);
@@ -239,10 +255,37 @@ var _user$project$Main$update = F2(
 						};
 					}
 				}
+			case 'UpdateMastery':
+				return {
+					ctor: '_Tuple2',
+					_0: _elm_lang$core$Native_Utils.update(
+						model,
+						{mastery: true}),
+					_1: _user$project$Ports$updateMastery(true)
+				};
+			default:
+				var _p4 = _p1._0;
+				var graph = model.graph;
+				var graph$ = _elm_lang$core$Native_Utils.update(
+					graph,
+					{weighted: _p4.weighted, directional: _p4.directed});
+				return {
+					ctor: '_Tuple2',
+					_0: _elm_lang$core$Native_Utils.update(
+						model,
+						{numerator: _p4.num, denominator: _p4.den, weighted: _p4.weighted, directional: _p4.directed, graph: graph$}),
+					_1: A2(
+						_elm_lang$core$Random$generate,
+						_user$project$Types$NewRandomValues,
+						A2(
+							_elm_lang$core$Random$list,
+							15,
+							A2(_elm_lang$core$Random$int, 1, 15)))
+				};
 		}
 	});
-var _user$project$Main$init = A2(_user$project$Main$update, _user$project$Types$Reset, _user$project$Main$initModel);
-var _user$project$Main$main = {
+var _user$project$GraphQuestions$init = A2(_user$project$GraphQuestions$update, _user$project$Types$Reset, _user$project$GraphQuestions$initModel);
+var _user$project$GraphQuestions$main = {
 	main: _elm_lang$html$Html_App$program(
-		{init: _user$project$Main$init, view: _user$project$Main$view, update: _user$project$Main$update, subscriptions: _user$project$Main$subscriptions})
+		{init: _user$project$GraphQuestions$init, view: _user$project$GraphQuestions$view, update: _user$project$GraphQuestions$update, subscriptions: _user$project$GraphQuestions$subscriptions})
 };
