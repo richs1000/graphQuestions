@@ -122,7 +122,7 @@ createAllEdges nodes =
 
 updateGraph : Model -> List NodeId -> List Edge -> Bool -> Bool -> Model
 updateGraph model ns es d w =
-    { model | graph = { nodes = ns, edges = es, directional = d, weighted = w } }
+    { model | graph = { nodes = ns, edges = es, directed = d, weighted = w } }
 
 
 visited : List NodeId -> List NodeId -> NodeId -> Bool
@@ -143,7 +143,7 @@ edgeExists graph n1 n2 =
 
         -- the graph is non-directional and there is an edge from n2 to n1
         n2_to_n1_non =
-            (not graph.directional) && List.any (\e -> e.from == n2 && e.to == n1) graph.edges
+            (not graph.directed) && List.any (\e -> e.from == n2 && e.to == n1) graph.edges
     in
         n1_to_n2 || n2_to_n1_bi || n2_to_n1_non
 
@@ -172,7 +172,7 @@ outDegree graph node =
 numberOfNodes : Model -> Int
 numberOfNodes model =
     let
-        { nodes, edges, directional, weighted } =
+        { nodes, edges, directed, weighted } =
             model.graph
     in
         List.length nodes
@@ -181,7 +181,7 @@ numberOfNodes model =
 numberOfEdges : Model -> Int
 numberOfEdges model =
     let
-        { nodes, edges, directional, weighted } =
+        { nodes, edges, directed, weighted } =
             model.graph
     in
         List.length edges
@@ -190,7 +190,7 @@ numberOfEdges model =
 firstNode : Model -> NodeId
 firstNode model =
     let
-        { nodes, edges, directional, weighted } =
+        { nodes, edges, directed, weighted } =
             model.graph
     in
         case nodes of
@@ -204,7 +204,7 @@ firstNode model =
 lastNode : Model -> NodeId
 lastNode model =
     let
-        { nodes, edges, directional, weighted } =
+        { nodes, edges, directed, weighted } =
             model.graph
 
         nodes' =

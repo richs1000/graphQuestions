@@ -16,8 +16,6 @@ type alias Model =
     , mastery : Bool
     , numerator : Int
     , denominator : Int
-    , weighted : Bool
-    , directional : Bool
     }
 
 
@@ -112,7 +110,7 @@ emptyEdge =
 type alias Graph =
     { nodes : List NodeId
     , edges : List Edge
-    , directional : Bool
+    , directed : Bool
     , weighted : Bool
     }
 
@@ -121,7 +119,7 @@ emptyGraph : Graph
 emptyGraph =
     { nodes = []
     , edges = []
-    , directional = True
+    , directed = True
     , weighted = True
     }
 
@@ -132,8 +130,9 @@ emptyGraph =
 
 
 type alias SSData =
-    { num : Int
-    , den : Int
+    { mastery : Bool
+    , numerator : Int
+    , denominator : Int
     , weighted : Bool
     , directed : Bool
     }

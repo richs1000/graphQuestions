@@ -8,7 +8,7 @@ import Search exposing (..)
 questionByIndex : Model -> Int -> Question
 questionByIndex model index =
     let
-        { nodes, edges, directional, weighted } =
+        { nodes, edges, directed, weighted } =
             model.graph
     in
         if index == 1 then
@@ -116,7 +116,7 @@ questionByIndex model index =
                     )
                 , format = MultipleChoice
                 }
-        else if index == 5 && directional then
+        else if index == 5 && directed then
             let
                 n =
                     randomNode model []
@@ -151,7 +151,7 @@ questionByIndex model index =
                     )
                 , format = FillInTheBlank
                 }
-        else if index == 6 && directional then
+        else if index == 6 && directed then
             let
                 n =
                     randomNode model []
@@ -252,7 +252,7 @@ questionByIndex model index =
 newQuestion : Model -> Int -> Model
 newQuestion model index =
     let
-        { nodes, edges, directional, weighted } =
+        { nodes, edges, directed, weighted } =
             model.graph
 
         newQuestion =

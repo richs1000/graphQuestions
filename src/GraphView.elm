@@ -105,19 +105,19 @@ drawNode nodeId =
 drawEdges : Graph -> List (Svg a)
 drawEdges graph =
     let
-        drawEdgesHelper edges weighted directional =
+        drawEdgesHelper edges weighted directed =
             case edges of
                 [] ->
                     arrowHeads
 
                 e :: es ->
-                    List.append (drawEdge e weighted directional) (drawEdgesHelper es weighted directional)
+                    List.append (drawEdge e weighted directed) (drawEdgesHelper es weighted directed)
     in
-        drawEdgesHelper graph.edges graph.weighted graph.directional
+        drawEdgesHelper graph.edges graph.weighted graph.directed
 
 
 drawEdge : Edge -> Bool -> Bool -> List (Svg a)
-drawEdge edge weighted directional =
+drawEdge edge weighted directed =
     let
         x_1 =
             nodeX edge.from
@@ -132,7 +132,7 @@ drawEdge edge weighted directional =
             nodeY edge.to
 
         lne =
-            [ edgeLine x_1 y_1 x_2 y_2 directional edge.direction ]
+            [ edgeLine x_1 y_1 x_2 y_2 directed edge.direction ]
     in
         if weighted && (edge.weight > 0) then
             List.append lne [ edgeWeight edge.weight x_1 y_1 x_2 y_2 ]
@@ -216,7 +216,7 @@ arrowHeads =
 
 
 edgeLine : Pixels -> Pixels -> Pixels -> Pixels -> Bool -> ArrowDirection -> Svg a
-edgeLine x_1 y_1 x_2 y_2 directional direction =
+edgeLine x_1 y_1 x_2 y_2 directed direction =
     let
         biArrow =
             [ markerStart "url(#ArrowHeadStart)"
@@ -237,9 +237,9 @@ edgeLine x_1 y_1 x_2 y_2 directional direction =
             ]
 
         lineStyle' =
-            if directional && (direction == BiDirectional) then
+            if directed && (direction == BiDirectional) then
                 List.append lineStyle biArrow
-            else if directional && (direction == UniDirectional) then
+            else if directed && (direction == UniDirectional) then
                 List.append lineStyle uniArrow
             else
                 lineStyle
