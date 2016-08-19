@@ -9825,6 +9825,7 @@ var _user$project$QuestionView$displayQuestion = function (model) {
 	}
 };
 var _user$project$QuestionView$questionForm = function (model) {
+	var success$ = A2(_elm_lang$core$Debug$log, 'in qForm', model.success);
 	var _p3 = model.question;
 	var question = _p3.question;
 	var distractors = _p3.distractors;
@@ -10371,7 +10372,9 @@ var _user$project$Question$findFeedback = F3(
 		}
 	});
 var _user$project$Question$masteryAchieved = function (model) {
-	var correctAnswers = A3(
+	var correctAnswers = A5(
+		_elm_lang$core$Debug$log,
+		'in masteryAchieved ',
 		_elm_lang$core$List$foldr,
 		F2(
 			function (h, acc) {
@@ -10381,7 +10384,7 @@ var _user$project$Question$masteryAchieved = function (model) {
 			}),
 		0,
 		model.history);
-	return _elm_lang$core$Native_Utils.cmp(correctAnswers, model.denominator) > 0;
+	return _elm_lang$core$Native_Utils.cmp(correctAnswers, model.numerator) > -1;
 };
 var _user$project$Question$checkAnswer = function (model) {
 	var _p2 = model.question;
