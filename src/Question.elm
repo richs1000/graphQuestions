@@ -1,5 +1,6 @@
 module Question exposing (..)
 
+import Debug exposing (..)
 import Types exposing (..)
 import Graph exposing (..)
 import Search exposing (..)
@@ -280,7 +281,8 @@ masteryAchieved : Model -> Bool
 masteryAchieved model =
     let
         correctAnswers =
-            List.foldr
+            Debug.log "in masteryAchieved "
+                List.foldr
                 (\h acc ->
                     if h == Just True then
                         acc + 1
@@ -290,7 +292,7 @@ masteryAchieved model =
                 0
                 model.history
     in
-        correctAnswers > model.denominator
+        correctAnswers >= model.numerator
 
 
 findFeedback : String -> String -> List ResponseAndFeedback -> String
