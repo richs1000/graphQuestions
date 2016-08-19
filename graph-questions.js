@@ -9271,6 +9271,7 @@ var _user$project$Types$ToggleDirectional = {ctor: 'ToggleDirectional'};
 var _user$project$Types$ToggleWeighted = {ctor: 'ToggleWeighted'};
 var _user$project$Types$BreadthFirstSearch = {ctor: 'BreadthFirstSearch'};
 var _user$project$Types$CheckMastery = {ctor: 'CheckMastery'};
+var _user$project$Types$GiveFeedback = {ctor: 'GiveFeedback'};
 var _user$project$Types$Submit = {ctor: 'Submit'};
 var _user$project$Types$UserInput = function (a) {
 	return {ctor: 'UserInput', _0: a};
@@ -9837,7 +9838,7 @@ var _user$project$QuestionView$questionForm = function (model) {
 			_elm_lang$html$Html$form,
 			_elm_lang$core$Native_List.fromArray(
 				[
-					_elm_lang$html$Html_Events$onSubmit(_user$project$Types$CheckMastery)
+					_elm_lang$html$Html_Events$onSubmit(_user$project$Types$GiveFeedback)
 				]),
 			_elm_lang$core$Native_List.fromArray(
 				[
@@ -11010,20 +11011,26 @@ var _user$project$GraphQuestions$update = F2(
 					if (_elm_lang$core$String$isEmpty(model.userInput)) {
 						return {ctor: '_Tuple2', _0: model, _1: _elm_lang$core$Platform_Cmd$none};
 					} else {
-						var _v1 = _user$project$Types$CheckMastery,
-							_v2 = _user$project$Question$checkAnswer(model);
+						var _v1 = _user$project$Types$GiveFeedback,
+							_v2 = model;
 						msg = _v1;
 						model = _v2;
 						continue update;
 					}
+				case 'GiveFeedback':
+					var _v3 = _user$project$Types$CheckMastery,
+						_v4 = _user$project$Question$checkAnswer(model);
+					msg = _v3;
+					model = _v4;
+					continue update;
 				case 'CheckMastery':
 					if (_user$project$Question$masteryAchieved(model)) {
-						var _v3 = _user$project$Types$UpdateMastery,
-							_v4 = _elm_lang$core$Native_Utils.update(
+						var _v5 = _user$project$Types$UpdateMastery,
+							_v6 = _elm_lang$core$Native_Utils.update(
 							model,
 							{mastery: true});
-						msg = _v3;
-						model = _v4;
+						msg = _v5;
+						model = _v6;
 						continue update;
 					} else {
 						return {

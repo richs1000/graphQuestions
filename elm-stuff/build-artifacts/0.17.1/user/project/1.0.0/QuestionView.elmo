@@ -139,7 +139,7 @@ var _user$project$QuestionView$questionForm = function (model) {
 			_elm_lang$html$Html$form,
 			_elm_lang$core$Native_List.fromArray(
 				[
-					_elm_lang$html$Html_Events$onSubmit(_user$project$Types$CheckMastery)
+					_elm_lang$html$Html_Events$onSubmit(_user$project$Types$GiveFeedback)
 				]),
 			_elm_lang$core$Native_List.fromArray(
 				[
