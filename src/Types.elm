@@ -141,7 +141,6 @@ type Msg
     | NewQuestion Int
     | UserInput String
     | Submit
-    | GiveFeedback
     | CheckMastery
     | BreadthFirstSearch
     | ToggleWeighted

@@ -9210,7 +9210,6 @@ var _user$project$Types$emptyGraph = {
 	directed: true,
 	weighted: true
 };
-var _user$project$Types$historyLength = 10;
 var _user$project$Types$Model = function (a) {
 	return function (b) {
 		return function (c) {
@@ -9271,7 +9270,7 @@ var _user$project$Types$UpdateMastery = {ctor: 'UpdateMastery'};
 var _user$project$Types$ToggleDirectional = {ctor: 'ToggleDirectional'};
 var _user$project$Types$ToggleWeighted = {ctor: 'ToggleWeighted'};
 var _user$project$Types$BreadthFirstSearch = {ctor: 'BreadthFirstSearch'};
-var _user$project$Types$GiveFeedback = {ctor: 'GiveFeedback'};
+var _user$project$Types$CheckMastery = {ctor: 'CheckMastery'};
 var _user$project$Types$Submit = {ctor: 'Submit'};
 var _user$project$Types$UserInput = function (a) {
 	return {ctor: 'UserInput', _0: a};
@@ -9838,7 +9837,7 @@ var _user$project$QuestionView$questionForm = function (model) {
 			_elm_lang$html$Html$form,
 			_elm_lang$core$Native_List.fromArray(
 				[
-					_elm_lang$html$Html_Events$onSubmit(_user$project$Types$GiveFeedback)
+					_elm_lang$html$Html_Events$onSubmit(_user$project$Types$CheckMastery)
 				]),
 			_elm_lang$core$Native_List.fromArray(
 				[
@@ -9975,7 +9974,7 @@ var _user$project$HistoryView$historySection = function (model) {
 				_elm_lang$svg$Svg_Attributes$version('1.1'),
 				_elm_lang$svg$Svg_Attributes$baseProfile('full'),
 				_elm_lang$svg$Svg_Attributes$width(
-				_elm_lang$core$Basics$toString(_user$project$Types$historyLength * (_user$project$View$viewConstants.historySquareSize + _user$project$View$viewConstants.historySquareSeparation))),
+				_elm_lang$core$Basics$toString(model.denominator * (_user$project$View$viewConstants.historySquareSize + _user$project$View$viewConstants.historySquareSeparation))),
 				_elm_lang$svg$Svg_Attributes$height('50')
 			]),
 		A2(_user$project$HistoryView$historyList, model.history, 0));
@@ -10370,12 +10369,25 @@ var _user$project$Question$findFeedback = F3(
 			}
 		}
 	});
+var _user$project$Question$masteryAchieved = function (model) {
+	var correctAnswers = A3(
+		_elm_lang$core$List$foldr,
+		F2(
+			function (h, acc) {
+				return _elm_lang$core$Native_Utils.eq(
+					h,
+					_elm_lang$core$Maybe$Just(true)) ? (acc + 1) : acc;
+			}),
+		0,
+		model.history);
+	return _elm_lang$core$Native_Utils.cmp(correctAnswers, model.denominator) > 0;
+};
 var _user$project$Question$checkAnswer = function (model) {
 	var _p2 = model.question;
 	var question = _p2.question;
 	var distractors = _p2.distractors;
 	var answer = _p2.answer;
-	var newHistory = A2(_elm_lang$core$List$take, _user$project$Types$historyLength - 1, model.history);
+	var newHistory = A2(_elm_lang$core$List$take, model.denominator - 1, model.history);
 	return _elm_lang$core$Native_Utils.eq(
 		_elm_lang$core$Basics$fst(answer),
 		model.userInput) ? _elm_lang$core$Native_Utils.update(
@@ -10906,7 +10918,8 @@ var _user$project$GraphQuestions$initModel = {
 	graph: _user$project$Types$emptyGraph,
 	debug: true,
 	userInput: '',
-	history: A2(_elm_lang$core$List$repeat, _user$project$Types$historyLength, _elm_lang$core$Maybe$Nothing),
+	history: _elm_lang$core$Native_List.fromArray(
+		[]),
 	bfs: _elm_lang$core$Maybe$Nothing,
 	success: _elm_lang$core$Maybe$Nothing,
 	question: _user$project$Types$emptyQuestion,
@@ -10914,175 +10927,195 @@ var _user$project$GraphQuestions$initModel = {
 	randomValues: _elm_lang$core$Native_List.fromArray(
 		[]),
 	mastery: false,
-	numerator: 0,
-	denominator: 0
+	numerator: 3,
+	denominator: 5
 };
 var _user$project$GraphQuestions$update = F2(
 	function (msg, model) {
-		var _p0 = model.graph;
-		var nodes = _p0.nodes;
-		var edges = _p0.edges;
-		var directed = _p0.directed;
-		var weighted = _p0.weighted;
-		var _p1 = msg;
-		switch (_p1.ctor) {
-			case 'Reset':
-				return {
-					ctor: '_Tuple2',
-					_0: _user$project$GraphQuestions$initModel,
-					_1: A2(
-						_elm_lang$core$Random$generate,
-						_user$project$Types$NewRandomValues,
-						A2(
-							_elm_lang$core$Random$list,
-							15,
-							A2(_elm_lang$core$Random$int, 1, 15)))
-				};
-			case 'NewRandomValues':
-				return {
-					ctor: '_Tuple2',
-					_0: _elm_lang$core$Native_Utils.update(
-						model,
-						{randomValues: _p1._0}),
-					_1: A2(
-						_elm_lang$core$Random$generate,
-						_user$project$Types$NewNodes,
-						A2(
-							_elm_lang$core$Random$list,
-							15,
-							A2(_elm_lang$core$Random$int, 1, 15)))
-				};
-			case 'NewNodes':
-				var newNodes$ = _elm_lang$core$Set$toList(
-					_elm_lang$core$Set$fromList(_p1._0));
-				var newEdges = _user$project$Graph$createAllEdges(newNodes$);
-				return {
-					ctor: '_Tuple2',
-					_0: A5(_user$project$Graph$updateGraph, model, newNodes$, newEdges, directed, weighted),
-					_1: A2(
-						_elm_lang$core$Random$generate,
-						_user$project$Types$NewEdgeWeights,
-						A2(
-							_elm_lang$core$Random$list,
-							_elm_lang$core$List$length(newEdges),
-							A2(_elm_lang$core$Random$int, -2, 5)))
-				};
-			case 'NewEdgeWeights':
-				var newEdges = A2(_user$project$Graph$replaceWeights, edges, _p1._0);
-				return {
-					ctor: '_Tuple2',
-					_0: A5(_user$project$Graph$updateGraph, model, nodes, newEdges, directed, weighted),
-					_1: A2(
-						_elm_lang$core$Random$generate,
-						_user$project$Types$NewQuestion,
-						A2(_elm_lang$core$Random$int, 1, 8))
-				};
-			case 'NewQuestion':
-				return {
-					ctor: '_Tuple2',
-					_0: A2(_user$project$Question$newQuestion, model, _p1._0),
-					_1: _elm_lang$core$Platform_Cmd$none
-				};
-			case 'UserInput':
-				return {
-					ctor: '_Tuple2',
-					_0: _elm_lang$core$Native_Utils.update(
-						model,
-						{userInput: _p1._0}),
-					_1: _elm_lang$core$Platform_Cmd$none
-				};
-			case 'Submit':
-				return _elm_lang$core$String$isEmpty(model.userInput) ? {ctor: '_Tuple2', _0: model, _1: _elm_lang$core$Platform_Cmd$none} : {
-					ctor: '_Tuple2',
-					_0: _user$project$Question$checkAnswer(model),
-					_1: _elm_lang$core$Platform_Cmd$none
-				};
-			case 'GiveFeedback':
-				return {
-					ctor: '_Tuple2',
-					_0: model,
-					_1: A2(
-						_elm_lang$core$Random$generate,
-						_user$project$Types$NewRandomValues,
-						A2(
-							_elm_lang$core$Random$list,
-							15,
-							A2(_elm_lang$core$Random$int, 1, 15)))
-				};
-			case 'ToggleWeighted':
-				return {
-					ctor: '_Tuple2',
-					_0: A5(
-						_user$project$Graph$updateGraph,
-						model,
-						nodes,
-						edges,
-						directed,
-						_elm_lang$core$Basics$not(weighted)),
-					_1: _elm_lang$core$Platform_Cmd$none
-				};
-			case 'ToggleDirectional':
-				return {
-					ctor: '_Tuple2',
-					_0: A5(
-						_user$project$Graph$updateGraph,
-						model,
-						nodes,
-						edges,
-						_elm_lang$core$Basics$not(directed),
-						weighted),
-					_1: _elm_lang$core$Platform_Cmd$none
-				};
-			case 'BreadthFirstSearch':
-				var lastNode = _elm_lang$core$List$head(
-					_elm_lang$core$List$reverse(nodes));
-				var firstNode = _elm_lang$core$List$head(nodes);
-				var _p2 = firstNode;
-				if (_p2.ctor === 'Nothing') {
-					return {ctor: '_Tuple2', _0: model, _1: _elm_lang$core$Platform_Cmd$none};
-				} else {
-					var _p3 = lastNode;
-					if (_p3.ctor === 'Nothing') {
+		update:
+		while (true) {
+			var _p0 = model.graph;
+			var nodes = _p0.nodes;
+			var edges = _p0.edges;
+			var directed = _p0.directed;
+			var weighted = _p0.weighted;
+			var _p1 = msg;
+			switch (_p1.ctor) {
+				case 'Reset':
+					return {
+						ctor: '_Tuple2',
+						_0: _user$project$GraphQuestions$initModel,
+						_1: A2(
+							_elm_lang$core$Random$generate,
+							_user$project$Types$NewRandomValues,
+							A2(
+								_elm_lang$core$Random$list,
+								15,
+								A2(_elm_lang$core$Random$int, 1, 15)))
+					};
+				case 'NewRandomValues':
+					return {
+						ctor: '_Tuple2',
+						_0: _elm_lang$core$Native_Utils.update(
+							model,
+							{randomValues: _p1._0}),
+						_1: A2(
+							_elm_lang$core$Random$generate,
+							_user$project$Types$NewNodes,
+							A2(
+								_elm_lang$core$Random$list,
+								15,
+								A2(_elm_lang$core$Random$int, 1, 15)))
+					};
+				case 'NewNodes':
+					var newNodes$ = _elm_lang$core$Set$toList(
+						_elm_lang$core$Set$fromList(_p1._0));
+					var newEdges = _user$project$Graph$createAllEdges(newNodes$);
+					return {
+						ctor: '_Tuple2',
+						_0: A5(_user$project$Graph$updateGraph, model, newNodes$, newEdges, directed, weighted),
+						_1: A2(
+							_elm_lang$core$Random$generate,
+							_user$project$Types$NewEdgeWeights,
+							A2(
+								_elm_lang$core$Random$list,
+								_elm_lang$core$List$length(newEdges),
+								A2(_elm_lang$core$Random$int, -2, 5)))
+					};
+				case 'NewEdgeWeights':
+					var newEdges = A2(_user$project$Graph$replaceWeights, edges, _p1._0);
+					return {
+						ctor: '_Tuple2',
+						_0: A5(_user$project$Graph$updateGraph, model, nodes, newEdges, directed, weighted),
+						_1: A2(
+							_elm_lang$core$Random$generate,
+							_user$project$Types$NewQuestion,
+							A2(_elm_lang$core$Random$int, 1, 8))
+					};
+				case 'NewQuestion':
+					return {
+						ctor: '_Tuple2',
+						_0: A2(_user$project$Question$newQuestion, model, _p1._0),
+						_1: _elm_lang$core$Platform_Cmd$none
+					};
+				case 'UserInput':
+					return {
+						ctor: '_Tuple2',
+						_0: _elm_lang$core$Native_Utils.update(
+							model,
+							{userInput: _p1._0}),
+						_1: _elm_lang$core$Platform_Cmd$none
+					};
+				case 'Submit':
+					if (_elm_lang$core$String$isEmpty(model.userInput)) {
 						return {ctor: '_Tuple2', _0: model, _1: _elm_lang$core$Platform_Cmd$none};
+					} else {
+						var _v1 = _user$project$Types$CheckMastery,
+							_v2 = _user$project$Question$checkAnswer(model);
+						msg = _v1;
+						model = _v2;
+						continue update;
+					}
+				case 'CheckMastery':
+					if (_user$project$Question$masteryAchieved(model)) {
+						var _v3 = _user$project$Types$UpdateMastery,
+							_v4 = _elm_lang$core$Native_Utils.update(
+							model,
+							{mastery: true});
+						msg = _v3;
+						model = _v4;
+						continue update;
 					} else {
 						return {
 							ctor: '_Tuple2',
 							_0: _elm_lang$core$Native_Utils.update(
 								model,
-								{
-									bfs: A3(_user$project$Search$breadthFirstSearch, model.graph, _p2._0, _p3._0)
-								}),
-							_1: _elm_lang$core$Platform_Cmd$none
+								{mastery: false}),
+							_1: A2(
+								_elm_lang$core$Random$generate,
+								_user$project$Types$NewRandomValues,
+								A2(
+									_elm_lang$core$Random$list,
+									15,
+									A2(_elm_lang$core$Random$int, 1, 15)))
 						};
 					}
-				}
-			case 'UpdateMastery':
-				return {
-					ctor: '_Tuple2',
-					_0: _elm_lang$core$Native_Utils.update(
-						model,
-						{mastery: true}),
-					_1: _user$project$Ports$updateMastery(true)
-				};
-			default:
-				var _p4 = _p1._0;
-				var graph = model.graph;
-				var graph$ = _elm_lang$core$Native_Utils.update(
-					graph,
-					{weighted: _p4.weighted, directed: _p4.directed});
-				return {
-					ctor: '_Tuple2',
-					_0: _elm_lang$core$Native_Utils.update(
-						model,
-						{mastery: _p4.mastery, numerator: _p4.numerator, denominator: _p4.denominator, graph: graph$}),
-					_1: A2(
-						_elm_lang$core$Random$generate,
-						_user$project$Types$NewRandomValues,
-						A2(
-							_elm_lang$core$Random$list,
-							15,
-							A2(_elm_lang$core$Random$int, 1, 15)))
-				};
+				case 'ToggleWeighted':
+					return {
+						ctor: '_Tuple2',
+						_0: A5(
+							_user$project$Graph$updateGraph,
+							model,
+							nodes,
+							edges,
+							directed,
+							_elm_lang$core$Basics$not(weighted)),
+						_1: _elm_lang$core$Platform_Cmd$none
+					};
+				case 'ToggleDirectional':
+					return {
+						ctor: '_Tuple2',
+						_0: A5(
+							_user$project$Graph$updateGraph,
+							model,
+							nodes,
+							edges,
+							_elm_lang$core$Basics$not(directed),
+							weighted),
+						_1: _elm_lang$core$Platform_Cmd$none
+					};
+				case 'BreadthFirstSearch':
+					var lastNode = _elm_lang$core$List$head(
+						_elm_lang$core$List$reverse(nodes));
+					var firstNode = _elm_lang$core$List$head(nodes);
+					var _p2 = firstNode;
+					if (_p2.ctor === 'Nothing') {
+						return {ctor: '_Tuple2', _0: model, _1: _elm_lang$core$Platform_Cmd$none};
+					} else {
+						var _p3 = lastNode;
+						if (_p3.ctor === 'Nothing') {
+							return {ctor: '_Tuple2', _0: model, _1: _elm_lang$core$Platform_Cmd$none};
+						} else {
+							return {
+								ctor: '_Tuple2',
+								_0: _elm_lang$core$Native_Utils.update(
+									model,
+									{
+										bfs: A3(_user$project$Search$breadthFirstSearch, model.graph, _p2._0, _p3._0)
+									}),
+								_1: _elm_lang$core$Platform_Cmd$none
+							};
+						}
+					}
+				case 'UpdateMastery':
+					return {
+						ctor: '_Tuple2',
+						_0: model,
+						_1: _user$project$Ports$updateMastery(model.mastery)
+					};
+				default:
+					var _p4 = _p1._0;
+					var graph = model.graph;
+					var graph$ = A2(
+						_elm_lang$core$Debug$log,
+						'got values from smart sparrow: ',
+						_elm_lang$core$Native_Utils.update(
+							graph,
+							{weighted: _p4.weighted, directed: _p4.directed}));
+					return {
+						ctor: '_Tuple2',
+						_0: _elm_lang$core$Native_Utils.update(
+							model,
+							{mastery: _p4.mastery, numerator: _p4.numerator, denominator: _p4.denominator, graph: graph$}),
+						_1: A2(
+							_elm_lang$core$Random$generate,
+							_user$project$Types$NewRandomValues,
+							A2(
+								_elm_lang$core$Random$list,
+								15,
+								A2(_elm_lang$core$Random$int, 1, 15)))
+					};
+			}
 		}
 	});
 var _user$project$GraphQuestions$init = A2(_user$project$GraphQuestions$update, _user$project$Types$Reset, _user$project$GraphQuestions$initModel);
