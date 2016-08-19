@@ -47,8 +47,8 @@ initModel =
     , feedback = ""
     , randomValues = []
     , mastery = False
-    , numerator = 0
-    , denominator = 0
+    , numerator = 3
+    , denominator = 5
     }
 
 
@@ -139,7 +139,7 @@ update msg model =
                     , Random.generate NewQuestion (Random.int 1 8)
                     )
 
-            -- New Question Flow: NewQuestion -> UserInput -> Submit -> GiveFeedback -> Check Mastery -> New Graph Flow
+            -- New Question Flow: NewQuestion -> UserInput -> Submit -> Check Mastery -> New Graph Flow
             NewQuestion questionIndex ->
                 ( newQuestion model questionIndex, Cmd.none )
 
@@ -150,18 +150,11 @@ update msg model =
                 if (String.isEmpty model.userInput) then
                     ( model, Cmd.none )
                 else
-                    ( checkAnswer model
-                    , Cmd.none
-                    )
-
-            GiveFeedback ->
-                ( model
-                , update CheckMastery
-                )
+                    update CheckMastery (checkAnswer model)
 
             CheckMastery ->
                 if masteryAchieved model then
-                    ( { model | mastery = True }, update UpdateMastery )
+                    update UpdateMastery { model | mastery = True }
                 else
                     ( { model | mastery = False }
                     , Random.generate NewRandomValues (Random.list 15 (Random.int 1 15))

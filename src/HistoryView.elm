@@ -14,7 +14,7 @@ historySection model =
         , baseProfile "full"
         , Svg.Attributes.width
             (toString
-                (historyLength
+                (model.denominator
                     * (viewConstants.historySquareSize + viewConstants.historySquareSeparation)
                 )
             )

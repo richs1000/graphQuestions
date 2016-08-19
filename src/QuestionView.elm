@@ -79,7 +79,7 @@ questionForm model =
 
             -- Answer has been submitted, so display the feedback
             Just _ ->
-                Html.form [ onSubmit GiveFeedback ]
+                Html.form [ onSubmit CheckMastery ]
                     [ div [ questionStyle ] [ Html.text model.feedback ]
                     , input
                         [ Html.Attributes.type' "text"

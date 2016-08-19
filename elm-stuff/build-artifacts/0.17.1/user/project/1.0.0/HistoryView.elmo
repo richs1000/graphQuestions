@@ -95,7 +95,7 @@ var _user$project$HistoryView$historySection = function (model) {
 				_elm_lang$svg$Svg_Attributes$version('1.1'),
 				_elm_lang$svg$Svg_Attributes$baseProfile('full'),
 				_elm_lang$svg$Svg_Attributes$width(
-				_elm_lang$core$Basics$toString(_user$project$Types$historyLength * (_user$project$View$viewConstants.historySquareSize + _user$project$View$viewConstants.historySquareSeparation))),
+				_elm_lang$core$Basics$toString(model.denominator * (_user$project$View$viewConstants.historySquareSize + _user$project$View$viewConstants.historySquareSeparation))),
 				_elm_lang$svg$Svg_Attributes$height('50')
 			]),
 		A2(_user$project$HistoryView$historyList, model.history, 0));
