@@ -3,6 +3,7 @@ module QuestionView exposing (..)
 import Html exposing (..)
 import Html.Attributes exposing (..)
 import Html.Events exposing (..)
+import Debug
 import Types exposing (..)
 import View exposing (..)
 
@@ -71,6 +72,9 @@ questionForm model =
     let
         { question, distractors, answer, format } =
             model.question
+
+        success' =
+            Debug.log "in qForm" model.success
     in
         case model.success of
             -- No answer has been submitted, so display the question
