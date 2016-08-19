@@ -26,7 +26,7 @@ var app = Elm.GraphQuestions.embed(node);
 app.ports.updateMastery.subscribe(function(mastery) {
     alert ("mastery = " + mastery);
     model.set('mastery', mastery);
-    simcapi.Controller.triggerCheck();
+    pipit.Controller.triggerCheck();
 });
 
 model.on('change:numerator', function(){
