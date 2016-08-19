@@ -265,7 +265,7 @@ checkAnswer : Model -> Model
 checkAnswer model =
     let
         newHistory =
-            List.take (historyLength - 1) model.history
+            List.take (model.denominator - 1) model.history
 
         { question, distractors, answer } =
             model.question
@@ -274,6 +274,23 @@ checkAnswer model =
             { model | success = Just True, history = (Just True) :: newHistory, feedback = (snd answer) }
         else
             { model | success = Just False, history = (Just False) :: newHistory, feedback = (findFeedback (fst answer) model.userInput distractors) }
+
+
+masteryAchieved : Model -> Bool
+masteryAchieved model =
+    let
+        correctAnswers =
+            List.foldr
+                (\h acc ->
+                    if h == Just True then
+                        acc + 1
+                    else
+                        acc
+                )
+                0
+                model.history
+    in
+        correctAnswers > model.denominator
 
 
 findFeedback : String -> String -> List ResponseAndFeedback -> String

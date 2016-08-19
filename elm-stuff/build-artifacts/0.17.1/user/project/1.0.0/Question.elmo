@@ -28,12 +28,25 @@ var _user$project$Question$findFeedback = F3(
 			}
 		}
 	});
+var _user$project$Question$masteryAchieved = function (model) {
+	var correctAnswers = A3(
+		_elm_lang$core$List$foldr,
+		F2(
+			function (h, acc) {
+				return _elm_lang$core$Native_Utils.eq(
+					h,
+					_elm_lang$core$Maybe$Just(true)) ? (acc + 1) : acc;
+			}),
+		0,
+		model.history);
+	return _elm_lang$core$Native_Utils.cmp(correctAnswers, model.denominator) > 0;
+};
 var _user$project$Question$checkAnswer = function (model) {
 	var _p2 = model.question;
 	var question = _p2.question;
 	var distractors = _p2.distractors;
 	var answer = _p2.answer;
-	var newHistory = A2(_elm_lang$core$List$take, _user$project$Types$historyLength - 1, model.history);
+	var newHistory = A2(_elm_lang$core$List$take, model.denominator - 1, model.history);
 	return _elm_lang$core$Native_Utils.eq(
 		_elm_lang$core$Basics$fst(answer),
 		model.userInput) ? _elm_lang$core$Native_Utils.update(

@@ -27,11 +27,6 @@ type alias HistoryList =
     List (Maybe Bool)
 
 
-historyLength : Int
-historyLength =
-    10
-
-
 
 -- QUESTION
 
@@ -147,6 +142,7 @@ type Msg
     | UserInput String
     | Submit
     | GiveFeedback
+    | CheckMastery
     | BreadthFirstSearch
     | ToggleWeighted
     | ToggleDirectional

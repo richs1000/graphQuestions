@@ -25,8 +25,8 @@ var app = Elm.GraphQuestions.embed(node);
 
 app.ports.updateMastery.subscribe(function(mastery) {
     alert ("mastery = " + mastery);
-    //app.ports.suggestions.send(suggestions);
     model.set('mastery', mastery);
+    simcapi.Controller.triggerCheck();
 });
 
 model.on('change:numerator', function(){
@@ -36,11 +36,4 @@ model.on('change:numerator', function(){
   });
 
 $(document).ready(function() {
-	// let smart sparrow know that the sim is ready to accept values
-	//pipit.Controller.notifyOnReady();
-  // app.ports.ssData.send( {num : 3, den : 5, weighted : true, directed : false });
-  // model.numerator = model.get('numerator');
-  // alert("in ready, numerator = " + model.numerator);
-  // model.denominator = model.set('denominator');
-  // app.ports.ssData.send( model );
 });

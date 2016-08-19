@@ -40,7 +40,7 @@ initModel =
     { graph = emptyGraph
     , debug = True
     , userInput = ""
-    , history = List.repeat historyLength Nothing
+    , history = []
     , bfs = Nothing
     , success = Nothing
     , question = emptyQuestion
@@ -139,7 +139,7 @@ update msg model =
                     , Random.generate NewQuestion (Random.int 1 8)
                     )
 
-            -- New Question Flow: NewQuestion -> UserInput -> Submit -> GiveFeedback -> New Graph Flow
+            -- New Question Flow: NewQuestion -> UserInput -> Submit -> GiveFeedback -> Check Mastery -> New Graph Flow
             NewQuestion questionIndex ->
                 ( newQuestion model questionIndex, Cmd.none )
 
@@ -156,8 +156,16 @@ update msg model =
 
             GiveFeedback ->
                 ( model
-                , Random.generate NewRandomValues (Random.list 15 (Random.int 1 15))
+                , update CheckMastery
                 )
+
+            CheckMastery ->
+                if masteryAchieved model then
+                    ( { model | mastery = True }, update UpdateMastery )
+                else
+                    ( { model | mastery = False }
+                    , Random.generate NewRandomValues (Random.list 15 (Random.int 1 15))
+                    )
 
             -- Debug actions
             ToggleWeighted ->
@@ -187,7 +195,7 @@ update msg model =
                                     ( { model | bfs = (breadthFirstSearch model.graph start finish) }, Cmd.none )
 
             UpdateMastery ->
-                ( { model | mastery = True }, updateMastery True )
+                ( model, updateMastery model.mastery )
 
             GetValuesFromSS ssd ->
                 let
