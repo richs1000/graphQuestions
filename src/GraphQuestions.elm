@@ -150,7 +150,7 @@ update msg model =
                 if (String.isEmpty model.userInput) then
                     ( model, Cmd.none )
                 else
-                    update GiveFeedback (checkAnswer model)
+                    ( checkAnswer model, Cmd.none )
 
             GiveFeedback ->
                 update CheckMastery model

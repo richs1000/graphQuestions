@@ -11008,29 +11008,25 @@ var _user$project$GraphQuestions$update = F2(
 						_1: _elm_lang$core$Platform_Cmd$none
 					};
 				case 'Submit':
-					if (_elm_lang$core$String$isEmpty(model.userInput)) {
-						return {ctor: '_Tuple2', _0: model, _1: _elm_lang$core$Platform_Cmd$none};
-					} else {
-						var _v1 = _user$project$Types$GiveFeedback,
-							_v2 = _user$project$Question$checkAnswer(model);
-						msg = _v1;
-						model = _v2;
-						continue update;
-					}
+					return _elm_lang$core$String$isEmpty(model.userInput) ? {ctor: '_Tuple2', _0: model, _1: _elm_lang$core$Platform_Cmd$none} : {
+						ctor: '_Tuple2',
+						_0: _user$project$Question$checkAnswer(model),
+						_1: _elm_lang$core$Platform_Cmd$none
+					};
 				case 'GiveFeedback':
-					var _v3 = _user$project$Types$CheckMastery,
-						_v4 = model;
-					msg = _v3;
-					model = _v4;
+					var _v1 = _user$project$Types$CheckMastery,
+						_v2 = model;
+					msg = _v1;
+					model = _v2;
 					continue update;
 				case 'CheckMastery':
 					if (_user$project$Question$masteryAchieved(model)) {
-						var _v5 = _user$project$Types$UpdateMastery,
-							_v6 = _elm_lang$core$Native_Utils.update(
+						var _v3 = _user$project$Types$UpdateMastery,
+							_v4 = _elm_lang$core$Native_Utils.update(
 							model,
 							{mastery: true});
-						msg = _v5;
-						model = _v6;
+						msg = _v3;
+						model = _v4;
 						continue update;
 					} else {
 						return {
