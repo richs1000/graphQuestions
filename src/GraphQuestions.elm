@@ -139,7 +139,7 @@ update msg model =
                     , Random.generate NewQuestion (Random.int 1 8)
                     )
 
-            -- New Question Flow: NewQuestion -> UserInput -> Submit -> Check Mastery -> New Graph Flow
+            -- New Question Flow: NewQuestion -> UserInput -> Submit -> Give Feedback -> Check Mastery -> New Graph Flow
             NewQuestion questionIndex ->
                 ( newQuestion model questionIndex, Cmd.none )
 
@@ -150,10 +150,10 @@ update msg model =
                 if (String.isEmpty model.userInput) then
                     ( model, Cmd.none )
                 else
-                    update GiveFeedback model
+                    ( checkAnswer model, Cmd.none )
 
             GiveFeedback ->
-                update CheckMastery (checkAnswer model)
+                update CheckMastery model
 
             CheckMastery ->
                 if masteryAchieved model then
