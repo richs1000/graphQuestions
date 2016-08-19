@@ -67,6 +67,7 @@ var _user$project$Types$ToggleDirectional = {ctor: 'ToggleDirectional'};
 var _user$project$Types$ToggleWeighted = {ctor: 'ToggleWeighted'};
 var _user$project$Types$BreadthFirstSearch = {ctor: 'BreadthFirstSearch'};
 var _user$project$Types$CheckMastery = {ctor: 'CheckMastery'};
+var _user$project$Types$GiveFeedback = {ctor: 'GiveFeedback'};
 var _user$project$Types$Submit = {ctor: 'Submit'};
 var _user$project$Types$UserInput = function (a) {
 	return {ctor: 'UserInput', _0: a};

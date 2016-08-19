@@ -150,7 +150,10 @@ update msg model =
                 if (String.isEmpty model.userInput) then
                     ( model, Cmd.none )
                 else
-                    update CheckMastery (checkAnswer model)
+                    update GiveFeedback model
+
+            GiveFeedback ->
+                update CheckMastery (checkAnswer model)
 
             CheckMastery ->
                 if masteryAchieved model then
