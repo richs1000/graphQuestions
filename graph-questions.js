@@ -11012,14 +11012,14 @@ var _user$project$GraphQuestions$update = F2(
 						return {ctor: '_Tuple2', _0: model, _1: _elm_lang$core$Platform_Cmd$none};
 					} else {
 						var _v1 = _user$project$Types$GiveFeedback,
-							_v2 = model;
+							_v2 = _user$project$Question$checkAnswer(model);
 						msg = _v1;
 						model = _v2;
 						continue update;
 					}
 				case 'GiveFeedback':
 					var _v3 = _user$project$Types$CheckMastery,
-						_v4 = _user$project$Question$checkAnswer(model);
+						_v4 = model;
 					msg = _v3;
 					model = _v4;
 					continue update;
