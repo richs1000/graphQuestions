@@ -24,7 +24,7 @@ var node = document.getElementById('my-thing');
 var app = Elm.GraphQuestions.embed(node);
 
 app.ports.updateMastery.subscribe(function(mastery) {
-    alert ("mastery = " + mastery);
+    // alert ("mastery = " + mastery);
     model.set('mastery', mastery);
     pipit.Controller.triggerCheck();
 });
