@@ -29,12 +29,30 @@ app.ports.updateMastery.subscribe(function(mastery) {
     pipit.Controller.triggerCheck();
 });
 
+model.on('change:numerator', function(){
+    // var v = model.get('numerator')
+    // alert ("weighted = " + model.weighted + " directed = " + model.directed);
+    app.ports.ssData.send( model );
+});
+
+model.on('change:denominator', function(){
+    // var v = model.get('numerator')
+    // alert ("weighted = " + model.weighted + " directed = " + model.directed);
+    app.ports.ssData.send( model );
+});
+
+model.on('change:weighted', function(){
+    // var v = model.get('numerator')
+    // alert ("weighted = " + model.weighted + " directed = " + model.directed);
+    app.ports.ssData.send( model );
+});
+
 model.on('change:directed', function(){
     // var v = model.get('numerator')
-    alert ("weighted = " + model.weighted + " directed = " + model.directed);
+    // alert ("weighted = " + model.weighted + " directed = " + model.directed);
     app.ports.ssData.send( model );
 });
 
 $(document).ready(function() {
-  alert ("model = " + model.numerator);
+  // alert ("model = " + model.numerator);
 });
