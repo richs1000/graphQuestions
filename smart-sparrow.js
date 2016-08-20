@@ -31,7 +31,7 @@ app.ports.updateMastery.subscribe(function(mastery) {
 
 model.on('change:numerator', function(){
     // var v = model.get('numerator')
-    Console.log ("directed = " + model.directed + " weighted = " + model.weighted);
+    alert ("model = " + model.numerator + " " + v );
     app.ports.ssData.send( model );
 });
 
