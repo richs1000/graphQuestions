@@ -31,9 +31,10 @@ app.ports.updateMastery.subscribe(function(mastery) {
 
 model.on('change:numerator', function(){
     // var v = model.get('numerator')
-    alert ("model = " + model.numerator + " " + v );
+    alert ("model = " + model.numerator);
     app.ports.ssData.send( model );
 });
 
 $(document).ready(function() {
+  alert ("model = " + model.numerator);
 });
