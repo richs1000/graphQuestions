@@ -1,6 +1,5 @@
 module Search exposing (..)
 
-import Debug exposing (..)
 import Types exposing (..)
 import Graph exposing (..)
 
@@ -37,7 +36,7 @@ genericSearch graph startNode endNode =
                                 (List.append restOfList neighbors)
 
                             searchTree' =
-                                Debug.log "search tree: " (( firstNode, neighbors ) :: searchTree)
+                                (( firstNode, neighbors ) :: searchTree)
 
                             -- start again...
                         in
@@ -58,7 +57,7 @@ unwindSearchTree searchTree lastNode =
             []
 
         ( node, children ) :: rest ->
-            if (List.member lastNode (Debug.log "kids" children)) then
+            if (List.member lastNode children) then
                 node :: (unwindSearchTree rest node)
             else
                 unwindSearchTree rest lastNode

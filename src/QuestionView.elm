@@ -74,7 +74,7 @@ questionForm model =
             model.question
 
         success' =
-            Debug.log "in qForm" model.success
+            model.success
     in
         case model.success of
             -- No answer has been submitted, so display the question

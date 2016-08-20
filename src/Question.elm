@@ -1,6 +1,5 @@
 module Question exposing (..)
 
-import Debug exposing (..)
 import Types exposing (..)
 import Graph exposing (..)
 import Search exposing (..)

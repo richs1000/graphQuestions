@@ -126,7 +126,7 @@ var _user$project$QuestionView$displayQuestion = function (model) {
 	}
 };
 var _user$project$QuestionView$questionForm = function (model) {
-	var success$ = A2(_elm_lang$core$Debug$log, 'in qForm', model.success);
+	var success$ = model.success;
 	var _p3 = model.question;
 	var question = _p3.question;
 	var distractors = _p3.distractors;
