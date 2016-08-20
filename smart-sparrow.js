@@ -29,7 +29,7 @@ app.ports.updateMastery.subscribe(function(mastery) {
     pipit.Controller.triggerCheck();
 });
 
-model.on('change:numerator', function(){
+model.on('change:directed', function(){
     // var v = model.get('numerator')
     alert ("weighted = " + model.weighted + " directed = " + model.directed);
     app.ports.ssData.send( model );
