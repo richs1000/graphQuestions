@@ -9825,7 +9825,7 @@ var _user$project$QuestionView$displayQuestion = function (model) {
 	}
 };
 var _user$project$QuestionView$questionForm = function (model) {
-	var success$ = A2(_elm_lang$core$Debug$log, 'in qForm', model.success);
+	var success$ = model.success;
 	var _p3 = model.question;
 	var question = _p3.question;
 	var distractors = _p3.distractors;
@@ -10240,10 +10240,7 @@ var _user$project$Search$unwindSearchTree = F2(
 			} else {
 				var _p2 = _p0._1;
 				var _p1 = _p0._0._0;
-				if (A2(
-					_elm_lang$core$List$member,
-					lastNode,
-					A2(_elm_lang$core$Debug$log, 'kids', _p0._0._1))) {
+				if (A2(_elm_lang$core$List$member, lastNode, _p0._0._1)) {
 					return A2(
 						_elm_lang$core$List_ops['::'],
 						_p1,
@@ -10289,12 +10286,9 @@ var _user$project$Search$genericSearch = F3(
 									graph.nodes));
 							var openList$ = A2(_elm_lang$core$List$append, _p3._1, neighbors);
 							var searchTree$ = A2(
-								_elm_lang$core$Debug$log,
-								'search tree: ',
-								A2(
-									_elm_lang$core$List_ops['::'],
-									{ctor: '_Tuple2', _0: _p5, _1: neighbors},
-									searchTree));
+								_elm_lang$core$List_ops['::'],
+								{ctor: '_Tuple2', _0: _p5, _1: neighbors},
+								searchTree);
 							var _p4 = neighbors;
 							if (_p4.ctor === '[]') {
 								var _v5 = openList$,
