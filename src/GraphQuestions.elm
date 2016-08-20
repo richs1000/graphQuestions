@@ -130,7 +130,7 @@ update msg model =
                         (createAllEdges newNodes')
                 in
                     ( updateGraph model newNodes' newEdges directed weighted
-                    , Random.generate NewEdgeWeights (Random.list (List.length newEdges) (Random.int -2 5))
+                    , Random.generate NewEdgeWeights (Random.list (List.length newEdges) (Random.int -1 5))
                     )
 
             NewEdgeWeights newWeights ->

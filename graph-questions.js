@@ -10978,7 +10978,7 @@ var _user$project$GraphQuestions$update = F2(
 							A2(
 								_elm_lang$core$Random$list,
 								_elm_lang$core$List$length(newEdges),
-								A2(_elm_lang$core$Random$int, -2, 5)))
+								A2(_elm_lang$core$Random$int, -1, 5)))
 					};
 				case 'NewEdgeWeights':
 					var newEdges = A2(_user$project$Graph$replaceWeights, edges, _p1._0);
