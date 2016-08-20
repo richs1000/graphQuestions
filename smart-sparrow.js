@@ -6,8 +6,8 @@ var model = new pipit.CapiAdapter.CapiModel({
     mastery: false,
     numerator: 30,
     denominator: 50,
-    weighted: true,
-    directed: true
+    weighted: false,
+    directed: false
 });
 
 //Tells pipit to expose the following attributes
@@ -33,7 +33,7 @@ model.on('change:numerator', function(){
     // var v = model.get('numerator')
     // alert ("numerator = " + model.numerator + " " + v );
     app.ports.ssData.send( model );
-  });
+});
 
 $(document).ready(function() {
 });
