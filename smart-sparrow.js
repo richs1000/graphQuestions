@@ -29,7 +29,7 @@ var app = Elm.GraphQuestions.embed(node);
 
 app.ports.updateMastery.subscribe(function(mastery) {
     model.set('mastery', mastery);
-    alert("Congratulations! You're ready to move on!");
+    alert("Congratulations! You're ready to move on. Press the NEXT button to advance to the next slide.");
     pipit.Controller.triggerCheck();
 });
 
