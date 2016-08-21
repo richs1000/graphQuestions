@@ -1,0 +1,44 @@
+var _user$project$Ports$updateMastery = _elm_lang$core$Native_Platform.outgoingPort(
+	'updateMastery',
+	function (v) {
+		return v;
+	});
+var _user$project$Ports$ssData = _elm_lang$core$Native_Platform.incomingPort(
+	'ssData',
+	A2(
+		_elm_lang$core$Json_Decode$andThen,
+		A2(_elm_lang$core$Json_Decode_ops[':='], 'mastery', _elm_lang$core$Json_Decode$bool),
+		function (mastery) {
+			return A2(
+				_elm_lang$core$Json_Decode$andThen,
+				A2(_elm_lang$core$Json_Decode_ops[':='], 'numerator', _elm_lang$core$Json_Decode$int),
+				function (numerator) {
+					return A2(
+						_elm_lang$core$Json_Decode$andThen,
+						A2(_elm_lang$core$Json_Decode_ops[':='], 'denominator', _elm_lang$core$Json_Decode$int),
+						function (denominator) {
+							return A2(
+								_elm_lang$core$Json_Decode$andThen,
+								A2(_elm_lang$core$Json_Decode_ops[':='], 'weighted', _elm_lang$core$Json_Decode$bool),
+								function (weighted) {
+									return A2(
+										_elm_lang$core$Json_Decode$andThen,
+										A2(_elm_lang$core$Json_Decode_ops[':='], 'directed', _elm_lang$core$Json_Decode$bool),
+										function (directed) {
+											return A2(
+												_elm_lang$core$Json_Decode$andThen,
+												A2(_elm_lang$core$Json_Decode_ops[':='], 'implementMastery', _elm_lang$core$Json_Decode$bool),
+												function (implementMastery) {
+													return A2(
+														_elm_lang$core$Json_Decode$andThen,
+														A2(_elm_lang$core$Json_Decode_ops[':='], 'debug', _elm_lang$core$Json_Decode$bool),
+														function (debug) {
+															return _elm_lang$core$Json_Decode$succeed(
+																{mastery: mastery, numerator: numerator, denominator: denominator, weighted: weighted, directed: directed, implementMastery: implementMastery, debug: debug});
+														});
+												});
+										});
+								});
+						});
+				});
+		}));
