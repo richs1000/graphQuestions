@@ -132,6 +132,7 @@ type alias SSData =
     , weighted : Bool
     , directed : Bool
     , implementMastery : Bool
+    , debug : Bool
     }
 
 

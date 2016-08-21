@@ -291,7 +291,7 @@ var _user$project$GraphQuestions$update = F2(
 						ctor: '_Tuple2',
 						_0: _elm_lang$core$Native_Utils.update(
 							model,
-							{mastery: _p4.mastery, numerator: _p4.numerator, denominator: _p4.denominator, implementMastery: _p4.implementMastery, graph: graph$}),
+							{mastery: _p4.mastery, numerator: _p4.numerator, denominator: _p4.denominator, implementMastery: _p4.implementMastery, graph: graph$, debug: _p4.debug}),
 						_1: A2(
 							_elm_lang$core$Random$generate,
 							_user$project$Types$NewRandomValues,

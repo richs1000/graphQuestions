@@ -210,6 +210,7 @@ update msg model =
                         , denominator = ssd.denominator
                         , implementMastery = ssd.implementMastery
                         , graph = graph'
+                        , debug = ssd.debug
                       }
                     , Random.generate NewRandomValues (Random.list 15 (Random.int 1 15))
                     )

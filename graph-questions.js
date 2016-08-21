@@ -9249,9 +9249,9 @@ var _user$project$Types$Graph = F4(
 	function (a, b, c, d) {
 		return {nodes: a, edges: b, directed: c, weighted: d};
 	});
-var _user$project$Types$SSData = F6(
-	function (a, b, c, d, e, f) {
-		return {mastery: a, numerator: b, denominator: c, weighted: d, directed: e, implementMastery: f};
+var _user$project$Types$SSData = F7(
+	function (a, b, c, d, e, f, g) {
+		return {mastery: a, numerator: b, denominator: c, weighted: d, directed: e, implementMastery: f, debug: g};
 	});
 var _user$project$Types$MultipleChoice = {ctor: 'MultipleChoice'};
 var _user$project$Types$FillInTheBlank = {ctor: 'FillInTheBlank'};
@@ -10811,8 +10811,13 @@ var _user$project$Ports$ssData = _elm_lang$core$Native_Platform.incomingPort(
 												_elm_lang$core$Json_Decode$andThen,
 												A2(_elm_lang$core$Json_Decode_ops[':='], 'implementMastery', _elm_lang$core$Json_Decode$bool),
 												function (implementMastery) {
-													return _elm_lang$core$Json_Decode$succeed(
-														{mastery: mastery, numerator: numerator, denominator: denominator, weighted: weighted, directed: directed, implementMastery: implementMastery});
+													return A2(
+														_elm_lang$core$Json_Decode$andThen,
+														A2(_elm_lang$core$Json_Decode_ops[':='], 'debug', _elm_lang$core$Json_Decode$bool),
+														function (debug) {
+															return _elm_lang$core$Json_Decode$succeed(
+																{mastery: mastery, numerator: numerator, denominator: denominator, weighted: weighted, directed: directed, implementMastery: implementMastery, debug: debug});
+														});
 												});
 										});
 								});
@@ -11113,7 +11118,7 @@ var _user$project$GraphQuestions$update = F2(
 						ctor: '_Tuple2',
 						_0: _elm_lang$core$Native_Utils.update(
 							model,
-							{mastery: _p4.mastery, numerator: _p4.numerator, denominator: _p4.denominator, implementMastery: _p4.implementMastery, graph: graph$}),
+							{mastery: _p4.mastery, numerator: _p4.numerator, denominator: _p4.denominator, implementMastery: _p4.implementMastery, graph: graph$, debug: _p4.debug}),
 						_1: A2(
 							_elm_lang$core$Random$generate,
 							_user$project$Types$NewRandomValues,

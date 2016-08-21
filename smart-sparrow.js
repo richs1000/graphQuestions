@@ -9,6 +9,7 @@ var model = new pipit.CapiAdapter.CapiModel({
     weighted: false,
     directed: false,
     implementMastery : false
+    debug : false
 });
 
 //Tells pipit to expose the following attributes
@@ -18,6 +19,7 @@ pipit.CapiAdapter.expose('denominator', model);
 pipit.CapiAdapter.expose('weighted', model);
 pipit.CapiAdapter.expose('directed', model);
 pipit.CapiAdapter.expose('implementMastery', model);
+pipit.CapiAdapter.expose('debug', model);
 
 // Tells pipit that the sim model is ready
 pipit.Controller.notifyOnReady();
@@ -48,6 +50,10 @@ model.on('change:directed', function(){
 });
 
 model.on('change:implementMastery', function(){
+    app.ports.ssData.send( model );
+});
+
+model.on('change:debug', function(){
     app.ports.ssData.send( model );
 });
 
