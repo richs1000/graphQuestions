@@ -10876,6 +10876,15 @@ var _user$project$GraphQuestions$view = function (model) {
 				_elm_lang$core$Native_List.fromArray(
 					[
 						_elm_lang$html$Html$text('Mastery')
+					])),
+				A2(
+				_elm_lang$html$Html$p,
+				_elm_lang$core$Native_List.fromArray(
+					[]),
+				_elm_lang$core$Native_List.fromArray(
+					[
+						_elm_lang$html$Html$text(
+						_elm_lang$core$Basics$toString(model))
 					]))
 			])) : A2(
 		_elm_lang$html$Html$div,
@@ -10900,16 +10909,7 @@ var _user$project$GraphQuestions$view = function (model) {
 				_user$project$GraphView$imageOfGraph(model),
 				_user$project$QuestionView$questionForm(model),
 				_user$project$HistoryView$historySection(model),
-				buttons,
-				A2(
-				_elm_lang$html$Html$p,
-				_elm_lang$core$Native_List.fromArray(
-					[]),
-				_elm_lang$core$Native_List.fromArray(
-					[
-						_elm_lang$html$Html$text(
-						_elm_lang$core$Basics$toString(model))
-					]))
+				buttons
 			]));
 };
 var _user$project$GraphQuestions$initModel = {
