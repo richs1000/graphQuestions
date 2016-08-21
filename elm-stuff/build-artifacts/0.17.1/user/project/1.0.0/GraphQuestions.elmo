@@ -90,7 +90,7 @@ var _user$project$GraphQuestions$view = function (model) {
 					[_user$project$View$scoreboardStyle]),
 				_elm_lang$core$Native_List.fromArray(
 					[
-						_elm_lang$html$Html$text('Mastery Quiz')
+						_elm_lang$html$Html$text('Test Your Understanding')
 					])),
 				_user$project$GraphView$imageOfGraph(model),
 				_user$project$QuestionView$questionForm(model),
