@@ -291,7 +291,10 @@ masteryAchieved model =
                 0
                 model.history
     in
-        correctAnswers >= model.numerator
+        if model.implementMastery then
+            correctAnswers >= model.numerator
+        else
+            (List.length model.history) >= model.numerator
 
 
 findFeedback : String -> String -> List ResponseAndFeedback -> String

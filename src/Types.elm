@@ -16,6 +16,7 @@ type alias Model =
     , mastery : Bool
     , numerator : Int
     , denominator : Int
+    , implementMastery : Bool
     }
 
 
@@ -130,6 +131,7 @@ type alias SSData =
     , denominator : Int
     , weighted : Bool
     , directed : Bool
+    , implementMastery : Bool
     }
 
 

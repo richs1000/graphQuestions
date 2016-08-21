@@ -41,7 +41,9 @@ var _user$project$Question$masteryAchieved = function (model) {
 			}),
 		0,
 		model.history);
-	return _elm_lang$core$Native_Utils.cmp(correctAnswers, model.numerator) > -1;
+	return model.implementMastery ? (_elm_lang$core$Native_Utils.cmp(correctAnswers, model.numerator) > -1) : (_elm_lang$core$Native_Utils.cmp(
+		_elm_lang$core$List$length(model.history),
+		model.numerator) > -1);
 };
 var _user$project$Question$checkAnswer = function (model) {
 	var _p2 = model.question;

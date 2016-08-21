@@ -41,7 +41,7 @@ main =
 initModel : Model
 initModel =
     { graph = emptyGraph
-    , debug = False
+    , debug = True
     , userInput = ""
     , history = []
     , bfs = Nothing
@@ -52,12 +52,14 @@ initModel =
     , mastery = False
     , numerator = 3
     , denominator = 5
+    , implementMastery = False
     }
 
 
 init : ( Model, Cmd Msg )
 init =
-    update Reset initModel
+    -- update Reset initModel
+    ( initModel, Cmd.none )
 
 
 
@@ -206,6 +208,7 @@ update msg model =
                         | mastery = ssd.mastery
                         , numerator = ssd.numerator
                         , denominator = ssd.denominator
+                        , implementMastery = ssd.implementMastery
                         , graph = graph'
                       }
                     , Random.generate NewRandomValues (Random.list 15 (Random.int 1 15))

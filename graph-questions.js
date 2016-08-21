@@ -9222,7 +9222,9 @@ var _user$project$Types$Model = function (a) {
 									return function (j) {
 										return function (k) {
 											return function (l) {
-												return {graph: a, debug: b, userInput: c, history: d, bfs: e, question: f, success: g, feedback: h, randomValues: i, mastery: j, numerator: k, denominator: l};
+												return function (m) {
+													return {graph: a, debug: b, userInput: c, history: d, bfs: e, question: f, success: g, feedback: h, randomValues: i, mastery: j, numerator: k, denominator: l, implementMastery: m};
+												};
 											};
 										};
 									};
@@ -9247,9 +9249,9 @@ var _user$project$Types$Graph = F4(
 	function (a, b, c, d) {
 		return {nodes: a, edges: b, directed: c, weighted: d};
 	});
-var _user$project$Types$SSData = F5(
-	function (a, b, c, d, e) {
-		return {mastery: a, numerator: b, denominator: c, weighted: d, directed: e};
+var _user$project$Types$SSData = F6(
+	function (a, b, c, d, e, f) {
+		return {mastery: a, numerator: b, denominator: c, weighted: d, directed: e, implementMastery: f};
 	});
 var _user$project$Types$MultipleChoice = {ctor: 'MultipleChoice'};
 var _user$project$Types$FillInTheBlank = {ctor: 'FillInTheBlank'};
@@ -10378,7 +10380,9 @@ var _user$project$Question$masteryAchieved = function (model) {
 			}),
 		0,
 		model.history);
-	return _elm_lang$core$Native_Utils.cmp(correctAnswers, model.numerator) > -1;
+	return model.implementMastery ? (_elm_lang$core$Native_Utils.cmp(correctAnswers, model.numerator) > -1) : (_elm_lang$core$Native_Utils.cmp(
+		_elm_lang$core$List$length(model.history),
+		model.numerator) > -1);
 };
 var _user$project$Question$checkAnswer = function (model) {
 	var _p2 = model.question;
@@ -10803,8 +10807,13 @@ var _user$project$Ports$ssData = _elm_lang$core$Native_Platform.incomingPort(
 										_elm_lang$core$Json_Decode$andThen,
 										A2(_elm_lang$core$Json_Decode_ops[':='], 'directed', _elm_lang$core$Json_Decode$bool),
 										function (directed) {
-											return _elm_lang$core$Json_Decode$succeed(
-												{mastery: mastery, numerator: numerator, denominator: denominator, weighted: weighted, directed: directed});
+											return A2(
+												_elm_lang$core$Json_Decode$andThen,
+												A2(_elm_lang$core$Json_Decode_ops[':='], 'implementMastery', _elm_lang$core$Json_Decode$bool),
+												function (implementMastery) {
+													return _elm_lang$core$Json_Decode$succeed(
+														{mastery: mastery, numerator: numerator, denominator: denominator, weighted: weighted, directed: directed, implementMastery: implementMastery});
+												});
 										});
 								});
 						});
@@ -10913,7 +10922,7 @@ var _user$project$GraphQuestions$view = function (model) {
 };
 var _user$project$GraphQuestions$initModel = {
 	graph: _user$project$Types$emptyGraph,
-	debug: false,
+	debug: true,
 	userInput: '',
 	history: _elm_lang$core$Native_List.fromArray(
 		[]),
@@ -10925,8 +10934,10 @@ var _user$project$GraphQuestions$initModel = {
 		[]),
 	mastery: false,
 	numerator: 3,
-	denominator: 5
+	denominator: 5,
+	implementMastery: false
 };
+var _user$project$GraphQuestions$init = {ctor: '_Tuple2', _0: _user$project$GraphQuestions$initModel, _1: _elm_lang$core$Platform_Cmd$none};
 var _user$project$GraphQuestions$update = F2(
 	function (msg, model) {
 		update:
@@ -11102,7 +11113,7 @@ var _user$project$GraphQuestions$update = F2(
 						ctor: '_Tuple2',
 						_0: _elm_lang$core$Native_Utils.update(
 							model,
-							{mastery: _p4.mastery, numerator: _p4.numerator, denominator: _p4.denominator, graph: graph$}),
+							{mastery: _p4.mastery, numerator: _p4.numerator, denominator: _p4.denominator, implementMastery: _p4.implementMastery, graph: graph$}),
 						_1: A2(
 							_elm_lang$core$Random$generate,
 							_user$project$Types$NewRandomValues,
@@ -11114,7 +11125,6 @@ var _user$project$GraphQuestions$update = F2(
 			}
 		}
 	});
-var _user$project$GraphQuestions$init = A2(_user$project$GraphQuestions$update, _user$project$Types$Reset, _user$project$GraphQuestions$initModel);
 var _user$project$GraphQuestions$main = {
 	main: _elm_lang$html$Html_App$program(
 		{init: _user$project$GraphQuestions$init, view: _user$project$GraphQuestions$view, update: _user$project$GraphQuestions$update, subscriptions: _user$project$GraphQuestions$subscriptions})
