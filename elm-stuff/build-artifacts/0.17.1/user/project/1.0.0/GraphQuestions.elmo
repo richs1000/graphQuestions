@@ -2,24 +2,23 @@ var _user$project$GraphQuestions$subscriptions = function (model) {
 	return _user$project$Ports$ssData(_user$project$Types$GetValuesFromSS);
 };
 var _user$project$GraphQuestions$view = function (model) {
-	var resetBtn = A2(
-		_elm_lang$html$Html$button,
-		_elm_lang$core$Native_List.fromArray(
-			[
-				_elm_lang$html$Html_Events$onClick(_user$project$Types$Reset),
-				_user$project$View$buttonStyle
-			]),
-		_elm_lang$core$Native_List.fromArray(
-			[
-				_elm_lang$html$Html$text('Reset')
-			]));
-	var buttons = model.debug ? A2(
+	var debug = model.debug ? A2(
 		_elm_lang$html$Html$div,
 		_elm_lang$core$Native_List.fromArray(
 			[]),
 		_elm_lang$core$Native_List.fromArray(
 			[
-				resetBtn,
+				A2(
+				_elm_lang$html$Html$button,
+				_elm_lang$core$Native_List.fromArray(
+					[
+						_elm_lang$html$Html_Events$onClick(_user$project$Types$Reset),
+						_user$project$View$buttonStyle
+					]),
+				_elm_lang$core$Native_List.fromArray(
+					[
+						_elm_lang$html$Html$text('Reset')
+					])),
 				A2(
 				_elm_lang$html$Html$button,
 				_elm_lang$core$Native_List.fromArray(
@@ -78,7 +77,7 @@ var _user$project$GraphQuestions$view = function (model) {
 		_elm_lang$core$Native_List.fromArray(
 			[]),
 		_elm_lang$core$Native_List.fromArray(
-			[resetBtn]));
+			[]));
 	return A2(
 		_elm_lang$html$Html$div,
 		_elm_lang$core$Native_List.fromArray(
@@ -96,12 +95,12 @@ var _user$project$GraphQuestions$view = function (model) {
 				_user$project$GraphView$imageOfGraph(model),
 				_user$project$QuestionView$questionForm(model),
 				_user$project$HistoryView$historySection(model),
-				buttons
+				debug
 			]));
 };
 var _user$project$GraphQuestions$initModel = {
 	graph: _user$project$Types$emptyGraph,
-	debug: true,
+	debug: false,
 	userInput: '',
 	history: _elm_lang$core$Native_List.fromArray(
 		[]),
