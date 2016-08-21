@@ -41,7 +41,7 @@ main =
 initModel : Model
 initModel =
     { graph = emptyGraph
-    , debug = True
+    , debug = False
     , userInput = ""
     , history = []
     , bfs = Nothing
@@ -67,13 +67,10 @@ init =
 view : Model -> Html Msg
 view model =
     let
-        resetBtn =
-            button [ onClick Reset, buttonStyle ] [ Html.text "Reset" ]
-
-        buttons =
+        debug =
             if model.debug then
                 div []
-                    [ resetBtn
+                    [ button [ onClick Reset, buttonStyle ] [ Html.text "Reset" ]
                     , button [ onClick ToggleWeighted, buttonStyle ] [ Html.text "Toggle Weighted" ]
                     , button [ onClick ToggleDirectional, buttonStyle ] [ Html.text "Toggle Directional" ]
                     , button [ onClick BreadthFirstSearch, buttonStyle ] [ Html.text "BFS" ]
@@ -81,14 +78,14 @@ view model =
                     , p [] [ Html.text (toString model) ]
                     ]
             else
-                div [] [ resetBtn ]
+                div [] []
     in
         div []
             [ h1 [ scoreboardStyle ] [ Html.text "Mastery Quiz" ]
             , imageOfGraph model
             , questionForm model
             , historySection model
-            , buttons
+            , debug
             ]
 
 
