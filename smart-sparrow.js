@@ -27,7 +27,7 @@ var app = Elm.GraphQuestions.embed(node);
 
 app.ports.updateMastery.subscribe(function(mastery) {
     model.set('mastery', mastery);
-    alert('Congratulations! You're ready to move on!);
+    alert("Congratulations! You're ready to move on!");
     pipit.Controller.triggerCheck();
 });
 
@@ -38,7 +38,7 @@ model.on('change:numerator', function(){
 model.on('change:denominator', function(){
     app.ports.ssData.send( model );
 });
- 
+
 model.on('change:weighted', function(){
     app.ports.ssData.send( model );
 });
