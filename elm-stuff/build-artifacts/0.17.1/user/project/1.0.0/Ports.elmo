@@ -25,8 +25,13 @@ var _user$project$Ports$ssData = _elm_lang$core$Native_Platform.incomingPort(
 										_elm_lang$core$Json_Decode$andThen,
 										A2(_elm_lang$core$Json_Decode_ops[':='], 'directed', _elm_lang$core$Json_Decode$bool),
 										function (directed) {
-											return _elm_lang$core$Json_Decode$succeed(
-												{mastery: mastery, numerator: numerator, denominator: denominator, weighted: weighted, directed: directed});
+											return A2(
+												_elm_lang$core$Json_Decode$andThen,
+												A2(_elm_lang$core$Json_Decode_ops[':='], 'implementMastery', _elm_lang$core$Json_Decode$bool),
+												function (implementMastery) {
+													return _elm_lang$core$Json_Decode$succeed(
+														{mastery: mastery, numerator: numerator, denominator: denominator, weighted: weighted, directed: directed, implementMastery: implementMastery});
+												});
 										});
 								});
 						});

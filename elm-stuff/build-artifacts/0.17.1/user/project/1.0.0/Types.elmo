@@ -18,7 +18,9 @@ var _user$project$Types$Model = function (a) {
 									return function (j) {
 										return function (k) {
 											return function (l) {
-												return {graph: a, debug: b, userInput: c, history: d, bfs: e, question: f, success: g, feedback: h, randomValues: i, mastery: j, numerator: k, denominator: l};
+												return function (m) {
+													return {graph: a, debug: b, userInput: c, history: d, bfs: e, question: f, success: g, feedback: h, randomValues: i, mastery: j, numerator: k, denominator: l, implementMastery: m};
+												};
 											};
 										};
 									};
@@ -43,9 +45,9 @@ var _user$project$Types$Graph = F4(
 	function (a, b, c, d) {
 		return {nodes: a, edges: b, directed: c, weighted: d};
 	});
-var _user$project$Types$SSData = F5(
-	function (a, b, c, d, e) {
-		return {mastery: a, numerator: b, denominator: c, weighted: d, directed: e};
+var _user$project$Types$SSData = F6(
+	function (a, b, c, d, e, f) {
+		return {mastery: a, numerator: b, denominator: c, weighted: d, directed: e, implementMastery: f};
 	});
 var _user$project$Types$MultipleChoice = {ctor: 'MultipleChoice'};
 var _user$project$Types$FillInTheBlank = {ctor: 'FillInTheBlank'};
