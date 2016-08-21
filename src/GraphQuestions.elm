@@ -83,7 +83,7 @@ view model =
                 div [] []
     in
         div []
-            [ h1 [ scoreboardStyle ] [ Html.text "Mastery Quiz" ]
+            [ h1 [ scoreboardStyle ] [ Html.text "Test Your Understanding" ]
             , imageOfGraph model
             , questionForm model
             , historySection model
