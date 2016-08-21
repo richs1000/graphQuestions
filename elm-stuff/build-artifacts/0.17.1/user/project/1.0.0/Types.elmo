@@ -45,9 +45,9 @@ var _user$project$Types$Graph = F4(
 	function (a, b, c, d) {
 		return {nodes: a, edges: b, directed: c, weighted: d};
 	});
-var _user$project$Types$SSData = F6(
-	function (a, b, c, d, e, f) {
-		return {mastery: a, numerator: b, denominator: c, weighted: d, directed: e, implementMastery: f};
+var _user$project$Types$SSData = F7(
+	function (a, b, c, d, e, f, g) {
+		return {mastery: a, numerator: b, denominator: c, weighted: d, directed: e, implementMastery: f, debug: g};
 	});
 var _user$project$Types$MultipleChoice = {ctor: 'MultipleChoice'};
 var _user$project$Types$FillInTheBlank = {ctor: 'FillInTheBlank'};
