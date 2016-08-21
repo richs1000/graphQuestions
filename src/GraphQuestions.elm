@@ -78,6 +78,7 @@ view model =
                     , button [ onClick ToggleDirectional, buttonStyle ] [ Html.text "Toggle Directional" ]
                     , button [ onClick BreadthFirstSearch, buttonStyle ] [ Html.text "BFS" ]
                     , button [ onClick UpdateMastery, buttonStyle ] [ Html.text "Mastery" ]
+                    , p [] [ Html.text (toString model) ]
                     ]
             else
                 div [] [ resetBtn ]
@@ -88,7 +89,6 @@ view model =
             , questionForm model
             , historySection model
             , buttons
-            , p [] [ Html.text (toString model) ]
             ]
 
 
