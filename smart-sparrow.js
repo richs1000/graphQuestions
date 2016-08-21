@@ -8,7 +8,7 @@ var model = new pipit.CapiAdapter.CapiModel({
     denominator: 50,
     weighted: false,
     directed: false,
-    implementMastery : false
+    implementMastery : false,
     debug : false
 });
 
