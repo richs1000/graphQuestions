@@ -1,0 +1,6 @@
+var _user$project$QuestionTypes$Question = F4(
+	function (a, b, c, d) {
+		return {question: a, distractors: b, answer: c, format: d};
+	});
+var _user$project$QuestionTypes$MultipleChoice = {ctor: 'MultipleChoice'};
+var _user$project$QuestionTypes$FillInTheBlank = {ctor: 'FillInTheBlank'};

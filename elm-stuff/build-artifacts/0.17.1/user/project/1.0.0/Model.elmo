@@ -1,0 +1,18 @@
+var _user$project$Model$initModel = {
+	graph: _user$project$Graph$emptyGraph,
+	debug: true,
+	userInput: '',
+	history: _elm_lang$core$Native_List.fromArray(
+		[]),
+	bfs: _elm_lang$core$Maybe$Nothing,
+	success: _elm_lang$core$Maybe$Nothing,
+	question: _user$project$Question$emptyQuestion,
+	feedback: '',
+	randomValues: _elm_lang$core$Native_List.fromArray(
+		[]),
+	mastery: false,
+	numerator: 3,
+	denominator: 5,
+	implementMastery: false
+};
+var _user$project$Model$init = {ctor: '_Tuple2', _0: _user$project$Model$initModel, _1: _elm_lang$core$Platform_Cmd$none};

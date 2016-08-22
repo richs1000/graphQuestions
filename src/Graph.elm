@@ -1,6 +1,7 @@
 module Graph exposing (..)
 
 import Types exposing (..)
+import GraphTypes exposing (..)
 
 
 -- Overlap with VIEW
@@ -351,3 +352,21 @@ randomEdge model =
 
             Just e ->
                 e
+
+
+emptyEdge : Edge
+emptyEdge =
+    { from = 0
+    , to = 0
+    , weight = 0
+    , direction = UniDirectional
+    }
+
+
+emptyGraph : Graph
+emptyGraph =
+    { nodes = []
+    , edges = []
+    , directed = True
+    , weighted = True
+    }

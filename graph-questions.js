@@ -9202,14 +9202,25 @@ var _elm_lang$svg$Svg_Attributes$accumulate = _elm_lang$virtual_dom$VirtualDom$a
 var _elm_lang$svg$Svg_Attributes$accelerate = _elm_lang$virtual_dom$VirtualDom$attribute('accelerate');
 var _elm_lang$svg$Svg_Attributes$accentHeight = _elm_lang$virtual_dom$VirtualDom$attribute('accent-height');
 
-var _user$project$Types$emptyGraph = {
-	nodes: _elm_lang$core$Native_List.fromArray(
-		[]),
-	edges: _elm_lang$core$Native_List.fromArray(
-		[]),
-	directed: true,
-	weighted: true
-};
+var _user$project$GraphTypes$Edge = F4(
+	function (a, b, c, d) {
+		return {from: a, to: b, weight: c, direction: d};
+	});
+var _user$project$GraphTypes$Graph = F4(
+	function (a, b, c, d) {
+		return {nodes: a, edges: b, directed: c, weighted: d};
+	});
+var _user$project$GraphTypes$BiDirectional = {ctor: 'BiDirectional'};
+var _user$project$GraphTypes$UniDirectional = {ctor: 'UniDirectional'};
+
+var _user$project$QuestionTypes$Question = F4(
+	function (a, b, c, d) {
+		return {question: a, distractors: b, answer: c, format: d};
+	});
+var _user$project$QuestionTypes$MultipleChoice = {ctor: 'MultipleChoice'};
+var _user$project$QuestionTypes$FillInTheBlank = {ctor: 'FillInTheBlank'};
+
+
 var _user$project$Types$Model = function (a) {
 	return function (b) {
 		return function (c) {
@@ -9237,34 +9248,10 @@ var _user$project$Types$Model = function (a) {
 		};
 	};
 };
-var _user$project$Types$Question = F4(
-	function (a, b, c, d) {
-		return {question: a, distractors: b, answer: c, format: d};
-	});
-var _user$project$Types$Edge = F4(
-	function (a, b, c, d) {
-		return {from: a, to: b, weight: c, direction: d};
-	});
-var _user$project$Types$Graph = F4(
-	function (a, b, c, d) {
-		return {nodes: a, edges: b, directed: c, weighted: d};
-	});
 var _user$project$Types$SSData = F7(
 	function (a, b, c, d, e, f, g) {
 		return {mastery: a, numerator: b, denominator: c, weighted: d, directed: e, implementMastery: f, debug: g};
 	});
-var _user$project$Types$MultipleChoice = {ctor: 'MultipleChoice'};
-var _user$project$Types$FillInTheBlank = {ctor: 'FillInTheBlank'};
-var _user$project$Types$emptyQuestion = {
-	question: '',
-	distractors: _elm_lang$core$Native_List.fromArray(
-		[]),
-	answer: {ctor: '_Tuple2', _0: '', _1: ''},
-	format: _user$project$Types$FillInTheBlank
-};
-var _user$project$Types$BiDirectional = {ctor: 'BiDirectional'};
-var _user$project$Types$UniDirectional = {ctor: 'UniDirectional'};
-var _user$project$Types$emptyEdge = {from: 0, to: 0, weight: 0, direction: _user$project$Types$UniDirectional};
 var _user$project$Types$GetValuesFromSS = function (a) {
 	return {ctor: 'GetValuesFromSS', _0: a};
 };
@@ -9292,6 +9279,102 @@ var _user$project$Types$NewRandomValues = function (a) {
 };
 var _user$project$Types$Reset = {ctor: 'Reset'};
 
+var _user$project$DebugView$buttonStyle = _elm_lang$html$Html_Attributes$style(
+	_elm_lang$core$Native_List.fromArray(
+		[
+			{ctor: '_Tuple2', _0: 'text-align', _1: 'center'},
+			{ctor: '_Tuple2', _0: 'font-size', _1: '16px'},
+			{ctor: '_Tuple2', _0: 'padding', _1: '15px 32px'},
+			{ctor: '_Tuple2', _0: 'margin', _1: '2px'}
+		]));
+var _user$project$DebugView$debugSection = function (model) {
+	return model.debug ? A2(
+		_elm_lang$html$Html$div,
+		_elm_lang$core$Native_List.fromArray(
+			[]),
+		_elm_lang$core$Native_List.fromArray(
+			[
+				A2(
+				_elm_lang$html$Html$button,
+				_elm_lang$core$Native_List.fromArray(
+					[
+						_elm_lang$html$Html_Events$onClick(_user$project$Types$Reset),
+						_user$project$DebugView$buttonStyle
+					]),
+				_elm_lang$core$Native_List.fromArray(
+					[
+						_elm_lang$html$Html$text('Reset')
+					])),
+				A2(
+				_elm_lang$html$Html$button,
+				_elm_lang$core$Native_List.fromArray(
+					[
+						_elm_lang$html$Html_Events$onClick(_user$project$Types$ToggleWeighted),
+						_user$project$DebugView$buttonStyle
+					]),
+				_elm_lang$core$Native_List.fromArray(
+					[
+						_elm_lang$html$Html$text('Toggle Weighted')
+					])),
+				A2(
+				_elm_lang$html$Html$button,
+				_elm_lang$core$Native_List.fromArray(
+					[
+						_elm_lang$html$Html_Events$onClick(_user$project$Types$ToggleDirectional),
+						_user$project$DebugView$buttonStyle
+					]),
+				_elm_lang$core$Native_List.fromArray(
+					[
+						_elm_lang$html$Html$text('Toggle Directional')
+					])),
+				A2(
+				_elm_lang$html$Html$button,
+				_elm_lang$core$Native_List.fromArray(
+					[
+						_elm_lang$html$Html_Events$onClick(_user$project$Types$BreadthFirstSearch),
+						_user$project$DebugView$buttonStyle
+					]),
+				_elm_lang$core$Native_List.fromArray(
+					[
+						_elm_lang$html$Html$text('BFS')
+					])),
+				A2(
+				_elm_lang$html$Html$button,
+				_elm_lang$core$Native_List.fromArray(
+					[
+						_elm_lang$html$Html_Events$onClick(_user$project$Types$UpdateMastery),
+						_user$project$DebugView$buttonStyle
+					]),
+				_elm_lang$core$Native_List.fromArray(
+					[
+						_elm_lang$html$Html$text('Mastery')
+					])),
+				A2(
+				_elm_lang$html$Html$p,
+				_elm_lang$core$Native_List.fromArray(
+					[]),
+				_elm_lang$core$Native_List.fromArray(
+					[
+						_elm_lang$html$Html$text(
+						_elm_lang$core$Basics$toString(model))
+					]))
+			])) : A2(
+		_elm_lang$html$Html$div,
+		_elm_lang$core$Native_List.fromArray(
+			[]),
+		_elm_lang$core$Native_List.fromArray(
+			[]));
+};
+
+var _user$project$Graph$emptyGraph = {
+	nodes: _elm_lang$core$Native_List.fromArray(
+		[]),
+	edges: _elm_lang$core$Native_List.fromArray(
+		[]),
+	directed: true,
+	weighted: true
+};
+var _user$project$Graph$emptyEdge = {from: 0, to: 0, weight: 0, direction: _user$project$GraphTypes$UniDirectional};
 var _user$project$Graph$randomEdge = function (model) {
 	var graph = model.graph;
 	var edges = graph.edges;
@@ -9312,7 +9395,7 @@ var _user$project$Graph$randomEdge = function (model) {
 		A2(_elm_lang$core$List$drop, i, edges));
 	var _p0 = edge;
 	if (_p0.ctor === 'Nothing') {
-		return _user$project$Types$emptyEdge;
+		return _user$project$Graph$emptyEdge;
 	} else {
 		return _p0._0;
 	}
@@ -9366,7 +9449,7 @@ var _user$project$Graph$mergeDuplicates = function (edges) {
 				_elm_lang$core$List_ops['::'],
 				_elm_lang$core$Native_Utils.update(
 					_p5,
-					{direction: _user$project$Types$BiDirectional}),
+					{direction: _user$project$GraphTypes$BiDirectional}),
 				_user$project$Graph$mergeDuplicates(notRev));
 		}
 	}
@@ -9420,7 +9503,7 @@ var _user$project$Graph$outDegree = F2(
 			A2(
 				_elm_lang$core$List$filter,
 				function (e) {
-					return _elm_lang$core$Native_Utils.eq(e.from, node) || (_elm_lang$core$Native_Utils.eq(e.to, node) && _elm_lang$core$Native_Utils.eq(e.direction, _user$project$Types$BiDirectional));
+					return _elm_lang$core$Native_Utils.eq(e.from, node) || (_elm_lang$core$Native_Utils.eq(e.to, node) && _elm_lang$core$Native_Utils.eq(e.direction, _user$project$GraphTypes$BiDirectional));
 				},
 				graph.edges));
 	});
@@ -9430,7 +9513,7 @@ var _user$project$Graph$inDegree = F2(
 			A2(
 				_elm_lang$core$List$filter,
 				function (e) {
-					return _elm_lang$core$Native_Utils.eq(e.to, node) || (_elm_lang$core$Native_Utils.eq(e.from, node) && _elm_lang$core$Native_Utils.eq(e.direction, _user$project$Types$BiDirectional));
+					return _elm_lang$core$Native_Utils.eq(e.to, node) || (_elm_lang$core$Native_Utils.eq(e.from, node) && _elm_lang$core$Native_Utils.eq(e.direction, _user$project$GraphTypes$BiDirectional));
 				},
 				graph.edges));
 	});
@@ -9455,7 +9538,7 @@ var _user$project$Graph$edgeExists = F3(
 		var n2_to_n1_bi = A2(
 			_elm_lang$core$List$any,
 			function (e) {
-				return _elm_lang$core$Native_Utils.eq(e.from, n2) && (_elm_lang$core$Native_Utils.eq(e.to, n1) && _elm_lang$core$Native_Utils.eq(e.direction, _user$project$Types$BiDirectional));
+				return _elm_lang$core$Native_Utils.eq(e.from, n2) && (_elm_lang$core$Native_Utils.eq(e.to, n1) && _elm_lang$core$Native_Utils.eq(e.direction, _user$project$GraphTypes$BiDirectional));
 			},
 			graph.edges);
 		var n1_to_n2 = A2(
@@ -9508,7 +9591,7 @@ var _user$project$Graph$createEdgesFromNode = F2(
 		} else {
 			return A2(
 				_elm_lang$core$List_ops['::'],
-				A4(_user$project$Types$Edge, fromNode, _p13._0, 0, _user$project$Types$UniDirectional),
+				A4(_user$project$GraphTypes$Edge, fromNode, _p13._0, 0, _user$project$GraphTypes$UniDirectional),
 				A2(_user$project$Graph$createEdgesFromNode, fromNode, _p13._1));
 		}
 	});
@@ -9641,255 +9724,271 @@ var _user$project$Graph$createAllEdges = function (nodes) {
 	return A2(createAllEdgesHelper, nodes, nodes);
 };
 
-var _user$project$View$viewConstants = {
-	nodeSeparation: 100,
-	nodeRadius: 20,
-	nodeOffset: 30,
-	weightOffset: 7,
-	graphUpperLeft: {ctor: '_Tuple2', _0: 40, _1: 20},
-	nodesPerRow: 4,
-	nodesPerCol: 4,
-	historySquareSize: 25,
-	historySquareSeparation: 5
+var _user$project$GraphView$arrowHeads = _elm_lang$core$Native_List.fromArray(
+	[
+		A2(
+		_elm_lang$svg$Svg$defs,
+		_elm_lang$core$Native_List.fromArray(
+			[]),
+		_elm_lang$core$Native_List.fromArray(
+			[
+				A2(
+				_elm_lang$svg$Svg$marker,
+				_elm_lang$core$Native_List.fromArray(
+					[
+						_elm_lang$svg$Svg_Attributes$id('ArrowHeadEnd'),
+						_elm_lang$svg$Svg_Attributes$viewBox('0 0 10 10'),
+						_elm_lang$svg$Svg_Attributes$refX('1'),
+						_elm_lang$svg$Svg_Attributes$refY('5'),
+						_elm_lang$svg$Svg_Attributes$markerWidth('6'),
+						_elm_lang$svg$Svg_Attributes$markerHeight('6'),
+						_elm_lang$svg$Svg_Attributes$orient('auto')
+					]),
+				_elm_lang$core$Native_List.fromArray(
+					[
+						A2(
+						_elm_lang$svg$Svg$path,
+						_elm_lang$core$Native_List.fromArray(
+							[
+								_elm_lang$svg$Svg_Attributes$d('M 0 0 L 10 5 L 0 10 z')
+							]),
+						_elm_lang$core$Native_List.fromArray(
+							[]))
+					])),
+				A2(
+				_elm_lang$svg$Svg$marker,
+				_elm_lang$core$Native_List.fromArray(
+					[
+						_elm_lang$svg$Svg_Attributes$id('ArrowHeadStart'),
+						_elm_lang$svg$Svg_Attributes$viewBox('0 0 10 10'),
+						_elm_lang$svg$Svg_Attributes$refX('9'),
+						_elm_lang$svg$Svg_Attributes$refY('5'),
+						_elm_lang$svg$Svg_Attributes$markerWidth('6'),
+						_elm_lang$svg$Svg_Attributes$markerHeight('6'),
+						_elm_lang$svg$Svg_Attributes$orient('auto')
+					]),
+				_elm_lang$core$Native_List.fromArray(
+					[
+						A2(
+						_elm_lang$svg$Svg$path,
+						_elm_lang$core$Native_List.fromArray(
+							[
+								_elm_lang$svg$Svg_Attributes$d('M 10 10 L 0 5 L 10 0 z')
+							]),
+						_elm_lang$core$Native_List.fromArray(
+							[]))
+					]))
+			]))
+	]);
+var _user$project$GraphView$nodesPerCol = 4;
+var _user$project$GraphView$nodeCol = function (nodeId) {
+	return A2(_elm_lang$core$Basics$rem, nodeId, _user$project$GraphView$nodesPerCol);
 };
-var _user$project$View$inputStyle = _elm_lang$html$Html_Attributes$style(
-	_elm_lang$core$Native_List.fromArray(
-		[
-			{ctor: '_Tuple2', _0: 'width', _1: '100%'},
-			{ctor: '_Tuple2', _0: 'height', _1: '40px'},
-			{ctor: '_Tuple2', _0: 'padding', _1: '10px'},
-			{ctor: '_Tuple2', _0: 'font-size', _1: '2em'},
-			{ctor: '_Tuple2', _0: 'margin', _1: '8px'}
-		]));
-var _user$project$View$radioStyle = _elm_lang$html$Html_Attributes$style(
-	_elm_lang$core$Native_List.fromArray(
-		[
-			{ctor: '_Tuple2', _0: 'width', _1: '40px'},
-			{ctor: '_Tuple2', _0: 'height', _1: '40px'},
-			{ctor: '_Tuple2', _0: 'border-radius', _1: '50%'}
-		]));
-var _user$project$View$buttonStyle = _elm_lang$html$Html_Attributes$style(
-	_elm_lang$core$Native_List.fromArray(
-		[
-			{ctor: '_Tuple2', _0: 'text-align', _1: 'center'},
-			{ctor: '_Tuple2', _0: 'font-size', _1: '16px'},
-			{ctor: '_Tuple2', _0: 'padding', _1: '15px 32px'},
-			{ctor: '_Tuple2', _0: 'margin', _1: '2px'}
-		]));
-var _user$project$View$questionStyle = _elm_lang$html$Html_Attributes$style(
-	_elm_lang$core$Native_List.fromArray(
-		[
-			{ctor: '_Tuple2', _0: 'width', _1: '100%'},
-			{ctor: '_Tuple2', _0: 'padding', _1: '10px'},
-			{ctor: '_Tuple2', _0: 'font-size', _1: '2em'},
-			{ctor: '_Tuple2', _0: 'margin', _1: '4px'}
-		]));
-var _user$project$View$scoreboardStyle = _elm_lang$html$Html_Attributes$style(
-	_elm_lang$core$Native_List.fromArray(
-		[
-			{ctor: '_Tuple2', _0: 'border-top', _1: '1px solid #000'},
-			{ctor: '_Tuple2', _0: 'border-bottom', _1: '1px solid #000'},
-			{ctor: '_Tuple2', _0: 'background', _1: '#ffffcc'},
-			{ctor: '_Tuple2', _0: 'height', _1: '40px'},
-			{ctor: '_Tuple2', _0: 'margin-left', _1: '6px'},
-			{ctor: '_Tuple2', _0: 'margin-right', _1: '6px'}
-		]));
-var _user$project$View$ViewConstants = F9(
-	function (a, b, c, d, e, f, g, h, i) {
-		return {nodeSeparation: a, nodeRadius: b, nodeOffset: c, weightOffset: d, graphUpperLeft: e, nodesPerRow: f, nodesPerCol: g, historySquareSize: h, historySquareSeparation: i};
-	});
-
-var _user$project$QuestionView$radio = F2(
-	function (name, model) {
-		var isSelected = _elm_lang$core$Native_Utils.eq(model.userInput, name);
+var _user$project$GraphView$nodeRow = function (nodeId) {
+	return (nodeId / _user$project$GraphView$nodesPerCol) | 0;
+};
+var _user$project$GraphView$nodesPerRow = 4;
+var _user$project$GraphView$graphUpperLeft = {ctor: '_Tuple2', _0: 40, _1: 20};
+var _user$project$GraphView$weightOffset = 7;
+var _user$project$GraphView$edgeWeight = F5(
+	function (weight, x_1, y_1, x_2, y_2) {
+		var yOffset = _elm_lang$core$Native_Utils.eq(y_1, y_2) ? (3 * _user$project$GraphView$weightOffset) : 0;
+		var midY = (((y_1 + y_2) / 2) | 0) + yOffset;
+		var xOffset = _elm_lang$core$Native_Utils.eq(x_1, x_2) ? _user$project$GraphView$weightOffset : 0;
+		var midX = (((x_1 + x_2) / 2) | 0) + xOffset;
 		return A2(
-			_elm_lang$html$Html$label,
-			_elm_lang$core$Native_List.fromArray(
-				[]),
+			_elm_lang$svg$Svg$text$,
 			_elm_lang$core$Native_List.fromArray(
 				[
-					A2(
-					_elm_lang$html$Html$br,
-					_elm_lang$core$Native_List.fromArray(
-						[]),
-					_elm_lang$core$Native_List.fromArray(
-						[])),
-					A2(
-					_elm_lang$html$Html$input,
-					_elm_lang$core$Native_List.fromArray(
-						[
-							_elm_lang$html$Html_Attributes$type$('radio'),
-							_elm_lang$html$Html_Attributes$checked(isSelected),
-							_elm_lang$html$Html_Events$onCheck(
-							function (_p0) {
-								return _user$project$Types$UserInput(name);
-							}),
-							_user$project$View$radioStyle
-						]),
-					_elm_lang$core$Native_List.fromArray(
-						[])),
-					A2(
-					_elm_lang$html$Html$span,
-					_elm_lang$core$Native_List.fromArray(
-						[_user$project$View$questionStyle]),
-					_elm_lang$core$Native_List.fromArray(
-						[
-							_elm_lang$html$Html$text(name)
-						]))
+					_elm_lang$svg$Svg_Attributes$x(
+					_elm_lang$core$Basics$toString(midX)),
+					_elm_lang$svg$Svg_Attributes$y(
+					_elm_lang$core$Basics$toString(midY)),
+					_elm_lang$svg$Svg_Attributes$fontSize('18'),
+					_elm_lang$svg$Svg_Attributes$textAnchor('middle'),
+					_elm_lang$svg$Svg_Attributes$fill('red')
+				]),
+			_elm_lang$core$Native_List.fromArray(
+				[
+					_elm_lang$svg$Svg$text(
+					_elm_lang$core$Basics$toString(weight))
 				]));
 	});
-var _user$project$QuestionView$displayQuestion = function (model) {
-	var _p1 = model.question;
-	var question = _p1.question;
-	var distractors = _p1.distractors;
-	var answer = _p1.answer;
-	var format = _p1.format;
-	var _p2 = format;
-	if (_p2.ctor === 'FillInTheBlank') {
+var _user$project$GraphView$nodeOffset = 30;
+var _user$project$GraphView$adjustPixel = F2(
+	function (p1, p2) {
+		return (_elm_lang$core$Native_Utils.cmp(p1, p2) < 0) ? (p1 + _user$project$GraphView$nodeOffset) : (_elm_lang$core$Native_Utils.eq(p1, p2) ? p1 : (p1 - _user$project$GraphView$nodeOffset));
+	});
+var _user$project$GraphView$edgeLine = F6(
+	function (x_1, y_1, x_2, y_2, directed, direction) {
+		var lineStyle = _elm_lang$core$Native_List.fromArray(
+			[
+				_elm_lang$svg$Svg_Attributes$x1(
+				_elm_lang$core$Basics$toString(
+					A2(_user$project$GraphView$adjustPixel, x_1, x_2))),
+				_elm_lang$svg$Svg_Attributes$y1(
+				_elm_lang$core$Basics$toString(
+					A2(_user$project$GraphView$adjustPixel, y_1, y_2))),
+				_elm_lang$svg$Svg_Attributes$x2(
+				_elm_lang$core$Basics$toString(
+					A2(_user$project$GraphView$adjustPixel, x_2, x_1))),
+				_elm_lang$svg$Svg_Attributes$y2(
+				_elm_lang$core$Basics$toString(
+					A2(_user$project$GraphView$adjustPixel, y_2, y_1))),
+				_elm_lang$svg$Svg_Attributes$fill('none'),
+				_elm_lang$svg$Svg_Attributes$stroke('black'),
+				_elm_lang$svg$Svg_Attributes$strokeWidth('2')
+			]);
+		var uniArrow = _elm_lang$core$Native_List.fromArray(
+			[
+				_elm_lang$svg$Svg_Attributes$markerEnd('url(#ArrowHeadEnd)')
+			]);
+		var biArrow = _elm_lang$core$Native_List.fromArray(
+			[
+				_elm_lang$svg$Svg_Attributes$markerStart('url(#ArrowHeadStart)'),
+				_elm_lang$svg$Svg_Attributes$markerEnd('url(#ArrowHeadEnd)')
+			]);
+		var lineStyle$ = (directed && _elm_lang$core$Native_Utils.eq(direction, _user$project$GraphTypes$BiDirectional)) ? A2(_elm_lang$core$List$append, lineStyle, biArrow) : ((directed && _elm_lang$core$Native_Utils.eq(direction, _user$project$GraphTypes$UniDirectional)) ? A2(_elm_lang$core$List$append, lineStyle, uniArrow) : lineStyle);
 		return A2(
-			_elm_lang$html$Html$form,
+			_elm_lang$svg$Svg$line,
+			lineStyle$,
 			_elm_lang$core$Native_List.fromArray(
-				[
-					_elm_lang$html$Html_Events$onSubmit(_user$project$Types$Submit)
-				]),
-			_elm_lang$core$Native_List.fromArray(
-				[
-					A2(
-					_elm_lang$html$Html$div,
-					_elm_lang$core$Native_List.fromArray(
-						[_user$project$View$questionStyle]),
-					_elm_lang$core$Native_List.fromArray(
-						[
-							_elm_lang$html$Html$text(question)
-						])),
-					A2(
-					_elm_lang$html$Html$input,
-					_elm_lang$core$Native_List.fromArray(
-						[
-							_elm_lang$html$Html_Attributes$type$('text'),
-							_elm_lang$html$Html_Attributes$placeholder('Answer here...'),
-							_elm_lang$html$Html_Events$onInput(_user$project$Types$UserInput),
-							_elm_lang$html$Html_Attributes$value(model.userInput),
-							_user$project$View$inputStyle
-						]),
-					_elm_lang$core$Native_List.fromArray(
-						[])),
-					A2(
-					_elm_lang$html$Html$button,
-					_elm_lang$core$Native_List.fromArray(
-						[
-							_elm_lang$html$Html_Attributes$type$('submit'),
-							_user$project$View$buttonStyle
-						]),
-					_elm_lang$core$Native_List.fromArray(
-						[
-							_elm_lang$html$Html$text('Submit')
-						]))
-				]));
-	} else {
-		return A2(
-			_elm_lang$html$Html$form,
-			_elm_lang$core$Native_List.fromArray(
-				[
-					_elm_lang$html$Html_Events$onSubmit(_user$project$Types$Submit)
-				]),
-			_elm_lang$core$Native_List.fromArray(
-				[
-					A2(
-					_elm_lang$html$Html$div,
-					_elm_lang$core$Native_List.fromArray(
-						[_user$project$View$questionStyle]),
-					_elm_lang$core$Native_List.fromArray(
-						[
-							_elm_lang$html$Html$text(question)
-						])),
-					A2(
-					_elm_lang$html$Html$div,
-					_elm_lang$core$Native_List.fromArray(
-						[]),
-					_elm_lang$core$Native_List.fromArray(
-						[
-							A2(_user$project$QuestionView$radio, 'True', model),
-							A2(_user$project$QuestionView$radio, 'False', model)
-						])),
-					A2(
-					_elm_lang$html$Html$button,
-					_elm_lang$core$Native_List.fromArray(
-						[
-							_elm_lang$html$Html_Attributes$type$('submit'),
-							_user$project$View$buttonStyle
-						]),
-					_elm_lang$core$Native_List.fromArray(
-						[
-							_elm_lang$html$Html$text('Submit')
-						]))
-				]));
-	}
+				[]));
+	});
+var _user$project$GraphView$nodeRadius = 20;
+var _user$project$GraphView$nodeSeparation = 100;
+var _user$project$GraphView$nodeX = function (nodeId) {
+	var col = A2(_elm_lang$core$Basics$rem, nodeId, _user$project$GraphView$nodesPerCol);
+	var x0 = _elm_lang$core$Basics$fst(_user$project$GraphView$graphUpperLeft);
+	return x0 + (col * (_user$project$GraphView$nodeRadius + _user$project$GraphView$nodeSeparation));
 };
-var _user$project$QuestionView$questionForm = function (model) {
-	var success$ = model.success;
-	var _p3 = model.question;
-	var question = _p3.question;
-	var distractors = _p3.distractors;
-	var answer = _p3.answer;
-	var format = _p3.format;
-	var _p4 = model.success;
-	if (_p4.ctor === 'Nothing') {
-		return _user$project$QuestionView$displayQuestion(model);
-	} else {
-		return A2(
-			_elm_lang$html$Html$form,
+var _user$project$GraphView$nodeY = function (nodeId) {
+	var row = (nodeId / _user$project$GraphView$nodesPerCol) | 0;
+	var y0 = _elm_lang$core$Basics$snd(_user$project$GraphView$graphUpperLeft);
+	return y0 + (row * (_user$project$GraphView$nodeRadius + _user$project$GraphView$nodeSeparation));
+};
+var _user$project$GraphView$drawNode = function (nodeId) {
+	return _elm_lang$core$Native_List.fromArray(
+		[
+			A2(
+			_elm_lang$svg$Svg$circle,
 			_elm_lang$core$Native_List.fromArray(
 				[
-					_elm_lang$html$Html_Events$onSubmit(_user$project$Types$GiveFeedback)
+					_elm_lang$svg$Svg_Attributes$cx(
+					_elm_lang$core$Basics$toString(
+						_user$project$GraphView$nodeX(nodeId))),
+					_elm_lang$svg$Svg_Attributes$cy(
+					_elm_lang$core$Basics$toString(
+						_user$project$GraphView$nodeY(nodeId))),
+					_elm_lang$svg$Svg_Attributes$r(
+					_elm_lang$core$Basics$toString(_user$project$GraphView$nodeRadius)),
+					_elm_lang$svg$Svg_Attributes$fill('blue')
+				]),
+			_elm_lang$core$Native_List.fromArray(
+				[])),
+			A2(
+			_elm_lang$svg$Svg$text$,
+			_elm_lang$core$Native_List.fromArray(
+				[
+					_elm_lang$svg$Svg_Attributes$x(
+					_elm_lang$core$Basics$toString(
+						_user$project$GraphView$nodeX(nodeId))),
+					_elm_lang$svg$Svg_Attributes$y(
+					_elm_lang$core$Basics$toString(
+						_user$project$GraphView$nodeY(nodeId))),
+					_elm_lang$svg$Svg_Attributes$fontSize('14'),
+					_elm_lang$svg$Svg_Attributes$textAnchor('middle'),
+					_elm_lang$svg$Svg_Attributes$fill('white')
 				]),
 			_elm_lang$core$Native_List.fromArray(
 				[
-					A2(
-					_elm_lang$html$Html$div,
-					_elm_lang$core$Native_List.fromArray(
-						[_user$project$View$questionStyle]),
-					_elm_lang$core$Native_List.fromArray(
-						[
-							_elm_lang$html$Html$text(model.feedback)
-						])),
-					A2(
-					_elm_lang$html$Html$input,
-					_elm_lang$core$Native_List.fromArray(
-						[
-							_elm_lang$html$Html_Attributes$type$('text'),
-							_elm_lang$html$Html_Attributes$placeholder('Answer here...'),
-							_elm_lang$html$Html_Events$onInput(_user$project$Types$UserInput),
-							_elm_lang$html$Html_Attributes$value(model.userInput),
-							_elm_lang$html$Html_Attributes$disabled(true),
-							_user$project$View$inputStyle
-						]),
-					_elm_lang$core$Native_List.fromArray(
-						[])),
-					A2(
-					_elm_lang$html$Html$button,
-					_elm_lang$core$Native_List.fromArray(
-						[
-							_elm_lang$html$Html_Attributes$type$('submit'),
-							_user$project$View$buttonStyle
-						]),
-					_elm_lang$core$Native_List.fromArray(
-						[
-							_elm_lang$html$Html$text('Next Question')
-						]))
-				]));
-	}
+					_elm_lang$svg$Svg$text(
+					_elm_lang$core$Basics$toString(nodeId))
+				]))
+		]);
+};
+var _user$project$GraphView$drawNodes = function (graph) {
+	var drawNodesHelper = function (nodeIds) {
+		var _p0 = nodeIds;
+		if (_p0.ctor === '[]') {
+			return _elm_lang$core$Native_List.fromArray(
+				[]);
+		} else {
+			return A2(
+				_elm_lang$core$List$append,
+				_user$project$GraphView$drawNode(_p0._0),
+				drawNodesHelper(_p0._1));
+		}
+	};
+	return drawNodesHelper(graph.nodes);
+};
+var _user$project$GraphView$drawEdge = F3(
+	function (edge, weighted, directed) {
+		var y_2 = _user$project$GraphView$nodeY(edge.to);
+		var x_2 = _user$project$GraphView$nodeX(edge.to);
+		var y_1 = _user$project$GraphView$nodeY(edge.from);
+		var x_1 = _user$project$GraphView$nodeX(edge.from);
+		var lne = _elm_lang$core$Native_List.fromArray(
+			[
+				A6(_user$project$GraphView$edgeLine, x_1, y_1, x_2, y_2, directed, edge.direction)
+			]);
+		return (weighted && (_elm_lang$core$Native_Utils.cmp(edge.weight, 0) > 0)) ? A2(
+			_elm_lang$core$List$append,
+			lne,
+			_elm_lang$core$Native_List.fromArray(
+				[
+					A5(_user$project$GraphView$edgeWeight, edge.weight, x_1, y_1, x_2, y_2)
+				])) : lne;
+	});
+var _user$project$GraphView$drawEdges = function (graph) {
+	var drawEdgesHelper = F3(
+		function (edges, weighted, directed) {
+			var _p1 = edges;
+			if (_p1.ctor === '[]') {
+				return _user$project$GraphView$arrowHeads;
+			} else {
+				return A2(
+					_elm_lang$core$List$append,
+					A3(_user$project$GraphView$drawEdge, _p1._0, weighted, directed),
+					A3(drawEdgesHelper, _p1._1, weighted, directed));
+			}
+		});
+	return A3(drawEdgesHelper, graph.edges, graph.weighted, graph.directed);
+};
+var _user$project$GraphView$drawGraph = function (graph) {
+	return A2(
+		_elm_lang$core$List$append,
+		_user$project$GraphView$drawNodes(graph),
+		_user$project$GraphView$drawEdges(graph));
+};
+var _user$project$GraphView$imageOfGraph = function (model) {
+	var graphHeight = (((_user$project$GraphView$nodeSeparation + _user$project$GraphView$nodeRadius) * (_user$project$GraphView$nodesPerCol - 1)) + _user$project$GraphView$nodeRadius) + ((_user$project$GraphView$nodeSeparation / 2) | 0);
+	var graphWidth = (_user$project$GraphView$nodeSeparation + _user$project$GraphView$nodeRadius) * _user$project$GraphView$nodesPerRow;
+	return A2(
+		_elm_lang$svg$Svg$svg,
+		_elm_lang$core$Native_List.fromArray(
+			[
+				_elm_lang$svg$Svg_Attributes$version('1.1'),
+				_elm_lang$svg$Svg_Attributes$baseProfile('full'),
+				_elm_lang$svg$Svg_Attributes$width(
+				_elm_lang$core$Basics$toString(graphWidth)),
+				_elm_lang$svg$Svg_Attributes$height(
+				_elm_lang$core$Basics$toString(graphHeight))
+			]),
+		_user$project$GraphView$drawGraph(model.graph));
 };
 
+var _user$project$HistoryView$historySquareSeparation = 5;
+var _user$project$HistoryView$historySquareSize = 25;
 var _user$project$HistoryView$historySquare = F2(
 	function (h, i) {
-		var myX = 10 + ((_user$project$View$viewConstants.historySquareSize + _user$project$View$viewConstants.historySquareSeparation) * i);
+		var myX = 10 + ((_user$project$HistoryView$historySquareSize + _user$project$HistoryView$historySquareSeparation) * i);
 		var base = _elm_lang$core$Native_List.fromArray(
 			[
 				_elm_lang$svg$Svg_Attributes$width(
-				_elm_lang$core$Basics$toString(_user$project$View$viewConstants.historySquareSize)),
+				_elm_lang$core$Basics$toString(_user$project$HistoryView$historySquareSize)),
 				_elm_lang$svg$Svg_Attributes$height(
-				_elm_lang$core$Basics$toString(_user$project$View$viewConstants.historySquareSize)),
+				_elm_lang$core$Basics$toString(_user$project$HistoryView$historySquareSize)),
 				_elm_lang$svg$Svg_Attributes$y('10')
 			]);
 		var incorrect = A2(
@@ -9978,258 +10077,302 @@ var _user$project$HistoryView$historySection = function (model) {
 				_elm_lang$svg$Svg_Attributes$version('1.1'),
 				_elm_lang$svg$Svg_Attributes$baseProfile('full'),
 				_elm_lang$svg$Svg_Attributes$width(
-				_elm_lang$core$Basics$toString(model.denominator * (_user$project$View$viewConstants.historySquareSize + _user$project$View$viewConstants.historySquareSeparation))),
+				_elm_lang$core$Basics$toString(model.denominator * (_user$project$HistoryView$historySquareSize + _user$project$HistoryView$historySquareSeparation))),
 				_elm_lang$svg$Svg_Attributes$height('50')
 			]),
 		A2(_user$project$HistoryView$historyList, model.history, 0));
 };
 
-var _user$project$GraphView$arrowHeads = _elm_lang$core$Native_List.fromArray(
-	[
-		A2(
-		_elm_lang$svg$Svg$defs,
+var _user$project$QuestionView$buttonStyle = _elm_lang$html$Html_Attributes$style(
+	_elm_lang$core$Native_List.fromArray(
+		[
+			{ctor: '_Tuple2', _0: 'text-align', _1: 'center'},
+			{ctor: '_Tuple2', _0: 'font-size', _1: '16px'},
+			{ctor: '_Tuple2', _0: 'padding', _1: '15px 32px'},
+			{ctor: '_Tuple2', _0: 'margin', _1: '2px'}
+		]));
+var _user$project$QuestionView$inputStyle = _elm_lang$html$Html_Attributes$style(
+	_elm_lang$core$Native_List.fromArray(
+		[
+			{ctor: '_Tuple2', _0: 'width', _1: '100%'},
+			{ctor: '_Tuple2', _0: 'height', _1: '40px'},
+			{ctor: '_Tuple2', _0: 'padding', _1: '10px'},
+			{ctor: '_Tuple2', _0: 'font-size', _1: '2em'},
+			{ctor: '_Tuple2', _0: 'margin', _1: '8px'}
+		]));
+var _user$project$QuestionView$radioStyle = _elm_lang$html$Html_Attributes$style(
+	_elm_lang$core$Native_List.fromArray(
+		[
+			{ctor: '_Tuple2', _0: 'width', _1: '40px'},
+			{ctor: '_Tuple2', _0: 'height', _1: '40px'},
+			{ctor: '_Tuple2', _0: 'border-radius', _1: '50%'}
+		]));
+var _user$project$QuestionView$questionStyle = _elm_lang$html$Html_Attributes$style(
+	_elm_lang$core$Native_List.fromArray(
+		[
+			{ctor: '_Tuple2', _0: 'width', _1: '100%'},
+			{ctor: '_Tuple2', _0: 'padding', _1: '10px'},
+			{ctor: '_Tuple2', _0: 'font-size', _1: '2em'},
+			{ctor: '_Tuple2', _0: 'margin', _1: '4px'}
+		]));
+var _user$project$QuestionView$radio = F2(
+	function (name, model) {
+		var isSelected = _elm_lang$core$Native_Utils.eq(model.userInput, name);
+		return A2(
+			_elm_lang$html$Html$label,
+			_elm_lang$core$Native_List.fromArray(
+				[]),
+			_elm_lang$core$Native_List.fromArray(
+				[
+					A2(
+					_elm_lang$html$Html$br,
+					_elm_lang$core$Native_List.fromArray(
+						[]),
+					_elm_lang$core$Native_List.fromArray(
+						[])),
+					A2(
+					_elm_lang$html$Html$input,
+					_elm_lang$core$Native_List.fromArray(
+						[
+							_elm_lang$html$Html_Attributes$type$('radio'),
+							_elm_lang$html$Html_Attributes$checked(isSelected),
+							_elm_lang$html$Html_Events$onCheck(
+							function (_p0) {
+								return _user$project$Types$UserInput(name);
+							}),
+							_user$project$QuestionView$radioStyle
+						]),
+					_elm_lang$core$Native_List.fromArray(
+						[])),
+					A2(
+					_elm_lang$html$Html$span,
+					_elm_lang$core$Native_List.fromArray(
+						[_user$project$QuestionView$questionStyle]),
+					_elm_lang$core$Native_List.fromArray(
+						[
+							_elm_lang$html$Html$text(name)
+						]))
+				]));
+	});
+var _user$project$QuestionView$displayQuestion = function (model) {
+	var _p1 = model.question;
+	var question = _p1.question;
+	var distractors = _p1.distractors;
+	var answer = _p1.answer;
+	var format = _p1.format;
+	var _p2 = format;
+	if (_p2.ctor === 'FillInTheBlank') {
+		return A2(
+			_elm_lang$html$Html$form,
+			_elm_lang$core$Native_List.fromArray(
+				[
+					_elm_lang$html$Html_Events$onSubmit(_user$project$Types$Submit)
+				]),
+			_elm_lang$core$Native_List.fromArray(
+				[
+					A2(
+					_elm_lang$html$Html$div,
+					_elm_lang$core$Native_List.fromArray(
+						[_user$project$QuestionView$questionStyle]),
+					_elm_lang$core$Native_List.fromArray(
+						[
+							_elm_lang$html$Html$text(question)
+						])),
+					A2(
+					_elm_lang$html$Html$input,
+					_elm_lang$core$Native_List.fromArray(
+						[
+							_elm_lang$html$Html_Attributes$type$('text'),
+							_elm_lang$html$Html_Attributes$placeholder('Answer here...'),
+							_elm_lang$html$Html_Events$onInput(_user$project$Types$UserInput),
+							_elm_lang$html$Html_Attributes$value(model.userInput),
+							_user$project$QuestionView$inputStyle
+						]),
+					_elm_lang$core$Native_List.fromArray(
+						[])),
+					A2(
+					_elm_lang$html$Html$button,
+					_elm_lang$core$Native_List.fromArray(
+						[
+							_elm_lang$html$Html_Attributes$type$('submit'),
+							_user$project$QuestionView$buttonStyle
+						]),
+					_elm_lang$core$Native_List.fromArray(
+						[
+							_elm_lang$html$Html$text('Submit')
+						]))
+				]));
+	} else {
+		return A2(
+			_elm_lang$html$Html$form,
+			_elm_lang$core$Native_List.fromArray(
+				[
+					_elm_lang$html$Html_Events$onSubmit(_user$project$Types$Submit)
+				]),
+			_elm_lang$core$Native_List.fromArray(
+				[
+					A2(
+					_elm_lang$html$Html$div,
+					_elm_lang$core$Native_List.fromArray(
+						[_user$project$QuestionView$questionStyle]),
+					_elm_lang$core$Native_List.fromArray(
+						[
+							_elm_lang$html$Html$text(question)
+						])),
+					A2(
+					_elm_lang$html$Html$div,
+					_elm_lang$core$Native_List.fromArray(
+						[]),
+					_elm_lang$core$Native_List.fromArray(
+						[
+							A2(_user$project$QuestionView$radio, 'True', model),
+							A2(_user$project$QuestionView$radio, 'False', model)
+						])),
+					A2(
+					_elm_lang$html$Html$button,
+					_elm_lang$core$Native_List.fromArray(
+						[
+							_elm_lang$html$Html_Attributes$type$('submit'),
+							_user$project$QuestionView$buttonStyle
+						]),
+					_elm_lang$core$Native_List.fromArray(
+						[
+							_elm_lang$html$Html$text('Submit')
+						]))
+				]));
+	}
+};
+var _user$project$QuestionView$questionForm = function (model) {
+	var success$ = model.success;
+	var _p3 = model.question;
+	var question = _p3.question;
+	var distractors = _p3.distractors;
+	var answer = _p3.answer;
+	var format = _p3.format;
+	var _p4 = model.success;
+	if (_p4.ctor === 'Nothing') {
+		return _user$project$QuestionView$displayQuestion(model);
+	} else {
+		return A2(
+			_elm_lang$html$Html$form,
+			_elm_lang$core$Native_List.fromArray(
+				[
+					_elm_lang$html$Html_Events$onSubmit(_user$project$Types$GiveFeedback)
+				]),
+			_elm_lang$core$Native_List.fromArray(
+				[
+					A2(
+					_elm_lang$html$Html$div,
+					_elm_lang$core$Native_List.fromArray(
+						[_user$project$QuestionView$questionStyle]),
+					_elm_lang$core$Native_List.fromArray(
+						[
+							_elm_lang$html$Html$text(model.feedback)
+						])),
+					A2(
+					_elm_lang$html$Html$input,
+					_elm_lang$core$Native_List.fromArray(
+						[
+							_elm_lang$html$Html_Attributes$type$('text'),
+							_elm_lang$html$Html_Attributes$placeholder('Answer here...'),
+							_elm_lang$html$Html_Events$onInput(_user$project$Types$UserInput),
+							_elm_lang$html$Html_Attributes$value(model.userInput),
+							_elm_lang$html$Html_Attributes$disabled(true),
+							_user$project$QuestionView$inputStyle
+						]),
+					_elm_lang$core$Native_List.fromArray(
+						[])),
+					A2(
+					_elm_lang$html$Html$button,
+					_elm_lang$core$Native_List.fromArray(
+						[
+							_elm_lang$html$Html_Attributes$type$('submit'),
+							_user$project$QuestionView$buttonStyle
+						]),
+					_elm_lang$core$Native_List.fromArray(
+						[
+							_elm_lang$html$Html$text('Next Question')
+						]))
+				]));
+	}
+};
+
+var _user$project$View$scoreboardStyle = _elm_lang$html$Html_Attributes$style(
+	_elm_lang$core$Native_List.fromArray(
+		[
+			{ctor: '_Tuple2', _0: 'border-top', _1: '1px solid #000'},
+			{ctor: '_Tuple2', _0: 'border-bottom', _1: '1px solid #000'},
+			{ctor: '_Tuple2', _0: 'background', _1: '#ffffcc'},
+			{ctor: '_Tuple2', _0: 'height', _1: '40px'},
+			{ctor: '_Tuple2', _0: 'margin-left', _1: '6px'},
+			{ctor: '_Tuple2', _0: 'margin-right', _1: '6px'}
+		]));
+var _user$project$View$view = function (model) {
+	return A2(
+		_elm_lang$html$Html$div,
 		_elm_lang$core$Native_List.fromArray(
 			[]),
 		_elm_lang$core$Native_List.fromArray(
 			[
 				A2(
-				_elm_lang$svg$Svg$marker,
+				_elm_lang$html$Html$h1,
+				_elm_lang$core$Native_List.fromArray(
+					[_user$project$View$scoreboardStyle]),
 				_elm_lang$core$Native_List.fromArray(
 					[
-						_elm_lang$svg$Svg_Attributes$id('ArrowHeadEnd'),
-						_elm_lang$svg$Svg_Attributes$viewBox('0 0 10 10'),
-						_elm_lang$svg$Svg_Attributes$refX('1'),
-						_elm_lang$svg$Svg_Attributes$refY('5'),
-						_elm_lang$svg$Svg_Attributes$markerWidth('6'),
-						_elm_lang$svg$Svg_Attributes$markerHeight('6'),
-						_elm_lang$svg$Svg_Attributes$orient('auto')
-					]),
-				_elm_lang$core$Native_List.fromArray(
-					[
-						A2(
-						_elm_lang$svg$Svg$path,
-						_elm_lang$core$Native_List.fromArray(
-							[
-								_elm_lang$svg$Svg_Attributes$d('M 0 0 L 10 5 L 0 10 z')
-							]),
-						_elm_lang$core$Native_List.fromArray(
-							[]))
+						_elm_lang$html$Html$text('Test Your Understanding')
 					])),
-				A2(
-				_elm_lang$svg$Svg$marker,
-				_elm_lang$core$Native_List.fromArray(
-					[
-						_elm_lang$svg$Svg_Attributes$id('ArrowHeadStart'),
-						_elm_lang$svg$Svg_Attributes$viewBox('0 0 10 10'),
-						_elm_lang$svg$Svg_Attributes$refX('9'),
-						_elm_lang$svg$Svg_Attributes$refY('5'),
-						_elm_lang$svg$Svg_Attributes$markerWidth('6'),
-						_elm_lang$svg$Svg_Attributes$markerHeight('6'),
-						_elm_lang$svg$Svg_Attributes$orient('auto')
-					]),
-				_elm_lang$core$Native_List.fromArray(
-					[
-						A2(
-						_elm_lang$svg$Svg$path,
-						_elm_lang$core$Native_List.fromArray(
-							[
-								_elm_lang$svg$Svg_Attributes$d('M 10 10 L 0 5 L 10 0 z')
-							]),
-						_elm_lang$core$Native_List.fromArray(
-							[]))
-					]))
-			]))
-	]);
-var _user$project$GraphView$adjustPixel = F2(
-	function (p1, p2) {
-		return (_elm_lang$core$Native_Utils.cmp(p1, p2) < 0) ? (p1 + _user$project$View$viewConstants.nodeOffset) : (_elm_lang$core$Native_Utils.eq(p1, p2) ? p1 : (p1 - _user$project$View$viewConstants.nodeOffset));
+				_user$project$GraphView$imageOfGraph(model),
+				_user$project$QuestionView$questionForm(model),
+				_user$project$HistoryView$historySection(model),
+				_user$project$DebugView$debugSection(model)
+			]));
+};
+
+var _user$project$Ports$updateMastery = _elm_lang$core$Native_Platform.outgoingPort(
+	'updateMastery',
+	function (v) {
+		return v;
 	});
-var _user$project$GraphView$edgeLine = F6(
-	function (x_1, y_1, x_2, y_2, directed, direction) {
-		var lineStyle = _elm_lang$core$Native_List.fromArray(
-			[
-				_elm_lang$svg$Svg_Attributes$x1(
-				_elm_lang$core$Basics$toString(
-					A2(_user$project$GraphView$adjustPixel, x_1, x_2))),
-				_elm_lang$svg$Svg_Attributes$y1(
-				_elm_lang$core$Basics$toString(
-					A2(_user$project$GraphView$adjustPixel, y_1, y_2))),
-				_elm_lang$svg$Svg_Attributes$x2(
-				_elm_lang$core$Basics$toString(
-					A2(_user$project$GraphView$adjustPixel, x_2, x_1))),
-				_elm_lang$svg$Svg_Attributes$y2(
-				_elm_lang$core$Basics$toString(
-					A2(_user$project$GraphView$adjustPixel, y_2, y_1))),
-				_elm_lang$svg$Svg_Attributes$fill('none'),
-				_elm_lang$svg$Svg_Attributes$stroke('black'),
-				_elm_lang$svg$Svg_Attributes$strokeWidth('2')
-			]);
-		var uniArrow = _elm_lang$core$Native_List.fromArray(
-			[
-				_elm_lang$svg$Svg_Attributes$markerEnd('url(#ArrowHeadEnd)')
-			]);
-		var biArrow = _elm_lang$core$Native_List.fromArray(
-			[
-				_elm_lang$svg$Svg_Attributes$markerStart('url(#ArrowHeadStart)'),
-				_elm_lang$svg$Svg_Attributes$markerEnd('url(#ArrowHeadEnd)')
-			]);
-		var lineStyle$ = (directed && _elm_lang$core$Native_Utils.eq(direction, _user$project$Types$BiDirectional)) ? A2(_elm_lang$core$List$append, lineStyle, biArrow) : ((directed && _elm_lang$core$Native_Utils.eq(direction, _user$project$Types$UniDirectional)) ? A2(_elm_lang$core$List$append, lineStyle, uniArrow) : lineStyle);
-		return A2(
-			_elm_lang$svg$Svg$line,
-			lineStyle$,
-			_elm_lang$core$Native_List.fromArray(
-				[]));
-	});
-var _user$project$GraphView$edgeWeight = F5(
-	function (weight, x_1, y_1, x_2, y_2) {
-		var yOffset = _elm_lang$core$Native_Utils.eq(y_1, y_2) ? (3 * _user$project$View$viewConstants.weightOffset) : 0;
-		var midY = (((y_1 + y_2) / 2) | 0) + yOffset;
-		var xOffset = _elm_lang$core$Native_Utils.eq(x_1, x_2) ? _user$project$View$viewConstants.weightOffset : 0;
-		var midX = (((x_1 + x_2) / 2) | 0) + xOffset;
-		return A2(
-			_elm_lang$svg$Svg$text$,
-			_elm_lang$core$Native_List.fromArray(
-				[
-					_elm_lang$svg$Svg_Attributes$x(
-					_elm_lang$core$Basics$toString(midX)),
-					_elm_lang$svg$Svg_Attributes$y(
-					_elm_lang$core$Basics$toString(midY)),
-					_elm_lang$svg$Svg_Attributes$fontSize('18'),
-					_elm_lang$svg$Svg_Attributes$textAnchor('middle'),
-					_elm_lang$svg$Svg_Attributes$fill('red')
-				]),
-			_elm_lang$core$Native_List.fromArray(
-				[
-					_elm_lang$svg$Svg$text(
-					_elm_lang$core$Basics$toString(weight))
-				]));
-	});
-var _user$project$GraphView$nodeY = function (nodeId) {
-	var row = (nodeId / _user$project$View$viewConstants.nodesPerCol) | 0;
-	var y0 = _elm_lang$core$Basics$snd(_user$project$View$viewConstants.graphUpperLeft);
-	return y0 + (row * (_user$project$View$viewConstants.nodeRadius + _user$project$View$viewConstants.nodeSeparation));
-};
-var _user$project$GraphView$nodeRow = function (nodeId) {
-	return (nodeId / _user$project$View$viewConstants.nodesPerCol) | 0;
-};
-var _user$project$GraphView$nodeX = function (nodeId) {
-	var col = A2(_elm_lang$core$Basics$rem, nodeId, _user$project$View$viewConstants.nodesPerCol);
-	var x0 = _elm_lang$core$Basics$fst(_user$project$View$viewConstants.graphUpperLeft);
-	return x0 + (col * (_user$project$View$viewConstants.nodeRadius + _user$project$View$viewConstants.nodeSeparation));
-};
-var _user$project$GraphView$drawNode = function (nodeId) {
-	return _elm_lang$core$Native_List.fromArray(
-		[
-			A2(
-			_elm_lang$svg$Svg$circle,
-			_elm_lang$core$Native_List.fromArray(
-				[
-					_elm_lang$svg$Svg_Attributes$cx(
-					_elm_lang$core$Basics$toString(
-						_user$project$GraphView$nodeX(nodeId))),
-					_elm_lang$svg$Svg_Attributes$cy(
-					_elm_lang$core$Basics$toString(
-						_user$project$GraphView$nodeY(nodeId))),
-					_elm_lang$svg$Svg_Attributes$r(
-					_elm_lang$core$Basics$toString(_user$project$View$viewConstants.nodeRadius)),
-					_elm_lang$svg$Svg_Attributes$fill('blue')
-				]),
-			_elm_lang$core$Native_List.fromArray(
-				[])),
-			A2(
-			_elm_lang$svg$Svg$text$,
-			_elm_lang$core$Native_List.fromArray(
-				[
-					_elm_lang$svg$Svg_Attributes$x(
-					_elm_lang$core$Basics$toString(
-						_user$project$GraphView$nodeX(nodeId))),
-					_elm_lang$svg$Svg_Attributes$y(
-					_elm_lang$core$Basics$toString(
-						_user$project$GraphView$nodeY(nodeId))),
-					_elm_lang$svg$Svg_Attributes$fontSize('14'),
-					_elm_lang$svg$Svg_Attributes$textAnchor('middle'),
-					_elm_lang$svg$Svg_Attributes$fill('white')
-				]),
-			_elm_lang$core$Native_List.fromArray(
-				[
-					_elm_lang$svg$Svg$text(
-					_elm_lang$core$Basics$toString(nodeId))
-				]))
-		]);
-};
-var _user$project$GraphView$drawEdge = F3(
-	function (edge, weighted, directed) {
-		var y_2 = _user$project$GraphView$nodeY(edge.to);
-		var x_2 = _user$project$GraphView$nodeX(edge.to);
-		var y_1 = _user$project$GraphView$nodeY(edge.from);
-		var x_1 = _user$project$GraphView$nodeX(edge.from);
-		var lne = _elm_lang$core$Native_List.fromArray(
-			[
-				A6(_user$project$GraphView$edgeLine, x_1, y_1, x_2, y_2, directed, edge.direction)
-			]);
-		return (weighted && (_elm_lang$core$Native_Utils.cmp(edge.weight, 0) > 0)) ? A2(
-			_elm_lang$core$List$append,
-			lne,
-			_elm_lang$core$Native_List.fromArray(
-				[
-					A5(_user$project$GraphView$edgeWeight, edge.weight, x_1, y_1, x_2, y_2)
-				])) : lne;
-	});
-var _user$project$GraphView$drawEdges = function (graph) {
-	var drawEdgesHelper = F3(
-		function (edges, weighted, directed) {
-			var _p0 = edges;
-			if (_p0.ctor === '[]') {
-				return _user$project$GraphView$arrowHeads;
-			} else {
-				return A2(
-					_elm_lang$core$List$append,
-					A3(_user$project$GraphView$drawEdge, _p0._0, weighted, directed),
-					A3(drawEdgesHelper, _p0._1, weighted, directed));
-			}
-		});
-	return A3(drawEdgesHelper, graph.edges, graph.weighted, graph.directed);
-};
-var _user$project$GraphView$nodeCol = function (nodeId) {
-	return A2(_elm_lang$core$Basics$rem, nodeId, _user$project$View$viewConstants.nodesPerCol);
-};
-var _user$project$GraphView$drawNodes = function (graph) {
-	var drawNodesHelper = function (nodeIds) {
-		var _p1 = nodeIds;
-		if (_p1.ctor === '[]') {
-			return _elm_lang$core$Native_List.fromArray(
-				[]);
-		} else {
+var _user$project$Ports$ssData = _elm_lang$core$Native_Platform.incomingPort(
+	'ssData',
+	A2(
+		_elm_lang$core$Json_Decode$andThen,
+		A2(_elm_lang$core$Json_Decode_ops[':='], 'mastery', _elm_lang$core$Json_Decode$bool),
+		function (mastery) {
 			return A2(
-				_elm_lang$core$List$append,
-				_user$project$GraphView$drawNode(_p1._0),
-				drawNodesHelper(_p1._1));
-		}
-	};
-	return drawNodesHelper(graph.nodes);
-};
-var _user$project$GraphView$drawGraph = function (graph) {
-	return A2(
-		_elm_lang$core$List$append,
-		_user$project$GraphView$drawNodes(graph),
-		_user$project$GraphView$drawEdges(graph));
-};
-var _user$project$GraphView$imageOfGraph = function (model) {
-	var graphHeight = (((_user$project$View$viewConstants.nodeSeparation + _user$project$View$viewConstants.nodeRadius) * (_user$project$View$viewConstants.nodesPerCol - 1)) + _user$project$View$viewConstants.nodeRadius) + ((_user$project$View$viewConstants.nodeSeparation / 2) | 0);
-	var graphWidth = (_user$project$View$viewConstants.nodeSeparation + _user$project$View$viewConstants.nodeRadius) * _user$project$View$viewConstants.nodesPerRow;
-	return A2(
-		_elm_lang$svg$Svg$svg,
-		_elm_lang$core$Native_List.fromArray(
-			[
-				_elm_lang$svg$Svg_Attributes$version('1.1'),
-				_elm_lang$svg$Svg_Attributes$baseProfile('full'),
-				_elm_lang$svg$Svg_Attributes$width(
-				_elm_lang$core$Basics$toString(graphWidth)),
-				_elm_lang$svg$Svg_Attributes$height(
-				_elm_lang$core$Basics$toString(graphHeight))
-			]),
-		_user$project$GraphView$drawGraph(model.graph));
-};
+				_elm_lang$core$Json_Decode$andThen,
+				A2(_elm_lang$core$Json_Decode_ops[':='], 'numerator', _elm_lang$core$Json_Decode$int),
+				function (numerator) {
+					return A2(
+						_elm_lang$core$Json_Decode$andThen,
+						A2(_elm_lang$core$Json_Decode_ops[':='], 'denominator', _elm_lang$core$Json_Decode$int),
+						function (denominator) {
+							return A2(
+								_elm_lang$core$Json_Decode$andThen,
+								A2(_elm_lang$core$Json_Decode_ops[':='], 'weighted', _elm_lang$core$Json_Decode$bool),
+								function (weighted) {
+									return A2(
+										_elm_lang$core$Json_Decode$andThen,
+										A2(_elm_lang$core$Json_Decode_ops[':='], 'directed', _elm_lang$core$Json_Decode$bool),
+										function (directed) {
+											return A2(
+												_elm_lang$core$Json_Decode$andThen,
+												A2(_elm_lang$core$Json_Decode_ops[':='], 'implementMastery', _elm_lang$core$Json_Decode$bool),
+												function (implementMastery) {
+													return A2(
+														_elm_lang$core$Json_Decode$andThen,
+														A2(_elm_lang$core$Json_Decode_ops[':='], 'debug', _elm_lang$core$Json_Decode$bool),
+														function (debug) {
+															return _elm_lang$core$Json_Decode$succeed(
+																{mastery: mastery, numerator: numerator, denominator: denominator, weighted: weighted, directed: directed, implementMastery: implementMastery, debug: debug});
+														});
+												});
+										});
+								});
+						});
+				});
+		}));
 
 var _user$project$Search$unwindSearchTree = F2(
 	function (searchTree, lastNode) {
@@ -10442,7 +10585,7 @@ var _user$project$Question$questionByIndex = F2(
 						_user$project$Graph$numberOfNodes(model)),
 					_1: 'Correct.'
 				},
-				format: _user$project$Types$FillInTheBlank
+				format: _user$project$QuestionTypes$FillInTheBlank
 			};
 		} else {
 			if (_elm_lang$core$Native_Utils.eq(index, 2)) {
@@ -10464,7 +10607,7 @@ var _user$project$Question$questionByIndex = F2(
 							_user$project$Graph$numberOfEdges(model)),
 						_1: 'Correct.'
 					},
-					format: _user$project$Types$FillInTheBlank
+					format: _user$project$QuestionTypes$FillInTheBlank
 				};
 			} else {
 				if (_elm_lang$core$Native_Utils.eq(index, 3)) {
@@ -10514,7 +10657,7 @@ var _user$project$Question$questionByIndex = F2(
 							_0: _elm_lang$core$Basics$toString(ans),
 							_1: A2(_elm_lang$core$Basics_ops['++'], 'Correct. ', fbackString)
 						},
-						format: _user$project$Types$MultipleChoice
+						format: _user$project$QuestionTypes$MultipleChoice
 					};
 				} else {
 					if (_elm_lang$core$Native_Utils.eq(index, 4)) {
@@ -10595,7 +10738,7 @@ var _user$project$Question$questionByIndex = F2(
 								_0: _elm_lang$core$Basics$toString(ans),
 								_1: A2(_elm_lang$core$Basics_ops['++'], 'Correct. ', fbackString)
 							},
-							format: _user$project$Types$MultipleChoice
+							format: _user$project$QuestionTypes$MultipleChoice
 						};
 					} else {
 						if (_elm_lang$core$Native_Utils.eq(index, 5) && directed) {
@@ -10639,7 +10782,7 @@ var _user$project$Question$questionByIndex = F2(
 									_0: _elm_lang$core$Basics$toString(inDeg),
 									_1: 'Correct.'
 								},
-								format: _user$project$Types$FillInTheBlank
+								format: _user$project$QuestionTypes$FillInTheBlank
 							};
 						} else {
 							if (_elm_lang$core$Native_Utils.eq(index, 6) && directed) {
@@ -10683,7 +10826,7 @@ var _user$project$Question$questionByIndex = F2(
 										_0: _elm_lang$core$Basics$toString(outDeg),
 										_1: 'Correct.'
 									},
-									format: _user$project$Types$FillInTheBlank
+									format: _user$project$QuestionTypes$FillInTheBlank
 								};
 							} else {
 								if (_elm_lang$core$Native_Utils.eq(index, 7) && weighted) {
@@ -10714,7 +10857,7 @@ var _user$project$Question$questionByIndex = F2(
 											_0: _elm_lang$core$Basics$toString(weight),
 											_1: 'Correct.'
 										},
-										format: _user$project$Types$FillInTheBlank
+										format: _user$project$QuestionTypes$FillInTheBlank
 									};
 								} else {
 									var n = A2(
@@ -10757,7 +10900,7 @@ var _user$project$Question$questionByIndex = F2(
 											_0: _elm_lang$core$Basics$toString(deg),
 											_1: 'Correct.'
 										},
-										format: _user$project$Types$FillInTheBlank
+										format: _user$project$QuestionTypes$FillInTheBlank
 									};
 								}
 							}
@@ -10779,161 +10922,23 @@ var _user$project$Question$newQuestion = F2(
 			model,
 			{question: newQuestion, success: _elm_lang$core$Maybe$Nothing, userInput: ''});
 	});
-
-var _user$project$Ports$updateMastery = _elm_lang$core$Native_Platform.outgoingPort(
-	'updateMastery',
-	function (v) {
-		return v;
-	});
-var _user$project$Ports$ssData = _elm_lang$core$Native_Platform.incomingPort(
-	'ssData',
-	A2(
-		_elm_lang$core$Json_Decode$andThen,
-		A2(_elm_lang$core$Json_Decode_ops[':='], 'mastery', _elm_lang$core$Json_Decode$bool),
-		function (mastery) {
-			return A2(
-				_elm_lang$core$Json_Decode$andThen,
-				A2(_elm_lang$core$Json_Decode_ops[':='], 'numerator', _elm_lang$core$Json_Decode$int),
-				function (numerator) {
-					return A2(
-						_elm_lang$core$Json_Decode$andThen,
-						A2(_elm_lang$core$Json_Decode_ops[':='], 'denominator', _elm_lang$core$Json_Decode$int),
-						function (denominator) {
-							return A2(
-								_elm_lang$core$Json_Decode$andThen,
-								A2(_elm_lang$core$Json_Decode_ops[':='], 'weighted', _elm_lang$core$Json_Decode$bool),
-								function (weighted) {
-									return A2(
-										_elm_lang$core$Json_Decode$andThen,
-										A2(_elm_lang$core$Json_Decode_ops[':='], 'directed', _elm_lang$core$Json_Decode$bool),
-										function (directed) {
-											return A2(
-												_elm_lang$core$Json_Decode$andThen,
-												A2(_elm_lang$core$Json_Decode_ops[':='], 'implementMastery', _elm_lang$core$Json_Decode$bool),
-												function (implementMastery) {
-													return A2(
-														_elm_lang$core$Json_Decode$andThen,
-														A2(_elm_lang$core$Json_Decode_ops[':='], 'debug', _elm_lang$core$Json_Decode$bool),
-														function (debug) {
-															return _elm_lang$core$Json_Decode$succeed(
-																{mastery: mastery, numerator: numerator, denominator: denominator, weighted: weighted, directed: directed, implementMastery: implementMastery, debug: debug});
-														});
-												});
-										});
-								});
-						});
-				});
-		}));
-
-var _user$project$GraphQuestions$subscriptions = function (model) {
-	return _user$project$Ports$ssData(_user$project$Types$GetValuesFromSS);
+var _user$project$Question$emptyQuestion = {
+	question: '',
+	distractors: _elm_lang$core$Native_List.fromArray(
+		[]),
+	answer: {ctor: '_Tuple2', _0: '', _1: ''},
+	format: _user$project$QuestionTypes$FillInTheBlank
 };
-var _user$project$GraphQuestions$view = function (model) {
-	var debug = model.debug ? A2(
-		_elm_lang$html$Html$div,
-		_elm_lang$core$Native_List.fromArray(
-			[]),
-		_elm_lang$core$Native_List.fromArray(
-			[
-				A2(
-				_elm_lang$html$Html$button,
-				_elm_lang$core$Native_List.fromArray(
-					[
-						_elm_lang$html$Html_Events$onClick(_user$project$Types$Reset),
-						_user$project$View$buttonStyle
-					]),
-				_elm_lang$core$Native_List.fromArray(
-					[
-						_elm_lang$html$Html$text('Reset')
-					])),
-				A2(
-				_elm_lang$html$Html$button,
-				_elm_lang$core$Native_List.fromArray(
-					[
-						_elm_lang$html$Html_Events$onClick(_user$project$Types$ToggleWeighted),
-						_user$project$View$buttonStyle
-					]),
-				_elm_lang$core$Native_List.fromArray(
-					[
-						_elm_lang$html$Html$text('Toggle Weighted')
-					])),
-				A2(
-				_elm_lang$html$Html$button,
-				_elm_lang$core$Native_List.fromArray(
-					[
-						_elm_lang$html$Html_Events$onClick(_user$project$Types$ToggleDirectional),
-						_user$project$View$buttonStyle
-					]),
-				_elm_lang$core$Native_List.fromArray(
-					[
-						_elm_lang$html$Html$text('Toggle Directional')
-					])),
-				A2(
-				_elm_lang$html$Html$button,
-				_elm_lang$core$Native_List.fromArray(
-					[
-						_elm_lang$html$Html_Events$onClick(_user$project$Types$BreadthFirstSearch),
-						_user$project$View$buttonStyle
-					]),
-				_elm_lang$core$Native_List.fromArray(
-					[
-						_elm_lang$html$Html$text('BFS')
-					])),
-				A2(
-				_elm_lang$html$Html$button,
-				_elm_lang$core$Native_List.fromArray(
-					[
-						_elm_lang$html$Html_Events$onClick(_user$project$Types$UpdateMastery),
-						_user$project$View$buttonStyle
-					]),
-				_elm_lang$core$Native_List.fromArray(
-					[
-						_elm_lang$html$Html$text('Mastery')
-					])),
-				A2(
-				_elm_lang$html$Html$p,
-				_elm_lang$core$Native_List.fromArray(
-					[]),
-				_elm_lang$core$Native_List.fromArray(
-					[
-						_elm_lang$html$Html$text(
-						_elm_lang$core$Basics$toString(model))
-					]))
-			])) : A2(
-		_elm_lang$html$Html$div,
-		_elm_lang$core$Native_List.fromArray(
-			[]),
-		_elm_lang$core$Native_List.fromArray(
-			[]));
-	return A2(
-		_elm_lang$html$Html$div,
-		_elm_lang$core$Native_List.fromArray(
-			[]),
-		_elm_lang$core$Native_List.fromArray(
-			[
-				A2(
-				_elm_lang$html$Html$h1,
-				_elm_lang$core$Native_List.fromArray(
-					[_user$project$View$scoreboardStyle]),
-				_elm_lang$core$Native_List.fromArray(
-					[
-						_elm_lang$html$Html$text('Test Your Understanding')
-					])),
-				_user$project$GraphView$imageOfGraph(model),
-				_user$project$QuestionView$questionForm(model),
-				_user$project$HistoryView$historySection(model),
-				debug
-			]));
-};
-var _user$project$GraphQuestions$initModel = {
-	graph: _user$project$Types$emptyGraph,
+
+var _user$project$Model$initModel = {
+	graph: _user$project$Graph$emptyGraph,
 	debug: true,
 	userInput: '',
 	history: _elm_lang$core$Native_List.fromArray(
 		[]),
 	bfs: _elm_lang$core$Maybe$Nothing,
 	success: _elm_lang$core$Maybe$Nothing,
-	question: _user$project$Types$emptyQuestion,
+	question: _user$project$Question$emptyQuestion,
 	feedback: '',
 	randomValues: _elm_lang$core$Native_List.fromArray(
 		[]),
@@ -10942,8 +10947,9 @@ var _user$project$GraphQuestions$initModel = {
 	denominator: 5,
 	implementMastery: false
 };
-var _user$project$GraphQuestions$init = {ctor: '_Tuple2', _0: _user$project$GraphQuestions$initModel, _1: _elm_lang$core$Platform_Cmd$none};
-var _user$project$GraphQuestions$update = F2(
+var _user$project$Model$init = {ctor: '_Tuple2', _0: _user$project$Model$initModel, _1: _elm_lang$core$Platform_Cmd$none};
+
+var _user$project$Update$update = F2(
 	function (msg, model) {
 		update:
 		while (true) {
@@ -10957,7 +10963,7 @@ var _user$project$GraphQuestions$update = F2(
 				case 'Reset':
 					return {
 						ctor: '_Tuple2',
-						_0: _user$project$GraphQuestions$initModel,
+						_0: _user$project$Model$initModel,
 						_1: A2(
 							_elm_lang$core$Random$generate,
 							_user$project$Types$NewRandomValues,
@@ -11130,9 +11136,13 @@ var _user$project$GraphQuestions$update = F2(
 			}
 		}
 	});
+
+var _user$project$GraphQuestions$subscriptions = function (model) {
+	return _user$project$Ports$ssData(_user$project$Types$GetValuesFromSS);
+};
 var _user$project$GraphQuestions$main = {
 	main: _elm_lang$html$Html_App$program(
-		{init: _user$project$GraphQuestions$init, view: _user$project$GraphQuestions$view, update: _user$project$GraphQuestions$update, subscriptions: _user$project$GraphQuestions$subscriptions})
+		{init: _user$project$Model$init, view: _user$project$View$view, update: _user$project$Update$update, subscriptions: _user$project$GraphQuestions$subscriptions})
 };
 
 var Elm = {};

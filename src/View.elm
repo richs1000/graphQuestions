@@ -2,6 +2,11 @@ module View exposing (..)
 
 import Html exposing (..)
 import Html.Attributes exposing (..)
+import Types exposing (..)
+import GraphView exposing (..)
+import HistoryView exposing (..)
+import DebugView exposing (..)
+import QuestionView exposing (..)
 
 
 scoreboardStyle : Html.Attribute msg
@@ -16,75 +21,12 @@ scoreboardStyle =
         ]
 
 
-questionStyle : Html.Attribute msg
-questionStyle =
-    Html.Attributes.style
-        [ ( "width", "100%" )
-          -- , ( "height", "40px" )
-        , ( "padding", "10px" )
-        , ( "font-size", "2em" )
-        , ( "margin", "4px" )
-          -- , ( "line-height", "3" )
+view : Model -> Html Msg
+view model =
+    div []
+        [ h1 [ scoreboardStyle ] [ Html.text "Test Your Understanding" ]
+        , imageOfGraph model
+        , questionForm model
+        , historySection model
+        , debugSection model
         ]
-
-
-buttonStyle : Html.Attribute msg
-buttonStyle =
-    Html.Attributes.style
-        [ ( "text-align", "center" )
-        , ( "font-size", "16px" )
-        , ( "padding", "15px 32px" )
-        , ( "margin", "2px" )
-          -- , ( "display", "inline-block" )
-        ]
-
-
-radioStyle : Html.Attribute msg
-radioStyle =
-    Html.Attributes.style
-        [ ( "width", "40px" )
-        , ( "height", "40px" )
-        , ( "border-radius", "50%" )
-        ]
-
-
-inputStyle : Html.Attribute msg
-inputStyle =
-    Html.Attributes.style
-        [ ( "width", "100%" )
-        , ( "height", "40px" )
-        , ( "padding", "10px" )
-        , ( "font-size", "2em" )
-        , ( "margin", "8px" )
-        ]
-
-
-type alias Pixels =
-    Int
-
-
-type alias ViewConstants =
-    { nodeSeparation : Pixels
-    , nodeRadius : Pixels
-    , nodeOffset : Pixels
-    , weightOffset : Pixels
-    , graphUpperLeft : ( Pixels, Pixels )
-    , nodesPerRow : Int
-    , nodesPerCol : Int
-    , historySquareSize : Int
-    , historySquareSeparation : Int
-    }
-
-
-viewConstants : ViewConstants
-viewConstants =
-    { nodeSeparation = 100
-    , nodeRadius = 20
-    , nodeOffset = 30
-    , weightOffset = 7
-    , graphUpperLeft = ( 40, 20 )
-    , nodesPerRow = 4
-    , nodesPerCol = 4
-    , historySquareSize = 25
-    , historySquareSeparation = 5
-    }

@@ -3,8 +3,18 @@ module HistoryView exposing (..)
 import Html exposing (..)
 import Svg exposing (..)
 import Svg.Attributes exposing (..)
-import View exposing (..)
 import Types exposing (..)
+import HistoryTypes exposing (HistoryList)
+
+
+historySquareSize : Pixels
+historySquareSize =
+    25
+
+
+historySquareSeparation : Pixels
+historySquareSeparation =
+    5
 
 
 historySection : Model -> Html Msg
@@ -15,7 +25,7 @@ historySection model =
         , Svg.Attributes.width
             (toString
                 (model.denominator
-                    * (viewConstants.historySquareSize + viewConstants.historySquareSeparation)
+                    * (historySquareSize + historySquareSeparation)
                 )
             )
         , Svg.Attributes.height "50"
@@ -27,8 +37,8 @@ historySquare : Maybe Bool -> Int -> Svg a
 historySquare h i =
     let
         base =
-            [ Svg.Attributes.width (toString viewConstants.historySquareSize)
-            , Svg.Attributes.height (toString viewConstants.historySquareSize)
+            [ Svg.Attributes.width (toString historySquareSize)
+            , Svg.Attributes.height (toString historySquareSize)
             , y "10"
             ]
 
@@ -42,7 +52,7 @@ historySquare h i =
             List.append base [ fill "white" ]
 
         myX =
-            10 + (viewConstants.historySquareSize + viewConstants.historySquareSeparation) * i
+            10 + (historySquareSize + historySquareSeparation) * i
     in
         case h of
             Just True ->
