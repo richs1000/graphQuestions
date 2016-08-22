@@ -103,7 +103,7 @@ var _user$project$Question$questionByIndex = F2(
 						_user$project$Graph$numberOfNodes(model)),
 					_1: 'Correct.'
 				},
-				format: _user$project$Types$FillInTheBlank
+				format: _user$project$QuestionTypes$FillInTheBlank
 			};
 		} else {
 			if (_elm_lang$core$Native_Utils.eq(index, 2)) {
@@ -125,7 +125,7 @@ var _user$project$Question$questionByIndex = F2(
 							_user$project$Graph$numberOfEdges(model)),
 						_1: 'Correct.'
 					},
-					format: _user$project$Types$FillInTheBlank
+					format: _user$project$QuestionTypes$FillInTheBlank
 				};
 			} else {
 				if (_elm_lang$core$Native_Utils.eq(index, 3)) {
@@ -175,7 +175,7 @@ var _user$project$Question$questionByIndex = F2(
 							_0: _elm_lang$core$Basics$toString(ans),
 							_1: A2(_elm_lang$core$Basics_ops['++'], 'Correct. ', fbackString)
 						},
-						format: _user$project$Types$MultipleChoice
+						format: _user$project$QuestionTypes$MultipleChoice
 					};
 				} else {
 					if (_elm_lang$core$Native_Utils.eq(index, 4)) {
@@ -256,7 +256,7 @@ var _user$project$Question$questionByIndex = F2(
 								_0: _elm_lang$core$Basics$toString(ans),
 								_1: A2(_elm_lang$core$Basics_ops['++'], 'Correct. ', fbackString)
 							},
-							format: _user$project$Types$MultipleChoice
+							format: _user$project$QuestionTypes$MultipleChoice
 						};
 					} else {
 						if (_elm_lang$core$Native_Utils.eq(index, 5) && directed) {
@@ -300,7 +300,7 @@ var _user$project$Question$questionByIndex = F2(
 									_0: _elm_lang$core$Basics$toString(inDeg),
 									_1: 'Correct.'
 								},
-								format: _user$project$Types$FillInTheBlank
+								format: _user$project$QuestionTypes$FillInTheBlank
 							};
 						} else {
 							if (_elm_lang$core$Native_Utils.eq(index, 6) && directed) {
@@ -344,7 +344,7 @@ var _user$project$Question$questionByIndex = F2(
 										_0: _elm_lang$core$Basics$toString(outDeg),
 										_1: 'Correct.'
 									},
-									format: _user$project$Types$FillInTheBlank
+									format: _user$project$QuestionTypes$FillInTheBlank
 								};
 							} else {
 								if (_elm_lang$core$Native_Utils.eq(index, 7) && weighted) {
@@ -375,7 +375,7 @@ var _user$project$Question$questionByIndex = F2(
 											_0: _elm_lang$core$Basics$toString(weight),
 											_1: 'Correct.'
 										},
-										format: _user$project$Types$FillInTheBlank
+										format: _user$project$QuestionTypes$FillInTheBlank
 									};
 								} else {
 									var n = A2(
@@ -418,7 +418,7 @@ var _user$project$Question$questionByIndex = F2(
 											_0: _elm_lang$core$Basics$toString(deg),
 											_1: 'Correct.'
 										},
-										format: _user$project$Types$FillInTheBlank
+										format: _user$project$QuestionTypes$FillInTheBlank
 									};
 								}
 							}
@@ -440,3 +440,10 @@ var _user$project$Question$newQuestion = F2(
 			model,
 			{question: newQuestion, success: _elm_lang$core$Maybe$Nothing, userInput: ''});
 	});
+var _user$project$Question$emptyQuestion = {
+	question: '',
+	distractors: _elm_lang$core$Native_List.fromArray(
+		[]),
+	answer: {ctor: '_Tuple2', _0: '', _1: ''},
+	format: _user$project$QuestionTypes$FillInTheBlank
+};

@@ -3,9 +3,50 @@ module QuestionView exposing (..)
 import Html exposing (..)
 import Html.Attributes exposing (..)
 import Html.Events exposing (..)
-import Debug
 import Types exposing (..)
-import View exposing (..)
+import QuestionTypes exposing (..)
+
+
+questionStyle : Html.Attribute msg
+questionStyle =
+    Html.Attributes.style
+        [ ( "width", "100%" )
+          -- , ( "height", "40px" )
+        , ( "padding", "10px" )
+        , ( "font-size", "2em" )
+        , ( "margin", "4px" )
+          -- , ( "line-height", "3" )
+        ]
+
+
+radioStyle : Html.Attribute msg
+radioStyle =
+    Html.Attributes.style
+        [ ( "width", "40px" )
+        , ( "height", "40px" )
+        , ( "border-radius", "50%" )
+        ]
+
+
+inputStyle : Html.Attribute msg
+inputStyle =
+    Html.Attributes.style
+        [ ( "width", "100%" )
+        , ( "height", "40px" )
+        , ( "padding", "10px" )
+        , ( "font-size", "2em" )
+        , ( "margin", "8px" )
+        ]
+
+
+buttonStyle : Html.Attribute msg
+buttonStyle =
+    Html.Attributes.style
+        [ ( "text-align", "center" )
+        , ( "font-size", "16px" )
+        , ( "padding", "15px 32px" )
+        , ( "margin", "2px" )
+        ]
 
 
 displayQuestion : Model -> Html Msg

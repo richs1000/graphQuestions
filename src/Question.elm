@@ -3,6 +3,16 @@ module Question exposing (..)
 import Types exposing (..)
 import Graph exposing (..)
 import Search exposing (..)
+import QuestionTypes exposing (..)
+
+
+emptyQuestion : Question
+emptyQuestion =
+    { question = ""
+    , distractors = []
+    , answer = ( "", "" )
+    , format = FillInTheBlank
+    }
 
 
 questionByIndex : Model -> Int -> Question

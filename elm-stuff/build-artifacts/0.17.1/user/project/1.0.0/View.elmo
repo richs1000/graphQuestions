@@ -1,46 +1,3 @@
-var _user$project$View$viewConstants = {
-	nodeSeparation: 100,
-	nodeRadius: 20,
-	nodeOffset: 30,
-	weightOffset: 7,
-	graphUpperLeft: {ctor: '_Tuple2', _0: 40, _1: 20},
-	nodesPerRow: 4,
-	nodesPerCol: 4,
-	historySquareSize: 25,
-	historySquareSeparation: 5
-};
-var _user$project$View$inputStyle = _elm_lang$html$Html_Attributes$style(
-	_elm_lang$core$Native_List.fromArray(
-		[
-			{ctor: '_Tuple2', _0: 'width', _1: '100%'},
-			{ctor: '_Tuple2', _0: 'height', _1: '40px'},
-			{ctor: '_Tuple2', _0: 'padding', _1: '10px'},
-			{ctor: '_Tuple2', _0: 'font-size', _1: '2em'},
-			{ctor: '_Tuple2', _0: 'margin', _1: '8px'}
-		]));
-var _user$project$View$radioStyle = _elm_lang$html$Html_Attributes$style(
-	_elm_lang$core$Native_List.fromArray(
-		[
-			{ctor: '_Tuple2', _0: 'width', _1: '40px'},
-			{ctor: '_Tuple2', _0: 'height', _1: '40px'},
-			{ctor: '_Tuple2', _0: 'border-radius', _1: '50%'}
-		]));
-var _user$project$View$buttonStyle = _elm_lang$html$Html_Attributes$style(
-	_elm_lang$core$Native_List.fromArray(
-		[
-			{ctor: '_Tuple2', _0: 'text-align', _1: 'center'},
-			{ctor: '_Tuple2', _0: 'font-size', _1: '16px'},
-			{ctor: '_Tuple2', _0: 'padding', _1: '15px 32px'},
-			{ctor: '_Tuple2', _0: 'margin', _1: '2px'}
-		]));
-var _user$project$View$questionStyle = _elm_lang$html$Html_Attributes$style(
-	_elm_lang$core$Native_List.fromArray(
-		[
-			{ctor: '_Tuple2', _0: 'width', _1: '100%'},
-			{ctor: '_Tuple2', _0: 'padding', _1: '10px'},
-			{ctor: '_Tuple2', _0: 'font-size', _1: '2em'},
-			{ctor: '_Tuple2', _0: 'margin', _1: '4px'}
-		]));
 var _user$project$View$scoreboardStyle = _elm_lang$html$Html_Attributes$style(
 	_elm_lang$core$Native_List.fromArray(
 		[
@@ -51,7 +8,24 @@ var _user$project$View$scoreboardStyle = _elm_lang$html$Html_Attributes$style(
 			{ctor: '_Tuple2', _0: 'margin-left', _1: '6px'},
 			{ctor: '_Tuple2', _0: 'margin-right', _1: '6px'}
 		]));
-var _user$project$View$ViewConstants = F9(
-	function (a, b, c, d, e, f, g, h, i) {
-		return {nodeSeparation: a, nodeRadius: b, nodeOffset: c, weightOffset: d, graphUpperLeft: e, nodesPerRow: f, nodesPerCol: g, historySquareSize: h, historySquareSeparation: i};
-	});
+var _user$project$View$view = function (model) {
+	return A2(
+		_elm_lang$html$Html$div,
+		_elm_lang$core$Native_List.fromArray(
+			[]),
+		_elm_lang$core$Native_List.fromArray(
+			[
+				A2(
+				_elm_lang$html$Html$h1,
+				_elm_lang$core$Native_List.fromArray(
+					[_user$project$View$scoreboardStyle]),
+				_elm_lang$core$Native_List.fromArray(
+					[
+						_elm_lang$html$Html$text('Test Your Understanding')
+					])),
+				_user$project$GraphView$imageOfGraph(model),
+				_user$project$QuestionView$questionForm(model),
+				_user$project$HistoryView$historySection(model),
+				_user$project$DebugView$debugSection(model)
+			]));
+};

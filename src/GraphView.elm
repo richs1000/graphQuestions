@@ -3,21 +3,60 @@ module GraphView exposing (..)
 import Html exposing (..)
 import Svg exposing (..)
 import Svg.Attributes exposing (..)
-import View exposing (..)
+
+
+-- import View exposing (..)
+
 import Types exposing (..)
+import GraphTypes exposing (..)
+
+
+nodeSeparation : Pixels
+nodeSeparation =
+    100
+
+
+nodeRadius : Pixels
+nodeRadius =
+    20
+
+
+nodeOffset : Pixels
+nodeOffset =
+    30
+
+
+weightOffset : Pixels
+weightOffset =
+    7
+
+
+graphUpperLeft : ( Pixels, Pixels )
+graphUpperLeft =
+    ( 40, 20 )
+
+
+nodesPerRow : Int
+nodesPerRow =
+    4
+
+
+nodesPerCol : Int
+nodesPerCol =
+    4
 
 
 imageOfGraph : Model -> Html Msg
 imageOfGraph model =
     let
         graphWidth =
-            ((viewConstants.nodeSeparation + viewConstants.nodeRadius) * viewConstants.nodesPerRow)
+            ((nodeSeparation + nodeRadius) * nodesPerRow)
 
         graphHeight =
-            ((viewConstants.nodeSeparation + viewConstants.nodeRadius)
-                * (viewConstants.nodesPerCol - 1)
-                + viewConstants.nodeRadius
-                + (viewConstants.nodeSeparation // 2)
+            ((nodeSeparation + nodeRadius)
+                * (nodesPerCol - 1)
+                + nodeRadius
+                + (nodeSeparation // 2)
             )
     in
         Svg.svg
@@ -50,36 +89,36 @@ drawNodes graph =
 
 nodeCol : NodeId -> Int
 nodeCol nodeId =
-    nodeId `rem` viewConstants.nodesPerCol
+    nodeId `rem` nodesPerCol
 
 
 nodeX : NodeId -> Pixels
 nodeX nodeId =
     let
         x0 =
-            fst viewConstants.graphUpperLeft
+            fst graphUpperLeft
 
         col =
-            nodeId `rem` viewConstants.nodesPerCol
+            nodeId `rem` nodesPerCol
     in
-        x0 + col * (viewConstants.nodeRadius + viewConstants.nodeSeparation)
+        x0 + col * (nodeRadius + nodeSeparation)
 
 
 nodeRow : NodeId -> Int
 nodeRow nodeId =
-    nodeId // viewConstants.nodesPerCol
+    nodeId // nodesPerCol
 
 
 nodeY : NodeId -> Pixels
 nodeY nodeId =
     let
         y0 =
-            snd viewConstants.graphUpperLeft
+            snd graphUpperLeft
 
         row =
-            nodeId // viewConstants.nodesPerCol
+            nodeId // nodesPerCol
     in
-        y0 + row * (viewConstants.nodeRadius + viewConstants.nodeSeparation)
+        y0 + row * (nodeRadius + nodeSeparation)
 
 
 drawNode : NodeId -> List (Svg a)
@@ -87,7 +126,7 @@ drawNode nodeId =
     [ Svg.circle
         [ cx (toString (nodeX nodeId))
         , cy (toString (nodeY nodeId))
-        , r (toString viewConstants.nodeRadius)
+        , r (toString nodeRadius)
         , fill "blue"
         ]
         []
@@ -145,13 +184,13 @@ edgeWeight weight x_1 y_1 x_2 y_2 =
     let
         xOffset =
             if (x_1 == x_2) then
-                viewConstants.weightOffset
+                weightOffset
             else
                 0
 
         yOffset =
             if (y_1 == y_2) then
-                3 * viewConstants.weightOffset
+                3 * weightOffset
             else
                 0
 
@@ -174,11 +213,11 @@ edgeWeight weight x_1 y_1 x_2 y_2 =
 adjustPixel : Pixels -> Pixels -> Pixels
 adjustPixel p1 p2 =
     if (p1 < p2) then
-        p1 + viewConstants.nodeOffset
+        p1 + nodeOffset
     else if (p1 == p2) then
         p1
     else
-        p1 - viewConstants.nodeOffset
+        p1 - nodeOffset
 
 
 arrowHeads : List (Svg a)
