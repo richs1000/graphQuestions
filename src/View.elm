@@ -7,6 +7,7 @@ import GraphView exposing (..)
 import HistoryView exposing (..)
 import DebugView exposing (..)
 import QuestionView exposing (..)
+import MessageTypes exposing (..)
 
 
 scoreboardStyle : Html.Attribute msg
@@ -25,7 +26,7 @@ view : Model -> Html Msg
 view model =
     div []
         [ h1 [ scoreboardStyle ] [ Html.text "Test Your Understanding" ]
-        , imageOfGraph model
+        , imageOfGraph model.graph
         , questionForm model
         , historySection model
         , debugSection model

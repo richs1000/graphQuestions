@@ -1,5 +1,5 @@
 var _user$project$GraphQuestions$subscriptions = function (model) {
-	return _user$project$Ports$ssData(_user$project$Types$GetValuesFromSS);
+	return _user$project$Ports$ssData(_user$project$MessageTypes$GetValuesFromSS);
 };
 var _user$project$GraphQuestions$main = {
 	main: _elm_lang$html$Html_App$program(

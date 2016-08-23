@@ -53,7 +53,7 @@ var _user$project$QuestionView$radio = F2(
 							_elm_lang$html$Html_Attributes$checked(isSelected),
 							_elm_lang$html$Html_Events$onCheck(
 							function (_p0) {
-								return _user$project$Types$UserInput(name);
+								return _user$project$MessageTypes$UserInput(name);
 							}),
 							_user$project$QuestionView$radioStyle
 						]),
@@ -81,7 +81,7 @@ var _user$project$QuestionView$displayQuestion = function (model) {
 			_elm_lang$html$Html$form,
 			_elm_lang$core$Native_List.fromArray(
 				[
-					_elm_lang$html$Html_Events$onSubmit(_user$project$Types$Submit)
+					_elm_lang$html$Html_Events$onSubmit(_user$project$MessageTypes$Submit)
 				]),
 			_elm_lang$core$Native_List.fromArray(
 				[
@@ -99,7 +99,7 @@ var _user$project$QuestionView$displayQuestion = function (model) {
 						[
 							_elm_lang$html$Html_Attributes$type$('text'),
 							_elm_lang$html$Html_Attributes$placeholder('Answer here...'),
-							_elm_lang$html$Html_Events$onInput(_user$project$Types$UserInput),
+							_elm_lang$html$Html_Events$onInput(_user$project$MessageTypes$UserInput),
 							_elm_lang$html$Html_Attributes$value(model.userInput),
 							_user$project$QuestionView$inputStyle
 						]),
@@ -122,7 +122,7 @@ var _user$project$QuestionView$displayQuestion = function (model) {
 			_elm_lang$html$Html$form,
 			_elm_lang$core$Native_List.fromArray(
 				[
-					_elm_lang$html$Html_Events$onSubmit(_user$project$Types$Submit)
+					_elm_lang$html$Html_Events$onSubmit(_user$project$MessageTypes$Submit)
 				]),
 			_elm_lang$core$Native_List.fromArray(
 				[
@@ -172,7 +172,7 @@ var _user$project$QuestionView$questionForm = function (model) {
 			_elm_lang$html$Html$form,
 			_elm_lang$core$Native_List.fromArray(
 				[
-					_elm_lang$html$Html_Events$onSubmit(_user$project$Types$GiveFeedback)
+					_elm_lang$html$Html_Events$onSubmit(_user$project$MessageTypes$GiveFeedback)
 				]),
 			_elm_lang$core$Native_List.fromArray(
 				[
@@ -190,7 +190,7 @@ var _user$project$QuestionView$questionForm = function (model) {
 						[
 							_elm_lang$html$Html_Attributes$type$('text'),
 							_elm_lang$html$Html_Attributes$placeholder('Answer here...'),
-							_elm_lang$html$Html_Events$onInput(_user$project$Types$UserInput),
+							_elm_lang$html$Html_Events$onInput(_user$project$MessageTypes$UserInput),
 							_elm_lang$html$Html_Attributes$value(model.userInput),
 							_elm_lang$html$Html_Attributes$disabled(true),
 							_user$project$QuestionView$inputStyle

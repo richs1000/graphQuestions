@@ -25,33 +25,3 @@ var _user$project$Types$Model = function (a) {
 		};
 	};
 };
-var _user$project$Types$SSData = F7(
-	function (a, b, c, d, e, f, g) {
-		return {mastery: a, numerator: b, denominator: c, weighted: d, directed: e, implementMastery: f, debug: g};
-	});
-var _user$project$Types$GetValuesFromSS = function (a) {
-	return {ctor: 'GetValuesFromSS', _0: a};
-};
-var _user$project$Types$UpdateMastery = {ctor: 'UpdateMastery'};
-var _user$project$Types$ToggleDirectional = {ctor: 'ToggleDirectional'};
-var _user$project$Types$ToggleWeighted = {ctor: 'ToggleWeighted'};
-var _user$project$Types$BreadthFirstSearch = {ctor: 'BreadthFirstSearch'};
-var _user$project$Types$CheckMastery = {ctor: 'CheckMastery'};
-var _user$project$Types$GiveFeedback = {ctor: 'GiveFeedback'};
-var _user$project$Types$Submit = {ctor: 'Submit'};
-var _user$project$Types$UserInput = function (a) {
-	return {ctor: 'UserInput', _0: a};
-};
-var _user$project$Types$NewQuestion = function (a) {
-	return {ctor: 'NewQuestion', _0: a};
-};
-var _user$project$Types$NewEdgeWeights = function (a) {
-	return {ctor: 'NewEdgeWeights', _0: a};
-};
-var _user$project$Types$NewNodes = function (a) {
-	return {ctor: 'NewNodes', _0: a};
-};
-var _user$project$Types$NewRandomValues = function (a) {
-	return {ctor: 'NewRandomValues', _0: a};
-};
-var _user$project$Types$Reset = {ctor: 'Reset'};

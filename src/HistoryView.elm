@@ -5,6 +5,11 @@ import Svg exposing (..)
 import Svg.Attributes exposing (..)
 import Types exposing (..)
 import HistoryTypes exposing (HistoryList)
+import MessageTypes exposing (Msg(..))
+
+
+type alias Pixels =
+    Int
 
 
 historySquareSize : Pixels

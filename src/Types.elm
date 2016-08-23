@@ -26,43 +26,7 @@ type alias Model =
 
 
 
--- HISTORY
--- QUESTION
--- GRAPH
 -- VIEW
-
-
-type alias Pixels =
-    Int
-
-
-
+-- type alias Pixels =
+--     Int
 -- UPDATE
-
-
-type alias SSData =
-    { mastery : Bool
-    , numerator : Int
-    , denominator : Int
-    , weighted : Bool
-    , directed : Bool
-    , implementMastery : Bool
-    , debug : Bool
-    }
-
-
-type Msg
-    = Reset
-    | NewRandomValues (List Int)
-    | NewNodes (List NodeId)
-    | NewEdgeWeights (List EdgeWeight)
-    | NewQuestion Int
-    | UserInput String
-    | Submit
-    | GiveFeedback
-    | CheckMastery
-    | BreadthFirstSearch
-    | ToggleWeighted
-    | ToggleDirectional
-    | UpdateMastery
-    | GetValuesFromSS SSData

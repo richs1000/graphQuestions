@@ -5,6 +5,7 @@ import Html.Attributes exposing (..)
 import Html.Events exposing (..)
 import Types exposing (..)
 import Question exposing (..)
+import MessageTypes exposing (Msg(..))
 
 
 questionStyle : Html.Attribute msg

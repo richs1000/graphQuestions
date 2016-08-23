@@ -1,6 +1,7 @@
 module Model exposing (..)
 
-import Types exposing (Model, Msg)
+import Types exposing (Model)
+import MessageTypes exposing (Msg(..))
 import Graph exposing (emptyGraph)
 import Question exposing (emptyQuestion)
 
@@ -24,8 +25,6 @@ masteryAchieved model =
             correctAnswers >= model.numerator
         else
             (List.length model.history) >= model.numerator
-
-
 
 
 initModel : Model

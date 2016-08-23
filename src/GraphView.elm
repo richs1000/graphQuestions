@@ -6,9 +6,14 @@ import Svg.Attributes exposing (..)
 
 
 -- import View exposing (..)
+-- import Types exposing (..)
 
-import Types exposing (..)
 import Graph exposing (..)
+import MessageTypes exposing (Msg(..))
+
+
+type alias Pixels =
+    Int
 
 
 nodeSeparation : Pixels
@@ -36,25 +41,53 @@ graphUpperLeft =
     ( 40, 20 )
 
 
-nodesPerRow : Int
-nodesPerRow =
-    4
+
+-- nodesPerRow : Int
+-- nodesPerRow =
+--     4
+--
+--
+-- nodesPerCol : Int
+-- nodesPerCol =
+--     4
+-- imageOfGraph : Model -> Html Msg
+-- imageOfGraph model =
+--     let
+--         graphWidth =
+--             ((nodeSeparation + nodeRadius) * nodesPerRow)
+--
+--         graphHeight =
+--             ((nodeSeparation + nodeRadius)
+--                 * (nodesPerCol - 1)
+--                 + nodeRadius
+--                 + (nodeSeparation // 2)
+--             )
+--     in
+--         Svg.svg
+--             [ version "1.1"
+--             , baseProfile "full"
+--             , Svg.Attributes.width (toString graphWidth)
+--             , Svg.Attributes.height (toString graphHeight)
+--             ]
+--             (drawGraph model.graph)
+--
+--
 
 
-nodesPerCol : Int
-nodesPerCol =
-    4
+drawGraph : Graph -> List (Svg a)
+drawGraph graph =
+    List.append (drawNodes graph) (drawEdges graph)
 
 
-imageOfGraph : Model -> Html Msg
-imageOfGraph model =
+imageOfGraph : Graph -> Html Msg
+imageOfGraph graph =
     let
         graphWidth =
-            ((nodeSeparation + nodeRadius) * nodesPerRow)
+            ((nodeSeparation + nodeRadius) * graph.nodesPerRow)
 
         graphHeight =
             ((nodeSeparation + nodeRadius)
-                * (nodesPerCol - 1)
+                * (graph.nodesPerCol - 1)
                 + nodeRadius
                 + (nodeSeparation // 2)
             )
@@ -65,12 +98,7 @@ imageOfGraph model =
             , Svg.Attributes.width (toString graphWidth)
             , Svg.Attributes.height (toString graphHeight)
             ]
-            (drawGraph model.graph)
-
-
-drawGraph : Graph -> List (Svg a)
-drawGraph graph =
-    List.append (drawNodes graph) (drawEdges graph)
+            (drawGraph graph)
 
 
 drawNodes : Graph -> List (Svg a)
@@ -82,57 +110,93 @@ drawNodes graph =
                     []
 
                 id :: ids ->
-                    List.append (drawNode id) (drawNodesHelper ids)
+                    List.append (drawNode graph id) (drawNodesHelper ids)
     in
         drawNodesHelper graph.nodes
 
 
-nodeCol : NodeId -> Int
-nodeCol nodeId =
-    nodeId `rem` nodesPerCol
+
+-- nodeX : NodeId -> Pixels
+-- nodeX nodeId =
+--     let
+--         x0 =
+--             fst graphUpperLeft
+--
+--         col =
+--             nodeId `rem` nodesPerCol
+--     in
+--         x0 + col * (nodeRadius + nodeSeparation)
+--
+--
+-- nodeY : NodeId -> Pixels
+-- nodeY nodeId =
+--     let
+--         y0 =
+--             snd graphUpperLeft
+--
+--         row =
+--             nodeId // nodesPerCol
+--     in
+--         y0 + row * (nodeRadius + nodeSeparation)
 
 
-nodeX : NodeId -> Pixels
-nodeX nodeId =
+nodeX : Graph -> NodeId -> Pixels
+nodeX graph nodeId =
     let
         x0 =
             fst graphUpperLeft
 
         col =
-            nodeId `rem` nodesPerCol
+            nodeId `rem` graph.nodesPerCol
     in
         x0 + col * (nodeRadius + nodeSeparation)
 
 
-nodeRow : NodeId -> Int
-nodeRow nodeId =
-    nodeId // nodesPerCol
-
-
-nodeY : NodeId -> Pixels
-nodeY nodeId =
+nodeY : Graph -> NodeId -> Pixels
+nodeY graph nodeId =
     let
         y0 =
             snd graphUpperLeft
 
         row =
-            nodeId // nodesPerCol
+            nodeId // graph.nodesPerCol
     in
         y0 + row * (nodeRadius + nodeSeparation)
 
 
-drawNode : NodeId -> List (Svg a)
-drawNode nodeId =
+
+-- drawNode : NodeId -> List (Svg a)
+-- drawNode nodeId =
+--     [ Svg.circle
+--         [ cx (toString (nodeX nodeId))
+--         , cy (toString (nodeY nodeId))
+--         , r (toString nodeRadius)
+--         , fill "blue"
+--         ]
+--         []
+--     , Svg.text'
+--         [ x (toString (nodeX nodeId))
+--         , y (toString (nodeY nodeId))
+--         , Svg.Attributes.fontSize "14"
+--         , Svg.Attributes.textAnchor "middle"
+--         , fill "white"
+--         ]
+--         [ Svg.text (toString nodeId) ]
+--     ]
+
+
+drawNode : Graph -> NodeId -> List (Svg a)
+drawNode graph nodeId =
     [ Svg.circle
-        [ cx (toString (nodeX nodeId))
-        , cy (toString (nodeY nodeId))
+        [ cx (toString (nodeX graph nodeId))
+        , cy (toString (nodeY graph nodeId))
         , r (toString nodeRadius)
         , fill "blue"
         ]
         []
     , Svg.text'
-        [ x (toString (nodeX nodeId))
-        , y (toString (nodeY nodeId))
+        [ x (toString (nodeX graph nodeId))
+        , y (toString (nodeY graph nodeId))
         , Svg.Attributes.fontSize "14"
         , Svg.Attributes.textAnchor "middle"
         , fill "white"
@@ -150,25 +214,50 @@ drawEdges graph =
                     arrowHeads
 
                 e :: es ->
-                    List.append (drawEdge e weighted directed) (drawEdgesHelper es weighted directed)
+                    List.append (drawEdge graph e weighted directed) (drawEdgesHelper es weighted directed)
     in
         drawEdgesHelper graph.edges graph.weighted graph.directed
 
 
-drawEdge : Edge -> Bool -> Bool -> List (Svg a)
-drawEdge edge weighted directed =
+
+-- drawEdge : Edge -> Bool -> Bool -> List (Svg a)
+-- drawEdge edge weighted directed =
+--     let
+--         x_1 =
+--             nodeX edge.from
+--
+--         y_1 =
+--             nodeY edge.from
+--
+--         x_2 =
+--             nodeX edge.to
+--
+--         y_2 =
+--             nodeY edge.to
+--
+--         lne =
+--             [ edgeLine x_1 y_1 x_2 y_2 directed edge.direction ]
+--     in
+--         if weighted && (edge.weight > 0) then
+--             List.append lne [ edgeWeight edge.weight x_1 y_1 x_2 y_2 ]
+--         else
+--             lne
+
+
+drawEdge : Graph -> Edge -> Bool -> Bool -> List (Svg a)
+drawEdge graph edge weighted directed =
     let
         x_1 =
-            nodeX edge.from
+            nodeX graph edge.from
 
         y_1 =
-            nodeY edge.from
+            nodeY graph edge.from
 
         x_2 =
-            nodeX edge.to
+            nodeX graph edge.to
 
         y_2 =
-            nodeY edge.to
+            nodeY graph edge.to
 
         lne =
             [ edgeLine x_1 y_1 x_2 y_2 directed edge.direction ]

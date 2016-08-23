@@ -10131,36 +10131,37 @@ var _user$project$Types$Model = function (a) {
 		};
 	};
 };
-var _user$project$Types$SSData = F7(
+
+var _user$project$MessageTypes$SSData = F7(
 	function (a, b, c, d, e, f, g) {
 		return {mastery: a, numerator: b, denominator: c, weighted: d, directed: e, implementMastery: f, debug: g};
 	});
-var _user$project$Types$GetValuesFromSS = function (a) {
+var _user$project$MessageTypes$GetValuesFromSS = function (a) {
 	return {ctor: 'GetValuesFromSS', _0: a};
 };
-var _user$project$Types$UpdateMastery = {ctor: 'UpdateMastery'};
-var _user$project$Types$ToggleDirectional = {ctor: 'ToggleDirectional'};
-var _user$project$Types$ToggleWeighted = {ctor: 'ToggleWeighted'};
-var _user$project$Types$BreadthFirstSearch = {ctor: 'BreadthFirstSearch'};
-var _user$project$Types$CheckMastery = {ctor: 'CheckMastery'};
-var _user$project$Types$GiveFeedback = {ctor: 'GiveFeedback'};
-var _user$project$Types$Submit = {ctor: 'Submit'};
-var _user$project$Types$UserInput = function (a) {
+var _user$project$MessageTypes$UpdateMastery = {ctor: 'UpdateMastery'};
+var _user$project$MessageTypes$ToggleDirectional = {ctor: 'ToggleDirectional'};
+var _user$project$MessageTypes$ToggleWeighted = {ctor: 'ToggleWeighted'};
+var _user$project$MessageTypes$BreadthFirstSearch = {ctor: 'BreadthFirstSearch'};
+var _user$project$MessageTypes$CheckMastery = {ctor: 'CheckMastery'};
+var _user$project$MessageTypes$GiveFeedback = {ctor: 'GiveFeedback'};
+var _user$project$MessageTypes$Submit = {ctor: 'Submit'};
+var _user$project$MessageTypes$UserInput = function (a) {
 	return {ctor: 'UserInput', _0: a};
 };
-var _user$project$Types$NewQuestion = function (a) {
+var _user$project$MessageTypes$NewQuestion = function (a) {
 	return {ctor: 'NewQuestion', _0: a};
 };
-var _user$project$Types$NewEdgeWeights = function (a) {
+var _user$project$MessageTypes$NewEdgeWeights = function (a) {
 	return {ctor: 'NewEdgeWeights', _0: a};
 };
-var _user$project$Types$NewNodes = function (a) {
+var _user$project$MessageTypes$NewNodes = function (a) {
 	return {ctor: 'NewNodes', _0: a};
 };
-var _user$project$Types$NewRandomValues = function (a) {
+var _user$project$MessageTypes$NewRandomValues = function (a) {
 	return {ctor: 'NewRandomValues', _0: a};
 };
-var _user$project$Types$Reset = {ctor: 'Reset'};
+var _user$project$MessageTypes$Reset = {ctor: 'Reset'};
 
 var _user$project$DebugView$buttonStyle = _elm_lang$html$Html_Attributes$style(
 	_elm_lang$core$Native_List.fromArray(
@@ -10181,7 +10182,7 @@ var _user$project$DebugView$debugSection = function (model) {
 				_elm_lang$html$Html$button,
 				_elm_lang$core$Native_List.fromArray(
 					[
-						_elm_lang$html$Html_Events$onClick(_user$project$Types$Reset),
+						_elm_lang$html$Html_Events$onClick(_user$project$MessageTypes$Reset),
 						_user$project$DebugView$buttonStyle
 					]),
 				_elm_lang$core$Native_List.fromArray(
@@ -10192,7 +10193,7 @@ var _user$project$DebugView$debugSection = function (model) {
 				_elm_lang$html$Html$button,
 				_elm_lang$core$Native_List.fromArray(
 					[
-						_elm_lang$html$Html_Events$onClick(_user$project$Types$ToggleWeighted),
+						_elm_lang$html$Html_Events$onClick(_user$project$MessageTypes$ToggleWeighted),
 						_user$project$DebugView$buttonStyle
 					]),
 				_elm_lang$core$Native_List.fromArray(
@@ -10203,7 +10204,7 @@ var _user$project$DebugView$debugSection = function (model) {
 				_elm_lang$html$Html$button,
 				_elm_lang$core$Native_List.fromArray(
 					[
-						_elm_lang$html$Html_Events$onClick(_user$project$Types$ToggleDirectional),
+						_elm_lang$html$Html_Events$onClick(_user$project$MessageTypes$ToggleDirectional),
 						_user$project$DebugView$buttonStyle
 					]),
 				_elm_lang$core$Native_List.fromArray(
@@ -10214,7 +10215,7 @@ var _user$project$DebugView$debugSection = function (model) {
 				_elm_lang$html$Html$button,
 				_elm_lang$core$Native_List.fromArray(
 					[
-						_elm_lang$html$Html_Events$onClick(_user$project$Types$BreadthFirstSearch),
+						_elm_lang$html$Html_Events$onClick(_user$project$MessageTypes$BreadthFirstSearch),
 						_user$project$DebugView$buttonStyle
 					]),
 				_elm_lang$core$Native_List.fromArray(
@@ -10225,7 +10226,7 @@ var _user$project$DebugView$debugSection = function (model) {
 				_elm_lang$html$Html$button,
 				_elm_lang$core$Native_List.fromArray(
 					[
-						_elm_lang$html$Html_Events$onClick(_user$project$Types$UpdateMastery),
+						_elm_lang$html$Html_Events$onClick(_user$project$MessageTypes$UpdateMastery),
 						_user$project$DebugView$buttonStyle
 					]),
 				_elm_lang$core$Native_List.fromArray(
@@ -10305,14 +10306,6 @@ var _user$project$GraphView$arrowHeads = _elm_lang$core$Native_List.fromArray(
 					]))
 			]))
 	]);
-var _user$project$GraphView$nodesPerCol = 4;
-var _user$project$GraphView$nodeCol = function (nodeId) {
-	return A2(_elm_lang$core$Basics$rem, nodeId, _user$project$GraphView$nodesPerCol);
-};
-var _user$project$GraphView$nodeRow = function (nodeId) {
-	return (nodeId / _user$project$GraphView$nodesPerCol) | 0;
-};
-var _user$project$GraphView$nodesPerRow = 4;
 var _user$project$GraphView$graphUpperLeft = {ctor: '_Tuple2', _0: 40, _1: 20};
 var _user$project$GraphView$weightOffset = 7;
 var _user$project$GraphView$edgeWeight = F5(
@@ -10382,56 +10375,59 @@ var _user$project$GraphView$edgeLine = F6(
 	});
 var _user$project$GraphView$nodeRadius = 20;
 var _user$project$GraphView$nodeSeparation = 100;
-var _user$project$GraphView$nodeX = function (nodeId) {
-	var col = A2(_elm_lang$core$Basics$rem, nodeId, _user$project$GraphView$nodesPerCol);
-	var x0 = _elm_lang$core$Basics$fst(_user$project$GraphView$graphUpperLeft);
-	return x0 + (col * (_user$project$GraphView$nodeRadius + _user$project$GraphView$nodeSeparation));
-};
-var _user$project$GraphView$nodeY = function (nodeId) {
-	var row = (nodeId / _user$project$GraphView$nodesPerCol) | 0;
-	var y0 = _elm_lang$core$Basics$snd(_user$project$GraphView$graphUpperLeft);
-	return y0 + (row * (_user$project$GraphView$nodeRadius + _user$project$GraphView$nodeSeparation));
-};
-var _user$project$GraphView$drawNode = function (nodeId) {
-	return _elm_lang$core$Native_List.fromArray(
-		[
-			A2(
-			_elm_lang$svg$Svg$circle,
-			_elm_lang$core$Native_List.fromArray(
-				[
-					_elm_lang$svg$Svg_Attributes$cx(
-					_elm_lang$core$Basics$toString(
-						_user$project$GraphView$nodeX(nodeId))),
-					_elm_lang$svg$Svg_Attributes$cy(
-					_elm_lang$core$Basics$toString(
-						_user$project$GraphView$nodeY(nodeId))),
-					_elm_lang$svg$Svg_Attributes$r(
-					_elm_lang$core$Basics$toString(_user$project$GraphView$nodeRadius)),
-					_elm_lang$svg$Svg_Attributes$fill('blue')
-				]),
-			_elm_lang$core$Native_List.fromArray(
-				[])),
-			A2(
-			_elm_lang$svg$Svg$text$,
-			_elm_lang$core$Native_List.fromArray(
-				[
-					_elm_lang$svg$Svg_Attributes$x(
-					_elm_lang$core$Basics$toString(
-						_user$project$GraphView$nodeX(nodeId))),
-					_elm_lang$svg$Svg_Attributes$y(
-					_elm_lang$core$Basics$toString(
-						_user$project$GraphView$nodeY(nodeId))),
-					_elm_lang$svg$Svg_Attributes$fontSize('14'),
-					_elm_lang$svg$Svg_Attributes$textAnchor('middle'),
-					_elm_lang$svg$Svg_Attributes$fill('white')
-				]),
-			_elm_lang$core$Native_List.fromArray(
-				[
-					_elm_lang$svg$Svg$text(
-					_elm_lang$core$Basics$toString(nodeId))
-				]))
-		]);
-};
+var _user$project$GraphView$nodeX = F2(
+	function (graph, nodeId) {
+		var col = A2(_elm_lang$core$Basics$rem, nodeId, graph.nodesPerCol);
+		var x0 = _elm_lang$core$Basics$fst(_user$project$GraphView$graphUpperLeft);
+		return x0 + (col * (_user$project$GraphView$nodeRadius + _user$project$GraphView$nodeSeparation));
+	});
+var _user$project$GraphView$nodeY = F2(
+	function (graph, nodeId) {
+		var row = (nodeId / graph.nodesPerCol) | 0;
+		var y0 = _elm_lang$core$Basics$snd(_user$project$GraphView$graphUpperLeft);
+		return y0 + (row * (_user$project$GraphView$nodeRadius + _user$project$GraphView$nodeSeparation));
+	});
+var _user$project$GraphView$drawNode = F2(
+	function (graph, nodeId) {
+		return _elm_lang$core$Native_List.fromArray(
+			[
+				A2(
+				_elm_lang$svg$Svg$circle,
+				_elm_lang$core$Native_List.fromArray(
+					[
+						_elm_lang$svg$Svg_Attributes$cx(
+						_elm_lang$core$Basics$toString(
+							A2(_user$project$GraphView$nodeX, graph, nodeId))),
+						_elm_lang$svg$Svg_Attributes$cy(
+						_elm_lang$core$Basics$toString(
+							A2(_user$project$GraphView$nodeY, graph, nodeId))),
+						_elm_lang$svg$Svg_Attributes$r(
+						_elm_lang$core$Basics$toString(_user$project$GraphView$nodeRadius)),
+						_elm_lang$svg$Svg_Attributes$fill('blue')
+					]),
+				_elm_lang$core$Native_List.fromArray(
+					[])),
+				A2(
+				_elm_lang$svg$Svg$text$,
+				_elm_lang$core$Native_List.fromArray(
+					[
+						_elm_lang$svg$Svg_Attributes$x(
+						_elm_lang$core$Basics$toString(
+							A2(_user$project$GraphView$nodeX, graph, nodeId))),
+						_elm_lang$svg$Svg_Attributes$y(
+						_elm_lang$core$Basics$toString(
+							A2(_user$project$GraphView$nodeY, graph, nodeId))),
+						_elm_lang$svg$Svg_Attributes$fontSize('14'),
+						_elm_lang$svg$Svg_Attributes$textAnchor('middle'),
+						_elm_lang$svg$Svg_Attributes$fill('white')
+					]),
+				_elm_lang$core$Native_List.fromArray(
+					[
+						_elm_lang$svg$Svg$text(
+						_elm_lang$core$Basics$toString(nodeId))
+					]))
+			]);
+	});
 var _user$project$GraphView$drawNodes = function (graph) {
 	var drawNodesHelper = function (nodeIds) {
 		var _p0 = nodeIds;
@@ -10441,18 +10437,18 @@ var _user$project$GraphView$drawNodes = function (graph) {
 		} else {
 			return A2(
 				_elm_lang$core$List$append,
-				_user$project$GraphView$drawNode(_p0._0),
+				A2(_user$project$GraphView$drawNode, graph, _p0._0),
 				drawNodesHelper(_p0._1));
 		}
 	};
 	return drawNodesHelper(graph.nodes);
 };
-var _user$project$GraphView$drawEdge = F3(
-	function (edge, weighted, directed) {
-		var y_2 = _user$project$GraphView$nodeY(edge.to);
-		var x_2 = _user$project$GraphView$nodeX(edge.to);
-		var y_1 = _user$project$GraphView$nodeY(edge.from);
-		var x_1 = _user$project$GraphView$nodeX(edge.from);
+var _user$project$GraphView$drawEdge = F4(
+	function (graph, edge, weighted, directed) {
+		var y_2 = A2(_user$project$GraphView$nodeY, graph, edge.to);
+		var x_2 = A2(_user$project$GraphView$nodeX, graph, edge.to);
+		var y_1 = A2(_user$project$GraphView$nodeY, graph, edge.from);
+		var x_1 = A2(_user$project$GraphView$nodeX, graph, edge.from);
 		var lne = _elm_lang$core$Native_List.fromArray(
 			[
 				A6(_user$project$GraphView$edgeLine, x_1, y_1, x_2, y_2, directed, edge.direction)
@@ -10474,7 +10470,7 @@ var _user$project$GraphView$drawEdges = function (graph) {
 			} else {
 				return A2(
 					_elm_lang$core$List$append,
-					A3(_user$project$GraphView$drawEdge, _p1._0, weighted, directed),
+					A4(_user$project$GraphView$drawEdge, graph, _p1._0, weighted, directed),
 					A3(drawEdgesHelper, _p1._1, weighted, directed));
 			}
 		});
@@ -10486,9 +10482,9 @@ var _user$project$GraphView$drawGraph = function (graph) {
 		_user$project$GraphView$drawNodes(graph),
 		_user$project$GraphView$drawEdges(graph));
 };
-var _user$project$GraphView$imageOfGraph = function (model) {
-	var graphHeight = (((_user$project$GraphView$nodeSeparation + _user$project$GraphView$nodeRadius) * (_user$project$GraphView$nodesPerCol - 1)) + _user$project$GraphView$nodeRadius) + ((_user$project$GraphView$nodeSeparation / 2) | 0);
-	var graphWidth = (_user$project$GraphView$nodeSeparation + _user$project$GraphView$nodeRadius) * _user$project$GraphView$nodesPerRow;
+var _user$project$GraphView$imageOfGraph = function (graph) {
+	var graphHeight = (((_user$project$GraphView$nodeSeparation + _user$project$GraphView$nodeRadius) * (graph.nodesPerCol - 1)) + _user$project$GraphView$nodeRadius) + ((_user$project$GraphView$nodeSeparation / 2) | 0);
+	var graphWidth = (_user$project$GraphView$nodeSeparation + _user$project$GraphView$nodeRadius) * graph.nodesPerRow;
 	return A2(
 		_elm_lang$svg$Svg$svg,
 		_elm_lang$core$Native_List.fromArray(
@@ -10500,7 +10496,7 @@ var _user$project$GraphView$imageOfGraph = function (model) {
 				_elm_lang$svg$Svg_Attributes$height(
 				_elm_lang$core$Basics$toString(graphHeight))
 			]),
-		_user$project$GraphView$drawGraph(model.graph));
+		_user$project$GraphView$drawGraph(graph));
 };
 
 var _user$project$HistoryView$historySquareSeparation = 5;
@@ -10663,7 +10659,7 @@ var _user$project$QuestionView$radio = F2(
 							_elm_lang$html$Html_Attributes$checked(isSelected),
 							_elm_lang$html$Html_Events$onCheck(
 							function (_p0) {
-								return _user$project$Types$UserInput(name);
+								return _user$project$MessageTypes$UserInput(name);
 							}),
 							_user$project$QuestionView$radioStyle
 						]),
@@ -10691,7 +10687,7 @@ var _user$project$QuestionView$displayQuestion = function (model) {
 			_elm_lang$html$Html$form,
 			_elm_lang$core$Native_List.fromArray(
 				[
-					_elm_lang$html$Html_Events$onSubmit(_user$project$Types$Submit)
+					_elm_lang$html$Html_Events$onSubmit(_user$project$MessageTypes$Submit)
 				]),
 			_elm_lang$core$Native_List.fromArray(
 				[
@@ -10709,7 +10705,7 @@ var _user$project$QuestionView$displayQuestion = function (model) {
 						[
 							_elm_lang$html$Html_Attributes$type$('text'),
 							_elm_lang$html$Html_Attributes$placeholder('Answer here...'),
-							_elm_lang$html$Html_Events$onInput(_user$project$Types$UserInput),
+							_elm_lang$html$Html_Events$onInput(_user$project$MessageTypes$UserInput),
 							_elm_lang$html$Html_Attributes$value(model.userInput),
 							_user$project$QuestionView$inputStyle
 						]),
@@ -10732,7 +10728,7 @@ var _user$project$QuestionView$displayQuestion = function (model) {
 			_elm_lang$html$Html$form,
 			_elm_lang$core$Native_List.fromArray(
 				[
-					_elm_lang$html$Html_Events$onSubmit(_user$project$Types$Submit)
+					_elm_lang$html$Html_Events$onSubmit(_user$project$MessageTypes$Submit)
 				]),
 			_elm_lang$core$Native_List.fromArray(
 				[
@@ -10782,7 +10778,7 @@ var _user$project$QuestionView$questionForm = function (model) {
 			_elm_lang$html$Html$form,
 			_elm_lang$core$Native_List.fromArray(
 				[
-					_elm_lang$html$Html_Events$onSubmit(_user$project$Types$GiveFeedback)
+					_elm_lang$html$Html_Events$onSubmit(_user$project$MessageTypes$GiveFeedback)
 				]),
 			_elm_lang$core$Native_List.fromArray(
 				[
@@ -10800,7 +10796,7 @@ var _user$project$QuestionView$questionForm = function (model) {
 						[
 							_elm_lang$html$Html_Attributes$type$('text'),
 							_elm_lang$html$Html_Attributes$placeholder('Answer here...'),
-							_elm_lang$html$Html_Events$onInput(_user$project$Types$UserInput),
+							_elm_lang$html$Html_Events$onInput(_user$project$MessageTypes$UserInput),
 							_elm_lang$html$Html_Attributes$value(model.userInput),
 							_elm_lang$html$Html_Attributes$disabled(true),
 							_user$project$QuestionView$inputStyle
@@ -10847,7 +10843,7 @@ var _user$project$View$view = function (model) {
 					[
 						_elm_lang$html$Html$text('Test Your Understanding')
 					])),
-				_user$project$GraphView$imageOfGraph(model),
+				_user$project$GraphView$imageOfGraph(model.graph),
 				_user$project$QuestionView$questionForm(model),
 				_user$project$HistoryView$historySection(model),
 				_user$project$DebugView$debugSection(model)
@@ -10954,7 +10950,7 @@ var _user$project$Update$update = F2(
 						_0: _user$project$Model$initModel,
 						_1: A2(
 							_elm_lang$core$Random$generate,
-							_user$project$Types$NewRandomValues,
+							_user$project$MessageTypes$NewRandomValues,
 							A2(
 								_elm_lang$core$Random$list,
 								15,
@@ -10968,7 +10964,7 @@ var _user$project$Update$update = F2(
 							{randomValues: _p1._0}),
 						_1: A2(
 							_elm_lang$core$Random$generate,
-							_user$project$Types$NewNodes,
+							_user$project$MessageTypes$NewNodes,
 							A2(
 								_elm_lang$core$Random$list,
 								15,
@@ -10989,7 +10985,7 @@ var _user$project$Update$update = F2(
 							{graph: graph$}),
 						_1: A2(
 							_elm_lang$core$Random$generate,
-							_user$project$Types$NewEdgeWeights,
+							_user$project$MessageTypes$NewEdgeWeights,
 							A2(
 								_elm_lang$core$Random$list,
 								_elm_lang$core$List$length(graph$.edges),
@@ -11004,7 +11000,7 @@ var _user$project$Update$update = F2(
 							{graph: graph$}),
 						_1: A2(
 							_elm_lang$core$Random$generate,
-							_user$project$Types$NewQuestion,
+							_user$project$MessageTypes$NewQuestion,
 							A2(_elm_lang$core$Random$int, 1, 8))
 					};
 				case 'NewQuestion':
@@ -11068,14 +11064,14 @@ var _user$project$Update$update = F2(
 						};
 					}
 				case 'GiveFeedback':
-					var _v1 = _user$project$Types$CheckMastery,
+					var _v1 = _user$project$MessageTypes$CheckMastery,
 						_v2 = model;
 					msg = _v1;
 					model = _v2;
 					continue update;
 				case 'CheckMastery':
 					if (_user$project$Model$masteryAchieved(model)) {
-						var _v3 = _user$project$Types$UpdateMastery,
+						var _v3 = _user$project$MessageTypes$UpdateMastery,
 							_v4 = _elm_lang$core$Native_Utils.update(
 							model,
 							{mastery: true});
@@ -11090,7 +11086,7 @@ var _user$project$Update$update = F2(
 								{mastery: false}),
 							_1: A2(
 								_elm_lang$core$Random$generate,
-								_user$project$Types$NewRandomValues,
+								_user$project$MessageTypes$NewRandomValues,
 								A2(
 									_elm_lang$core$Random$list,
 									15,
@@ -11173,7 +11169,7 @@ var _user$project$Update$update = F2(
 							{mastery: _p5.mastery, numerator: _p5.numerator, denominator: _p5.denominator, implementMastery: _p5.implementMastery, graph: graph$, debug: _p5.debug}),
 						_1: A2(
 							_elm_lang$core$Random$generate,
-							_user$project$Types$NewRandomValues,
+							_user$project$MessageTypes$NewRandomValues,
 							A2(
 								_elm_lang$core$Random$list,
 								15,
@@ -11184,7 +11180,7 @@ var _user$project$Update$update = F2(
 	});
 
 var _user$project$GraphQuestions$subscriptions = function (model) {
-	return _user$project$Ports$ssData(_user$project$Types$GetValuesFromSS);
+	return _user$project$Ports$ssData(_user$project$MessageTypes$GetValuesFromSS);
 };
 var _user$project$GraphQuestions$main = {
 	main: _elm_lang$html$Html_App$program(

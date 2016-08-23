@@ -17,7 +17,7 @@ var _user$project$DebugView$debugSection = function (model) {
 				_elm_lang$html$Html$button,
 				_elm_lang$core$Native_List.fromArray(
 					[
-						_elm_lang$html$Html_Events$onClick(_user$project$Types$Reset),
+						_elm_lang$html$Html_Events$onClick(_user$project$MessageTypes$Reset),
 						_user$project$DebugView$buttonStyle
 					]),
 				_elm_lang$core$Native_List.fromArray(
@@ -28,7 +28,7 @@ var _user$project$DebugView$debugSection = function (model) {
 				_elm_lang$html$Html$button,
 				_elm_lang$core$Native_List.fromArray(
 					[
-						_elm_lang$html$Html_Events$onClick(_user$project$Types$ToggleWeighted),
+						_elm_lang$html$Html_Events$onClick(_user$project$MessageTypes$ToggleWeighted),
 						_user$project$DebugView$buttonStyle
 					]),
 				_elm_lang$core$Native_List.fromArray(
@@ -39,7 +39,7 @@ var _user$project$DebugView$debugSection = function (model) {
 				_elm_lang$html$Html$button,
 				_elm_lang$core$Native_List.fromArray(
 					[
-						_elm_lang$html$Html_Events$onClick(_user$project$Types$ToggleDirectional),
+						_elm_lang$html$Html_Events$onClick(_user$project$MessageTypes$ToggleDirectional),
 						_user$project$DebugView$buttonStyle
 					]),
 				_elm_lang$core$Native_List.fromArray(
@@ -50,7 +50,7 @@ var _user$project$DebugView$debugSection = function (model) {
 				_elm_lang$html$Html$button,
 				_elm_lang$core$Native_List.fromArray(
 					[
-						_elm_lang$html$Html_Events$onClick(_user$project$Types$BreadthFirstSearch),
+						_elm_lang$html$Html_Events$onClick(_user$project$MessageTypes$BreadthFirstSearch),
 						_user$project$DebugView$buttonStyle
 					]),
 				_elm_lang$core$Native_List.fromArray(
@@ -61,7 +61,7 @@ var _user$project$DebugView$debugSection = function (model) {
 				_elm_lang$html$Html$button,
 				_elm_lang$core$Native_List.fromArray(
 					[
-						_elm_lang$html$Html_Events$onClick(_user$project$Types$UpdateMastery),
+						_elm_lang$html$Html_Events$onClick(_user$project$MessageTypes$UpdateMastery),
 						_user$project$DebugView$buttonStyle
 					]),
 				_elm_lang$core$Native_List.fromArray(

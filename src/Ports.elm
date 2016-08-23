@@ -1,6 +1,8 @@
 port module Ports exposing (..)
 
-import Types exposing (..)
+-- import Types exposing (..)
+
+import MessageTypes exposing (SSData)
 
 
 -- Sends mastery flag out to JS

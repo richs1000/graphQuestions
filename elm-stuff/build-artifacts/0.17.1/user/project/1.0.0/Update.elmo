@@ -17,7 +17,7 @@ var _user$project$Update$update = F2(
 						_0: _user$project$Model$initModel,
 						_1: A2(
 							_elm_lang$core$Random$generate,
-							_user$project$Types$NewRandomValues,
+							_user$project$MessageTypes$NewRandomValues,
 							A2(
 								_elm_lang$core$Random$list,
 								15,
@@ -31,7 +31,7 @@ var _user$project$Update$update = F2(
 							{randomValues: _p1._0}),
 						_1: A2(
 							_elm_lang$core$Random$generate,
-							_user$project$Types$NewNodes,
+							_user$project$MessageTypes$NewNodes,
 							A2(
 								_elm_lang$core$Random$list,
 								15,
@@ -52,7 +52,7 @@ var _user$project$Update$update = F2(
 							{graph: graph$}),
 						_1: A2(
 							_elm_lang$core$Random$generate,
-							_user$project$Types$NewEdgeWeights,
+							_user$project$MessageTypes$NewEdgeWeights,
 							A2(
 								_elm_lang$core$Random$list,
 								_elm_lang$core$List$length(graph$.edges),
@@ -67,7 +67,7 @@ var _user$project$Update$update = F2(
 							{graph: graph$}),
 						_1: A2(
 							_elm_lang$core$Random$generate,
-							_user$project$Types$NewQuestion,
+							_user$project$MessageTypes$NewQuestion,
 							A2(_elm_lang$core$Random$int, 1, 8))
 					};
 				case 'NewQuestion':
@@ -131,14 +131,14 @@ var _user$project$Update$update = F2(
 						};
 					}
 				case 'GiveFeedback':
-					var _v1 = _user$project$Types$CheckMastery,
+					var _v1 = _user$project$MessageTypes$CheckMastery,
 						_v2 = model;
 					msg = _v1;
 					model = _v2;
 					continue update;
 				case 'CheckMastery':
 					if (_user$project$Model$masteryAchieved(model)) {
-						var _v3 = _user$project$Types$UpdateMastery,
+						var _v3 = _user$project$MessageTypes$UpdateMastery,
 							_v4 = _elm_lang$core$Native_Utils.update(
 							model,
 							{mastery: true});
@@ -153,7 +153,7 @@ var _user$project$Update$update = F2(
 								{mastery: false}),
 							_1: A2(
 								_elm_lang$core$Random$generate,
-								_user$project$Types$NewRandomValues,
+								_user$project$MessageTypes$NewRandomValues,
 								A2(
 									_elm_lang$core$Random$list,
 									15,
@@ -236,7 +236,7 @@ var _user$project$Update$update = F2(
 							{mastery: _p5.mastery, numerator: _p5.numerator, denominator: _p5.denominator, implementMastery: _p5.implementMastery, graph: graph$, debug: _p5.debug}),
 						_1: A2(
 							_elm_lang$core$Random$generate,
-							_user$project$Types$NewRandomValues,
+							_user$project$MessageTypes$NewRandomValues,
 							A2(
 								_elm_lang$core$Random$list,
 								15,

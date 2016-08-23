@@ -23,7 +23,7 @@ var _user$project$View$view = function (model) {
 					[
 						_elm_lang$html$Html$text('Test Your Understanding')
 					])),
-				_user$project$GraphView$imageOfGraph(model),
+				_user$project$GraphView$imageOfGraph(model.graph),
 				_user$project$QuestionView$questionForm(model),
 				_user$project$HistoryView$historySection(model),
 				_user$project$DebugView$debugSection(model)

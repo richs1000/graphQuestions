@@ -1,14 +1,12 @@
 module GraphQuestions exposing (..)
 
 import Html.App as Html
-import Types exposing (Model, Msg(..))
+import Types exposing (Model)
 import View exposing (view)
 import Ports exposing (..)
 import Update exposing (update)
 import Model exposing (init)
-
-
--- MAIN
+import MessageTypes exposing (Msg(..))
 
 
 main : Program Never
@@ -21,17 +19,6 @@ main =
         }
 
 
-
--- MODEL
--- VIEW
--- PORTS
--- SUBSCRIPTIONS
-
-
 subscriptions : Model -> Sub Msg
 subscriptions model =
     ssData GetValuesFromSS
-
-
-
--- UPDATE

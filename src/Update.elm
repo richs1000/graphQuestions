@@ -9,6 +9,7 @@ import Question exposing (..)
 import Search exposing (..)
 import Ports exposing (..)
 import Model exposing (..)
+import MessageTypes exposing (Msg(..))
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )
