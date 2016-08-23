@@ -28,6 +28,19 @@ var _user$project$Question$findFeedback = F3(
 			}
 		}
 	});
+var _user$project$Question$Question = F4(
+	function (a, b, c, d) {
+		return {question: a, distractors: b, answer: c, format: d};
+	});
+var _user$project$Question$MultipleChoice = {ctor: 'MultipleChoice'};
+var _user$project$Question$FillInTheBlank = {ctor: 'FillInTheBlank'};
+var _user$project$Question$emptyQuestion = {
+	question: '',
+	distractors: _elm_lang$core$Native_List.fromArray(
+		[]),
+	answer: {ctor: '_Tuple2', _0: '', _1: ''},
+	format: _user$project$Question$FillInTheBlank
+};
 var _user$project$Question$newQuestion = F3(
 	function (graph, randomValues, index) {
 		var _p2 = graph;
@@ -54,7 +67,7 @@ var _user$project$Question$newQuestion = F3(
 						_user$project$Graph$numberOfNodes(graph)),
 					_1: 'Correct.'
 				},
-				format: _user$project$QuestionTypes$FillInTheBlank
+				format: _user$project$Question$FillInTheBlank
 			};
 		} else {
 			if (_elm_lang$core$Native_Utils.eq(index, 2)) {
@@ -76,7 +89,7 @@ var _user$project$Question$newQuestion = F3(
 							_user$project$Graph$numberOfEdges(graph)),
 						_1: 'Correct.'
 					},
-					format: _user$project$QuestionTypes$FillInTheBlank
+					format: _user$project$Question$FillInTheBlank
 				};
 			} else {
 				if (_elm_lang$core$Native_Utils.eq(index, 3)) {
@@ -126,7 +139,7 @@ var _user$project$Question$newQuestion = F3(
 							_0: _elm_lang$core$Basics$toString(ans),
 							_1: A2(_elm_lang$core$Basics_ops['++'], 'Correct. ', fbackString)
 						},
-						format: _user$project$QuestionTypes$MultipleChoice
+						format: _user$project$Question$MultipleChoice
 					};
 				} else {
 					if (_elm_lang$core$Native_Utils.eq(index, 4)) {
@@ -209,7 +222,7 @@ var _user$project$Question$newQuestion = F3(
 								_0: _elm_lang$core$Basics$toString(ans),
 								_1: A2(_elm_lang$core$Basics_ops['++'], 'Correct. ', fbackString)
 							},
-							format: _user$project$QuestionTypes$MultipleChoice
+							format: _user$project$Question$MultipleChoice
 						};
 					} else {
 						if (_elm_lang$core$Native_Utils.eq(index, 5) && directed) {
@@ -254,7 +267,7 @@ var _user$project$Question$newQuestion = F3(
 									_0: _elm_lang$core$Basics$toString(inDeg),
 									_1: 'Correct.'
 								},
-								format: _user$project$QuestionTypes$FillInTheBlank
+								format: _user$project$Question$FillInTheBlank
 							};
 						} else {
 							if (_elm_lang$core$Native_Utils.eq(index, 6) && directed) {
@@ -299,7 +312,7 @@ var _user$project$Question$newQuestion = F3(
 										_0: _elm_lang$core$Basics$toString(outDeg),
 										_1: 'Correct.'
 									},
-									format: _user$project$QuestionTypes$FillInTheBlank
+									format: _user$project$Question$FillInTheBlank
 								};
 							} else {
 								if (_elm_lang$core$Native_Utils.eq(index, 7) && weighted) {
@@ -330,7 +343,7 @@ var _user$project$Question$newQuestion = F3(
 											_0: _elm_lang$core$Basics$toString(weight),
 											_1: 'Correct.'
 										},
-										format: _user$project$QuestionTypes$FillInTheBlank
+										format: _user$project$Question$FillInTheBlank
 									};
 								} else {
 									var n = A3(
@@ -374,7 +387,7 @@ var _user$project$Question$newQuestion = F3(
 											_0: _elm_lang$core$Basics$toString(deg),
 											_1: 'Correct.'
 										},
-										format: _user$project$QuestionTypes$FillInTheBlank
+										format: _user$project$Question$FillInTheBlank
 									};
 								}
 							}
@@ -384,10 +397,3 @@ var _user$project$Question$newQuestion = F3(
 			}
 		}
 	});
-var _user$project$Question$emptyQuestion = {
-	question: '',
-	distractors: _elm_lang$core$Native_List.fromArray(
-		[]),
-	answer: {ctor: '_Tuple2', _0: '', _1: ''},
-	format: _user$project$QuestionTypes$FillInTheBlank
-};

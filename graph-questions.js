@@ -9597,12 +9597,511 @@ var _user$project$Graph$randomEdge = F2(
 		}
 	});
 
-var _user$project$QuestionTypes$Question = F4(
+var _user$project$Search$unwindSearchTree = F2(
+	function (searchTree, lastNode) {
+		unwindSearchTree:
+		while (true) {
+			var _p0 = searchTree;
+			if (_p0.ctor === '[]') {
+				return _elm_lang$core$Native_List.fromArray(
+					[]);
+			} else {
+				var _p2 = _p0._1;
+				var _p1 = _p0._0._0;
+				if (A2(_elm_lang$core$List$member, lastNode, _p0._0._1)) {
+					return A2(
+						_elm_lang$core$List_ops['::'],
+						_p1,
+						A2(_user$project$Search$unwindSearchTree, _p2, _p1));
+				} else {
+					var _v1 = _p2,
+						_v2 = lastNode;
+					searchTree = _v1;
+					lastNode = _v2;
+					continue unwindSearchTree;
+				}
+			}
+		}
+	});
+var _user$project$Search$genericSearch = F3(
+	function (graph, startNode, endNode) {
+		var searchHelper = F3(
+			function (openList, closedList, searchTree) {
+				searchHelper:
+				while (true) {
+					var _p3 = openList;
+					if (_p3.ctor === '[]') {
+						return _elm_lang$core$Maybe$Nothing;
+					} else {
+						var _p5 = _p3._0;
+						if (_elm_lang$core$Native_Utils.eq(_p5, endNode)) {
+							return _elm_lang$core$Maybe$Just(
+								_elm_lang$core$List$reverse(
+									A2(
+										_elm_lang$core$List_ops['::'],
+										endNode,
+										A2(_user$project$Search$unwindSearchTree, searchTree, endNode))));
+						} else {
+							var neighbors = A2(
+								_elm_lang$core$List$filter,
+								function (n) {
+									return _elm_lang$core$Basics$not(
+										A3(_user$project$Graph$visited, openList, closedList, n));
+								},
+								A2(
+									_elm_lang$core$List$filter,
+									A2(_user$project$Graph$edgeExists, graph, _p5),
+									graph.nodes));
+							var openList$ = A2(_elm_lang$core$List$append, _p3._1, neighbors);
+							var searchTree$ = A2(
+								_elm_lang$core$List_ops['::'],
+								{ctor: '_Tuple2', _0: _p5, _1: neighbors},
+								searchTree);
+							var _p4 = neighbors;
+							if (_p4.ctor === '[]') {
+								var _v5 = openList$,
+									_v6 = A2(_elm_lang$core$List_ops['::'], _p5, closedList),
+									_v7 = searchTree$;
+								openList = _v5;
+								closedList = _v6;
+								searchTree = _v7;
+								continue searchHelper;
+							} else {
+								var _v8 = openList$,
+									_v9 = A2(_elm_lang$core$List_ops['::'], _p5, closedList),
+									_v10 = searchTree$;
+								openList = _v8;
+								closedList = _v9;
+								searchTree = _v10;
+								continue searchHelper;
+							}
+						}
+					}
+				}
+			});
+		return A3(
+			searchHelper,
+			_elm_lang$core$Native_List.fromArray(
+				[startNode]),
+			_elm_lang$core$Native_List.fromArray(
+				[]),
+			_elm_lang$core$Native_List.fromArray(
+				[]));
+	});
+var _user$project$Search$breadthFirstSearch = F3(
+	function (graph, startNode, endNode) {
+		return A3(_user$project$Search$genericSearch, graph, startNode, endNode);
+	});
+var _user$project$Search$pathExists = F3(
+	function (graph, startNode, endNode) {
+		var s = A3(_user$project$Search$breadthFirstSearch, graph, startNode, endNode);
+		var _p6 = s;
+		if (_p6.ctor === 'Nothing') {
+			return false;
+		} else {
+			return true;
+		}
+	});
+
+var _user$project$Question$findFeedback = F3(
+	function (answer, response, distractors) {
+		findFeedback:
+		while (true) {
+			var _p0 = distractors;
+			if (_p0.ctor === '[]') {
+				return A2(_elm_lang$core$Basics_ops['++'], 'Incorrect. The answer is ', answer);
+			} else {
+				var _p1 = _p0._0;
+				if (_elm_lang$core$Native_Utils.eq(
+					_elm_lang$core$Basics$fst(_p1),
+					response) || _elm_lang$core$Native_Utils.eq(
+					_elm_lang$core$Basics$fst(_p1),
+					'')) {
+					return A2(
+						_elm_lang$core$Basics_ops['++'],
+						_elm_lang$core$Basics$snd(_p1),
+						A2(_elm_lang$core$Basics_ops['++'], ' The answer is ', answer));
+				} else {
+					var _v1 = answer,
+						_v2 = response,
+						_v3 = _p0._1;
+					answer = _v1;
+					response = _v2;
+					distractors = _v3;
+					continue findFeedback;
+				}
+			}
+		}
+	});
+var _user$project$Question$Question = F4(
 	function (a, b, c, d) {
 		return {question: a, distractors: b, answer: c, format: d};
 	});
-var _user$project$QuestionTypes$MultipleChoice = {ctor: 'MultipleChoice'};
-var _user$project$QuestionTypes$FillInTheBlank = {ctor: 'FillInTheBlank'};
+var _user$project$Question$MultipleChoice = {ctor: 'MultipleChoice'};
+var _user$project$Question$FillInTheBlank = {ctor: 'FillInTheBlank'};
+var _user$project$Question$emptyQuestion = {
+	question: '',
+	distractors: _elm_lang$core$Native_List.fromArray(
+		[]),
+	answer: {ctor: '_Tuple2', _0: '', _1: ''},
+	format: _user$project$Question$FillInTheBlank
+};
+var _user$project$Question$newQuestion = F3(
+	function (graph, randomValues, index) {
+		var _p2 = graph;
+		var nodes = _p2.nodes;
+		var edges = _p2.edges;
+		var directed = _p2.directed;
+		var weighted = _p2.weighted;
+		if (_elm_lang$core$Native_Utils.eq(index, 1)) {
+			return {
+				question: 'How many nodes are in the graph above?',
+				distractors: _elm_lang$core$Native_List.fromArray(
+					[
+						{
+						ctor: '_Tuple2',
+						_0: _elm_lang$core$Basics$toString(
+							_user$project$Graph$numberOfEdges(graph)),
+						_1: 'That is the number of edges. Nodes are the labeled circles in the picture above.'
+					},
+						{ctor: '_Tuple2', _0: '', _1: 'Incorrect. Nodes are the labeled circles in the picture above. A node is still part of a graph even if it is not connected by an edge to any other nodes'}
+					]),
+				answer: {
+					ctor: '_Tuple2',
+					_0: _elm_lang$core$Basics$toString(
+						_user$project$Graph$numberOfNodes(graph)),
+					_1: 'Correct.'
+				},
+				format: _user$project$Question$FillInTheBlank
+			};
+		} else {
+			if (_elm_lang$core$Native_Utils.eq(index, 2)) {
+				return {
+					question: 'How many edges are in the graph above?',
+					distractors: _elm_lang$core$Native_List.fromArray(
+						[
+							{
+							ctor: '_Tuple2',
+							_0: _elm_lang$core$Basics$toString(
+								_user$project$Graph$numberOfNodes(graph)),
+							_1: 'That is the number of nodes. Edges are the lines connecting circles in the picture above. A bi-directional edge (i.e., an edge with two arrows) still counts as a single edge.'
+						},
+							{ctor: '_Tuple2', _0: '', _1: 'Incorrect. Edges are the lines connecting circles in the picture above. A bi-directional edge (i.e., an edge with two arrows) still counts as a single edge.'}
+						]),
+					answer: {
+						ctor: '_Tuple2',
+						_0: _elm_lang$core$Basics$toString(
+							_user$project$Graph$numberOfEdges(graph)),
+						_1: 'Correct.'
+					},
+					format: _user$project$Question$FillInTheBlank
+				};
+			} else {
+				if (_elm_lang$core$Native_Utils.eq(index, 3)) {
+					var l = _user$project$Graph$lastNode(graph);
+					var f = _user$project$Graph$firstNode(graph);
+					var ans = A3(_user$project$Search$pathExists, graph, f, l);
+					var actualPath = A2(
+						_elm_lang$core$Maybe$withDefault,
+						_elm_lang$core$Native_List.fromArray(
+							[]),
+						A3(_user$project$Search$genericSearch, graph, f, l));
+					var fbackString = ans ? A2(
+						_elm_lang$core$Basics_ops['++'],
+						'One valid path is ',
+						_elm_lang$core$Basics$toString(actualPath)) : A2(
+						_elm_lang$core$Basics_ops['++'],
+						'There is no path from Node ',
+						A2(
+							_elm_lang$core$Basics_ops['++'],
+							_elm_lang$core$Basics$toString(f),
+							A2(
+								_elm_lang$core$Basics_ops['++'],
+								' to Node ',
+								_elm_lang$core$Basics$toString(l))));
+					return {
+						question: A2(
+							_elm_lang$core$Basics_ops['++'],
+							'True or False: There is a path from Node ',
+							A2(
+								_elm_lang$core$Basics_ops['++'],
+								_elm_lang$core$Basics$toString(f),
+								A2(
+									_elm_lang$core$Basics_ops['++'],
+									' to Node ',
+									_elm_lang$core$Basics$toString(l)))),
+						distractors: _elm_lang$core$Native_List.fromArray(
+							[
+								{
+								ctor: '_Tuple2',
+								_0: _elm_lang$core$Basics$toString(
+									_elm_lang$core$Basics$not(ans)),
+								_1: A2(_elm_lang$core$Basics_ops['++'], 'Incorrect. ', fbackString)
+							}
+							]),
+						answer: {
+							ctor: '_Tuple2',
+							_0: _elm_lang$core$Basics$toString(ans),
+							_1: A2(_elm_lang$core$Basics_ops['++'], 'Correct. ', fbackString)
+						},
+						format: _user$project$Question$MultipleChoice
+					};
+				} else {
+					if (_elm_lang$core$Native_Utils.eq(index, 4)) {
+						var f = A3(
+							_user$project$Graph$randomNode,
+							graph,
+							randomValues,
+							_elm_lang$core$Native_List.fromArray(
+								[]));
+						var l = A3(
+							_user$project$Graph$randomNode,
+							graph,
+							randomValues,
+							_elm_lang$core$Native_List.fromArray(
+								[f]));
+						var ans = A3(_user$project$Graph$edgeExists, graph, f, l);
+						var opposite = A3(_user$project$Graph$edgeExists, graph, l, f);
+						var fbackString = ans ? A2(
+							_elm_lang$core$Basics_ops['++'],
+							'There is an edge from Node ',
+							A2(
+								_elm_lang$core$Basics_ops['++'],
+								_elm_lang$core$Basics$toString(f),
+								A2(
+									_elm_lang$core$Basics_ops['++'],
+									' to Node ',
+									_elm_lang$core$Basics$toString(l)))) : (opposite ? A2(
+							_elm_lang$core$Basics_ops['++'],
+							'There is an not an edge from Node ',
+							A2(
+								_elm_lang$core$Basics_ops['++'],
+								_elm_lang$core$Basics$toString(f),
+								A2(
+									_elm_lang$core$Basics_ops['++'],
+									' to Node ',
+									A2(
+										_elm_lang$core$Basics_ops['++'],
+										_elm_lang$core$Basics$toString(l),
+										A2(
+											_elm_lang$core$Basics_ops['++'],
+											', but there is an edge from Node ',
+											A2(
+												_elm_lang$core$Basics_ops['++'],
+												_elm_lang$core$Basics$toString(l),
+												A2(
+													_elm_lang$core$Basics_ops['++'],
+													' to Node ',
+													_elm_lang$core$Basics$toString(f)))))))) : A2(
+							_elm_lang$core$Basics_ops['++'],
+							'There is no edge between Node ',
+							A2(
+								_elm_lang$core$Basics_ops['++'],
+								_elm_lang$core$Basics$toString(f),
+								A2(
+									_elm_lang$core$Basics_ops['++'],
+									' and Node ',
+									_elm_lang$core$Basics$toString(l)))));
+						return {
+							question: A2(
+								_elm_lang$core$Basics_ops['++'],
+								'True or False: There is an edge from Node ',
+								A2(
+									_elm_lang$core$Basics_ops['++'],
+									_elm_lang$core$Basics$toString(f),
+									A2(
+										_elm_lang$core$Basics_ops['++'],
+										' to Node ',
+										_elm_lang$core$Basics$toString(l)))),
+							distractors: _elm_lang$core$Native_List.fromArray(
+								[
+									{
+									ctor: '_Tuple2',
+									_0: _elm_lang$core$Basics$toString(
+										_elm_lang$core$Basics$not(ans)),
+									_1: A2(_elm_lang$core$Basics_ops['++'], 'Incorrect. ', fbackString)
+								}
+								]),
+							answer: {
+								ctor: '_Tuple2',
+								_0: _elm_lang$core$Basics$toString(ans),
+								_1: A2(_elm_lang$core$Basics_ops['++'], 'Correct. ', fbackString)
+							},
+							format: _user$project$Question$MultipleChoice
+						};
+					} else {
+						if (_elm_lang$core$Native_Utils.eq(index, 5) && directed) {
+							var n = A3(
+								_user$project$Graph$randomNode,
+								graph,
+								randomValues,
+								_elm_lang$core$Native_List.fromArray(
+									[]));
+							var deg = A2(_user$project$Graph$degree, graph, n);
+							var inDeg = A2(_user$project$Graph$inDegree, graph, n);
+							var outDeg = A2(_user$project$Graph$outDegree, graph, n);
+							return {
+								question: A2(
+									_elm_lang$core$Basics_ops['++'],
+									'What is the in-degree of Node ',
+									A2(
+										_elm_lang$core$Basics_ops['++'],
+										_elm_lang$core$Basics$toString(n),
+										'?')),
+								distractors: _elm_lang$core$Native_List.fromArray(
+									[
+										{
+										ctor: '_Tuple2',
+										_0: _elm_lang$core$Basics$toString(deg),
+										_1: 'Incorrect. You identified the number of edges entering and leaving the node (the degree). You should only count the number of edges entering the node (the in-degree)'
+									},
+										{
+										ctor: '_Tuple2',
+										_0: _elm_lang$core$Basics$toString(outDeg),
+										_1: 'Incorrect. You identified the number of edges leaving the node (the out-degree), not the number of edges entering the node (the in-degree)'
+									},
+										{
+										ctor: '_Tuple2',
+										_0: _elm_lang$core$Basics$toString(inDeg + outDeg),
+										_1: 'Incorrect. You double-counted the bi-directional edges.'
+									},
+										{ctor: '_Tuple2', _0: '', _1: 'Incorrect. A node\'s in-degree is the number of edges entering (to) the node. A bidirectional node only is counted once.'}
+									]),
+								answer: {
+									ctor: '_Tuple2',
+									_0: _elm_lang$core$Basics$toString(inDeg),
+									_1: 'Correct.'
+								},
+								format: _user$project$Question$FillInTheBlank
+							};
+						} else {
+							if (_elm_lang$core$Native_Utils.eq(index, 6) && directed) {
+								var n = A3(
+									_user$project$Graph$randomNode,
+									graph,
+									randomValues,
+									_elm_lang$core$Native_List.fromArray(
+										[]));
+								var deg = A2(_user$project$Graph$degree, graph, n);
+								var inDeg = A2(_user$project$Graph$inDegree, graph, n);
+								var outDeg = A2(_user$project$Graph$outDegree, graph, n);
+								return {
+									question: A2(
+										_elm_lang$core$Basics_ops['++'],
+										'What is the out-degree of Node ',
+										A2(
+											_elm_lang$core$Basics_ops['++'],
+											_elm_lang$core$Basics$toString(n),
+											'?')),
+									distractors: _elm_lang$core$Native_List.fromArray(
+										[
+											{
+											ctor: '_Tuple2',
+											_0: _elm_lang$core$Basics$toString(deg),
+											_1: 'Incorrect. You identified the number of edges entering and leaving the node (the degree). You should only count the number of edges leaving the node (the out-degree)'
+										},
+											{
+											ctor: '_Tuple2',
+											_0: _elm_lang$core$Basics$toString(inDeg),
+											_1: 'Incorrect. You identified the number of edges entering the node (the in-degree), not the number of edges leaving the node (the out-degree)'
+										},
+											{
+											ctor: '_Tuple2',
+											_0: _elm_lang$core$Basics$toString(inDeg + outDeg),
+											_1: 'Incorrect. You double-counted the bi-directional edges.'
+										},
+											{ctor: '_Tuple2', _0: '', _1: 'Incorrect. A node\'s out-degree is the number of edges leaving (from) the node. A bidirectional node only is counted once.'}
+										]),
+									answer: {
+										ctor: '_Tuple2',
+										_0: _elm_lang$core$Basics$toString(outDeg),
+										_1: 'Correct.'
+									},
+									format: _user$project$Question$FillInTheBlank
+								};
+							} else {
+								if (_elm_lang$core$Native_Utils.eq(index, 7) && weighted) {
+									var e = A2(_user$project$Graph$randomEdge, graph, randomValues);
+									var f = e.from;
+									var t = e.to;
+									var weight = e.weight;
+									return {
+										question: A2(
+											_elm_lang$core$Basics_ops['++'],
+											'What is the weight of the edge from Node ',
+											A2(
+												_elm_lang$core$Basics_ops['++'],
+												_elm_lang$core$Basics$toString(f),
+												A2(
+													_elm_lang$core$Basics_ops['++'],
+													' to Node ',
+													A2(
+														_elm_lang$core$Basics_ops['++'],
+														_elm_lang$core$Basics$toString(t),
+														'?')))),
+										distractors: _elm_lang$core$Native_List.fromArray(
+											[
+												{ctor: '_Tuple2', _0: '', _1: 'Incorrect. An edge\'s weight is the number displayed on top of (or next to) the edge.'}
+											]),
+										answer: {
+											ctor: '_Tuple2',
+											_0: _elm_lang$core$Basics$toString(weight),
+											_1: 'Correct.'
+										},
+										format: _user$project$Question$FillInTheBlank
+									};
+								} else {
+									var n = A3(
+										_user$project$Graph$randomNode,
+										graph,
+										randomValues,
+										_elm_lang$core$Native_List.fromArray(
+											[]));
+									var deg = A2(_user$project$Graph$degree, graph, n);
+									var inDeg = A2(_user$project$Graph$inDegree, graph, n);
+									var outDeg = A2(_user$project$Graph$outDegree, graph, n);
+									return {
+										question: A2(
+											_elm_lang$core$Basics_ops['++'],
+											'What is the degree of Node ',
+											A2(
+												_elm_lang$core$Basics_ops['++'],
+												_elm_lang$core$Basics$toString(n),
+												'?')),
+										distractors: _elm_lang$core$Native_List.fromArray(
+											[
+												{
+												ctor: '_Tuple2',
+												_0: _elm_lang$core$Basics$toString(inDeg),
+												_1: 'Incorrect. You identified the number of edges entering the node (the in-degree) but did not count the number of edges leaving the node (the out-degree)'
+											},
+												{
+												ctor: '_Tuple2',
+												_0: _elm_lang$core$Basics$toString(outDeg),
+												_1: 'Incorrect. You identified the number of edges leaving the node (the out-degree) but did not count the number of edges entering the node (the in-degree)'
+											},
+												{
+												ctor: '_Tuple2',
+												_0: _elm_lang$core$Basics$toString(inDeg + outDeg),
+												_1: 'Incorrect. You double-counted the bi-directional edges.'
+											},
+												{ctor: '_Tuple2', _0: '', _1: 'Incorrect. A node\'s degree is the number of edges entering (to) or exiting (from) the node. A bidirectional node only is only counted once.'}
+											]),
+										answer: {
+											ctor: '_Tuple2',
+											_0: _elm_lang$core$Basics$toString(deg),
+											_1: 'Correct.'
+										},
+										format: _user$project$Question$FillInTheBlank
+									};
+								}
+							}
+						}
+					}
+				}
+			}
+		}
+	});
 
 
 var _user$project$Types$Model = function (a) {
@@ -10399,506 +10898,6 @@ var _user$project$Ports$ssData = _elm_lang$core$Native_Platform.incomingPort(
 						});
 				});
 		}));
-
-var _user$project$Search$unwindSearchTree = F2(
-	function (searchTree, lastNode) {
-		unwindSearchTree:
-		while (true) {
-			var _p0 = searchTree;
-			if (_p0.ctor === '[]') {
-				return _elm_lang$core$Native_List.fromArray(
-					[]);
-			} else {
-				var _p2 = _p0._1;
-				var _p1 = _p0._0._0;
-				if (A2(_elm_lang$core$List$member, lastNode, _p0._0._1)) {
-					return A2(
-						_elm_lang$core$List_ops['::'],
-						_p1,
-						A2(_user$project$Search$unwindSearchTree, _p2, _p1));
-				} else {
-					var _v1 = _p2,
-						_v2 = lastNode;
-					searchTree = _v1;
-					lastNode = _v2;
-					continue unwindSearchTree;
-				}
-			}
-		}
-	});
-var _user$project$Search$genericSearch = F3(
-	function (graph, startNode, endNode) {
-		var searchHelper = F3(
-			function (openList, closedList, searchTree) {
-				searchHelper:
-				while (true) {
-					var _p3 = openList;
-					if (_p3.ctor === '[]') {
-						return _elm_lang$core$Maybe$Nothing;
-					} else {
-						var _p5 = _p3._0;
-						if (_elm_lang$core$Native_Utils.eq(_p5, endNode)) {
-							return _elm_lang$core$Maybe$Just(
-								_elm_lang$core$List$reverse(
-									A2(
-										_elm_lang$core$List_ops['::'],
-										endNode,
-										A2(_user$project$Search$unwindSearchTree, searchTree, endNode))));
-						} else {
-							var neighbors = A2(
-								_elm_lang$core$List$filter,
-								function (n) {
-									return _elm_lang$core$Basics$not(
-										A3(_user$project$Graph$visited, openList, closedList, n));
-								},
-								A2(
-									_elm_lang$core$List$filter,
-									A2(_user$project$Graph$edgeExists, graph, _p5),
-									graph.nodes));
-							var openList$ = A2(_elm_lang$core$List$append, _p3._1, neighbors);
-							var searchTree$ = A2(
-								_elm_lang$core$List_ops['::'],
-								{ctor: '_Tuple2', _0: _p5, _1: neighbors},
-								searchTree);
-							var _p4 = neighbors;
-							if (_p4.ctor === '[]') {
-								var _v5 = openList$,
-									_v6 = A2(_elm_lang$core$List_ops['::'], _p5, closedList),
-									_v7 = searchTree$;
-								openList = _v5;
-								closedList = _v6;
-								searchTree = _v7;
-								continue searchHelper;
-							} else {
-								var _v8 = openList$,
-									_v9 = A2(_elm_lang$core$List_ops['::'], _p5, closedList),
-									_v10 = searchTree$;
-								openList = _v8;
-								closedList = _v9;
-								searchTree = _v10;
-								continue searchHelper;
-							}
-						}
-					}
-				}
-			});
-		return A3(
-			searchHelper,
-			_elm_lang$core$Native_List.fromArray(
-				[startNode]),
-			_elm_lang$core$Native_List.fromArray(
-				[]),
-			_elm_lang$core$Native_List.fromArray(
-				[]));
-	});
-var _user$project$Search$breadthFirstSearch = F3(
-	function (graph, startNode, endNode) {
-		return A3(_user$project$Search$genericSearch, graph, startNode, endNode);
-	});
-var _user$project$Search$pathExists = F3(
-	function (graph, startNode, endNode) {
-		var s = A3(_user$project$Search$breadthFirstSearch, graph, startNode, endNode);
-		var _p6 = s;
-		if (_p6.ctor === 'Nothing') {
-			return false;
-		} else {
-			return true;
-		}
-	});
-
-var _user$project$Question$findFeedback = F3(
-	function (answer, response, distractors) {
-		findFeedback:
-		while (true) {
-			var _p0 = distractors;
-			if (_p0.ctor === '[]') {
-				return A2(_elm_lang$core$Basics_ops['++'], 'Incorrect. The answer is ', answer);
-			} else {
-				var _p1 = _p0._0;
-				if (_elm_lang$core$Native_Utils.eq(
-					_elm_lang$core$Basics$fst(_p1),
-					response) || _elm_lang$core$Native_Utils.eq(
-					_elm_lang$core$Basics$fst(_p1),
-					'')) {
-					return A2(
-						_elm_lang$core$Basics_ops['++'],
-						_elm_lang$core$Basics$snd(_p1),
-						A2(_elm_lang$core$Basics_ops['++'], ' The answer is ', answer));
-				} else {
-					var _v1 = answer,
-						_v2 = response,
-						_v3 = _p0._1;
-					answer = _v1;
-					response = _v2;
-					distractors = _v3;
-					continue findFeedback;
-				}
-			}
-		}
-	});
-var _user$project$Question$newQuestion = F3(
-	function (graph, randomValues, index) {
-		var _p2 = graph;
-		var nodes = _p2.nodes;
-		var edges = _p2.edges;
-		var directed = _p2.directed;
-		var weighted = _p2.weighted;
-		if (_elm_lang$core$Native_Utils.eq(index, 1)) {
-			return {
-				question: 'How many nodes are in the graph above?',
-				distractors: _elm_lang$core$Native_List.fromArray(
-					[
-						{
-						ctor: '_Tuple2',
-						_0: _elm_lang$core$Basics$toString(
-							_user$project$Graph$numberOfEdges(graph)),
-						_1: 'That is the number of edges. Nodes are the labeled circles in the picture above.'
-					},
-						{ctor: '_Tuple2', _0: '', _1: 'Incorrect. Nodes are the labeled circles in the picture above. A node is still part of a graph even if it is not connected by an edge to any other nodes'}
-					]),
-				answer: {
-					ctor: '_Tuple2',
-					_0: _elm_lang$core$Basics$toString(
-						_user$project$Graph$numberOfNodes(graph)),
-					_1: 'Correct.'
-				},
-				format: _user$project$QuestionTypes$FillInTheBlank
-			};
-		} else {
-			if (_elm_lang$core$Native_Utils.eq(index, 2)) {
-				return {
-					question: 'How many edges are in the graph above?',
-					distractors: _elm_lang$core$Native_List.fromArray(
-						[
-							{
-							ctor: '_Tuple2',
-							_0: _elm_lang$core$Basics$toString(
-								_user$project$Graph$numberOfNodes(graph)),
-							_1: 'That is the number of nodes. Edges are the lines connecting circles in the picture above. A bi-directional edge (i.e., an edge with two arrows) still counts as a single edge.'
-						},
-							{ctor: '_Tuple2', _0: '', _1: 'Incorrect. Edges are the lines connecting circles in the picture above. A bi-directional edge (i.e., an edge with two arrows) still counts as a single edge.'}
-						]),
-					answer: {
-						ctor: '_Tuple2',
-						_0: _elm_lang$core$Basics$toString(
-							_user$project$Graph$numberOfEdges(graph)),
-						_1: 'Correct.'
-					},
-					format: _user$project$QuestionTypes$FillInTheBlank
-				};
-			} else {
-				if (_elm_lang$core$Native_Utils.eq(index, 3)) {
-					var l = _user$project$Graph$lastNode(graph);
-					var f = _user$project$Graph$firstNode(graph);
-					var ans = A3(_user$project$Search$pathExists, graph, f, l);
-					var actualPath = A2(
-						_elm_lang$core$Maybe$withDefault,
-						_elm_lang$core$Native_List.fromArray(
-							[]),
-						A3(_user$project$Search$genericSearch, graph, f, l));
-					var fbackString = ans ? A2(
-						_elm_lang$core$Basics_ops['++'],
-						'One valid path is ',
-						_elm_lang$core$Basics$toString(actualPath)) : A2(
-						_elm_lang$core$Basics_ops['++'],
-						'There is no path from Node ',
-						A2(
-							_elm_lang$core$Basics_ops['++'],
-							_elm_lang$core$Basics$toString(f),
-							A2(
-								_elm_lang$core$Basics_ops['++'],
-								' to Node ',
-								_elm_lang$core$Basics$toString(l))));
-					return {
-						question: A2(
-							_elm_lang$core$Basics_ops['++'],
-							'True or False: There is a path from Node ',
-							A2(
-								_elm_lang$core$Basics_ops['++'],
-								_elm_lang$core$Basics$toString(f),
-								A2(
-									_elm_lang$core$Basics_ops['++'],
-									' to Node ',
-									_elm_lang$core$Basics$toString(l)))),
-						distractors: _elm_lang$core$Native_List.fromArray(
-							[
-								{
-								ctor: '_Tuple2',
-								_0: _elm_lang$core$Basics$toString(
-									_elm_lang$core$Basics$not(ans)),
-								_1: A2(_elm_lang$core$Basics_ops['++'], 'Incorrect. ', fbackString)
-							}
-							]),
-						answer: {
-							ctor: '_Tuple2',
-							_0: _elm_lang$core$Basics$toString(ans),
-							_1: A2(_elm_lang$core$Basics_ops['++'], 'Correct. ', fbackString)
-						},
-						format: _user$project$QuestionTypes$MultipleChoice
-					};
-				} else {
-					if (_elm_lang$core$Native_Utils.eq(index, 4)) {
-						var f = A3(
-							_user$project$Graph$randomNode,
-							graph,
-							randomValues,
-							_elm_lang$core$Native_List.fromArray(
-								[]));
-						var l = A3(
-							_user$project$Graph$randomNode,
-							graph,
-							randomValues,
-							_elm_lang$core$Native_List.fromArray(
-								[f]));
-						var ans = A3(_user$project$Graph$edgeExists, graph, f, l);
-						var opposite = A3(_user$project$Graph$edgeExists, graph, l, f);
-						var fbackString = ans ? A2(
-							_elm_lang$core$Basics_ops['++'],
-							'There is an edge from Node ',
-							A2(
-								_elm_lang$core$Basics_ops['++'],
-								_elm_lang$core$Basics$toString(f),
-								A2(
-									_elm_lang$core$Basics_ops['++'],
-									' to Node ',
-									_elm_lang$core$Basics$toString(l)))) : (opposite ? A2(
-							_elm_lang$core$Basics_ops['++'],
-							'There is an not an edge from Node ',
-							A2(
-								_elm_lang$core$Basics_ops['++'],
-								_elm_lang$core$Basics$toString(f),
-								A2(
-									_elm_lang$core$Basics_ops['++'],
-									' to Node ',
-									A2(
-										_elm_lang$core$Basics_ops['++'],
-										_elm_lang$core$Basics$toString(l),
-										A2(
-											_elm_lang$core$Basics_ops['++'],
-											', but there is an edge from Node ',
-											A2(
-												_elm_lang$core$Basics_ops['++'],
-												_elm_lang$core$Basics$toString(l),
-												A2(
-													_elm_lang$core$Basics_ops['++'],
-													' to Node ',
-													_elm_lang$core$Basics$toString(f)))))))) : A2(
-							_elm_lang$core$Basics_ops['++'],
-							'There is no edge between Node ',
-							A2(
-								_elm_lang$core$Basics_ops['++'],
-								_elm_lang$core$Basics$toString(f),
-								A2(
-									_elm_lang$core$Basics_ops['++'],
-									' and Node ',
-									_elm_lang$core$Basics$toString(l)))));
-						return {
-							question: A2(
-								_elm_lang$core$Basics_ops['++'],
-								'True or False: There is an edge from Node ',
-								A2(
-									_elm_lang$core$Basics_ops['++'],
-									_elm_lang$core$Basics$toString(f),
-									A2(
-										_elm_lang$core$Basics_ops['++'],
-										' to Node ',
-										_elm_lang$core$Basics$toString(l)))),
-							distractors: _elm_lang$core$Native_List.fromArray(
-								[
-									{
-									ctor: '_Tuple2',
-									_0: _elm_lang$core$Basics$toString(
-										_elm_lang$core$Basics$not(ans)),
-									_1: A2(_elm_lang$core$Basics_ops['++'], 'Incorrect. ', fbackString)
-								}
-								]),
-							answer: {
-								ctor: '_Tuple2',
-								_0: _elm_lang$core$Basics$toString(ans),
-								_1: A2(_elm_lang$core$Basics_ops['++'], 'Correct. ', fbackString)
-							},
-							format: _user$project$QuestionTypes$MultipleChoice
-						};
-					} else {
-						if (_elm_lang$core$Native_Utils.eq(index, 5) && directed) {
-							var n = A3(
-								_user$project$Graph$randomNode,
-								graph,
-								randomValues,
-								_elm_lang$core$Native_List.fromArray(
-									[]));
-							var deg = A2(_user$project$Graph$degree, graph, n);
-							var inDeg = A2(_user$project$Graph$inDegree, graph, n);
-							var outDeg = A2(_user$project$Graph$outDegree, graph, n);
-							return {
-								question: A2(
-									_elm_lang$core$Basics_ops['++'],
-									'What is the in-degree of Node ',
-									A2(
-										_elm_lang$core$Basics_ops['++'],
-										_elm_lang$core$Basics$toString(n),
-										'?')),
-								distractors: _elm_lang$core$Native_List.fromArray(
-									[
-										{
-										ctor: '_Tuple2',
-										_0: _elm_lang$core$Basics$toString(deg),
-										_1: 'Incorrect. You identified the number of edges entering and leaving the node (the degree). You should only count the number of edges entering the node (the in-degree)'
-									},
-										{
-										ctor: '_Tuple2',
-										_0: _elm_lang$core$Basics$toString(outDeg),
-										_1: 'Incorrect. You identified the number of edges leaving the node (the out-degree), not the number of edges entering the node (the in-degree)'
-									},
-										{
-										ctor: '_Tuple2',
-										_0: _elm_lang$core$Basics$toString(inDeg + outDeg),
-										_1: 'Incorrect. You double-counted the bi-directional edges.'
-									},
-										{ctor: '_Tuple2', _0: '', _1: 'Incorrect. A node\'s in-degree is the number of edges entering (to) the node. A bidirectional node only is counted once.'}
-									]),
-								answer: {
-									ctor: '_Tuple2',
-									_0: _elm_lang$core$Basics$toString(inDeg),
-									_1: 'Correct.'
-								},
-								format: _user$project$QuestionTypes$FillInTheBlank
-							};
-						} else {
-							if (_elm_lang$core$Native_Utils.eq(index, 6) && directed) {
-								var n = A3(
-									_user$project$Graph$randomNode,
-									graph,
-									randomValues,
-									_elm_lang$core$Native_List.fromArray(
-										[]));
-								var deg = A2(_user$project$Graph$degree, graph, n);
-								var inDeg = A2(_user$project$Graph$inDegree, graph, n);
-								var outDeg = A2(_user$project$Graph$outDegree, graph, n);
-								return {
-									question: A2(
-										_elm_lang$core$Basics_ops['++'],
-										'What is the out-degree of Node ',
-										A2(
-											_elm_lang$core$Basics_ops['++'],
-											_elm_lang$core$Basics$toString(n),
-											'?')),
-									distractors: _elm_lang$core$Native_List.fromArray(
-										[
-											{
-											ctor: '_Tuple2',
-											_0: _elm_lang$core$Basics$toString(deg),
-											_1: 'Incorrect. You identified the number of edges entering and leaving the node (the degree). You should only count the number of edges leaving the node (the out-degree)'
-										},
-											{
-											ctor: '_Tuple2',
-											_0: _elm_lang$core$Basics$toString(inDeg),
-											_1: 'Incorrect. You identified the number of edges entering the node (the in-degree), not the number of edges leaving the node (the out-degree)'
-										},
-											{
-											ctor: '_Tuple2',
-											_0: _elm_lang$core$Basics$toString(inDeg + outDeg),
-											_1: 'Incorrect. You double-counted the bi-directional edges.'
-										},
-											{ctor: '_Tuple2', _0: '', _1: 'Incorrect. A node\'s out-degree is the number of edges leaving (from) the node. A bidirectional node only is counted once.'}
-										]),
-									answer: {
-										ctor: '_Tuple2',
-										_0: _elm_lang$core$Basics$toString(outDeg),
-										_1: 'Correct.'
-									},
-									format: _user$project$QuestionTypes$FillInTheBlank
-								};
-							} else {
-								if (_elm_lang$core$Native_Utils.eq(index, 7) && weighted) {
-									var e = A2(_user$project$Graph$randomEdge, graph, randomValues);
-									var f = e.from;
-									var t = e.to;
-									var weight = e.weight;
-									return {
-										question: A2(
-											_elm_lang$core$Basics_ops['++'],
-											'What is the weight of the edge from Node ',
-											A2(
-												_elm_lang$core$Basics_ops['++'],
-												_elm_lang$core$Basics$toString(f),
-												A2(
-													_elm_lang$core$Basics_ops['++'],
-													' to Node ',
-													A2(
-														_elm_lang$core$Basics_ops['++'],
-														_elm_lang$core$Basics$toString(t),
-														'?')))),
-										distractors: _elm_lang$core$Native_List.fromArray(
-											[
-												{ctor: '_Tuple2', _0: '', _1: 'Incorrect. An edge\'s weight is the number displayed on top of (or next to) the edge.'}
-											]),
-										answer: {
-											ctor: '_Tuple2',
-											_0: _elm_lang$core$Basics$toString(weight),
-											_1: 'Correct.'
-										},
-										format: _user$project$QuestionTypes$FillInTheBlank
-									};
-								} else {
-									var n = A3(
-										_user$project$Graph$randomNode,
-										graph,
-										randomValues,
-										_elm_lang$core$Native_List.fromArray(
-											[]));
-									var deg = A2(_user$project$Graph$degree, graph, n);
-									var inDeg = A2(_user$project$Graph$inDegree, graph, n);
-									var outDeg = A2(_user$project$Graph$outDegree, graph, n);
-									return {
-										question: A2(
-											_elm_lang$core$Basics_ops['++'],
-											'What is the degree of Node ',
-											A2(
-												_elm_lang$core$Basics_ops['++'],
-												_elm_lang$core$Basics$toString(n),
-												'?')),
-										distractors: _elm_lang$core$Native_List.fromArray(
-											[
-												{
-												ctor: '_Tuple2',
-												_0: _elm_lang$core$Basics$toString(inDeg),
-												_1: 'Incorrect. You identified the number of edges entering the node (the in-degree) but did not count the number of edges leaving the node (the out-degree)'
-											},
-												{
-												ctor: '_Tuple2',
-												_0: _elm_lang$core$Basics$toString(outDeg),
-												_1: 'Incorrect. You identified the number of edges leaving the node (the out-degree) but did not count the number of edges entering the node (the in-degree)'
-											},
-												{
-												ctor: '_Tuple2',
-												_0: _elm_lang$core$Basics$toString(inDeg + outDeg),
-												_1: 'Incorrect. You double-counted the bi-directional edges.'
-											},
-												{ctor: '_Tuple2', _0: '', _1: 'Incorrect. A node\'s degree is the number of edges entering (to) or exiting (from) the node. A bidirectional node only is only counted once.'}
-											]),
-										answer: {
-											ctor: '_Tuple2',
-											_0: _elm_lang$core$Basics$toString(deg),
-											_1: 'Correct.'
-										},
-										format: _user$project$QuestionTypes$FillInTheBlank
-									};
-								}
-							}
-						}
-					}
-				}
-			}
-		}
-	});
-var _user$project$Question$emptyQuestion = {
-	question: '',
-	distractors: _elm_lang$core$Native_List.fromArray(
-		[]),
-	answer: {ctor: '_Tuple2', _0: '', _1: ''},
-	format: _user$project$QuestionTypes$FillInTheBlank
-};
 
 var _user$project$Model$initModel = {
 	graph: _user$project$Graph$emptyGraph,
