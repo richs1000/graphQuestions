@@ -27,10 +27,22 @@ view model =
     div []
         [ h1 [ scoreboardStyle ] [ Html.text "Test Your Understanding" ]
         , imageOfGraph model.graph
-        , questionForm model.question model.success model.userInput model.feedback
+        , questionOrFeedback model
         , historySection model.history model.denominator
         , debugSection model
         ]
+
+
+questionOrFeedback : Model -> Html Msg
+questionOrFeedback model =
+    case model.success of
+        -- No answer has been submitted, so display the question
+        Nothing ->
+            displayQuestion model.question model.userInput (Maybe.withDefault 0 (List.head model.randomValues))
+
+        -- Answer has been submitted, so display the feedback
+        Just _ ->
+            displayFeedback model.userInput model.feedback
 
 
 debugSection : Model -> Html Msg

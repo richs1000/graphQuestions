@@ -49,85 +49,67 @@ buttonStyle =
         ]
 
 
-
--- displayQuestion : Model -> Html Msg
--- displayQuestion model =
---     let
---         { question, distractors, answer, format } =
---             model.question
---     in
---         case format of
---             FillInTheBlank ->
---                 Html.form [ onSubmit Submit ]
---                     [ div [ questionStyle ] [ Html.text question ]
---                     , input
---                         [ Html.Attributes.type' "text"
---                         , placeholder "Answer here..."
---                         , onInput UserInput
---                         , value model.userInput
---                         , inputStyle
---                         ]
---                         []
---                     , button
---                         [ Html.Attributes.type' "submit"
---                         , buttonStyle
---                         ]
---                         [ Html.text "Submit" ]
---                     ]
---
---             MultipleChoice ->
---                 Html.form [ onSubmit Submit ]
---                     [ div [ questionStyle ] [ Html.text question ]
---                     , div []
---                         [ radio "True" model
---                         , radio "False" model
---                         ]
---                     , button
---                         [ Html.Attributes.type' "submit"
---                         , buttonStyle
---                         ]
---                         [ Html.text "Submit" ]
---                     ]
+fillInTheBlank : Question -> String -> Html Msg
+fillInTheBlank quest userInput =
+    Html.form [ onSubmit Submit ]
+        [ div [ questionStyle ] [ Html.text quest.question ]
+        , input
+            [ Html.Attributes.type' "text"
+            , placeholder "Answer here..."
+            , onInput UserInput
+            , value userInput
+            , inputStyle
+            ]
+            []
+        , button
+            [ Html.Attributes.type' "submit"
+            , buttonStyle
+            ]
+            [ Html.text "Submit" ]
+        ]
 
 
-displayQuestion : Question -> String -> Html Msg
-displayQuestion quest userInput =
+multipleChoiceButtons : ResponseAndFeedback -> List ResponseAndFeedback -> String -> Int -> Html Msg
+multipleChoiceButtons answer distractors userInput randomValue =
     let
-        { question, distractors, answer, format } =
-            quest
-    in
-        case format of
-            FillInTheBlank ->
-                Html.form [ onSubmit Submit ]
-                    [ div [ questionStyle ] [ Html.text question ]
-                    , input
-                        [ Html.Attributes.type' "text"
-                        , placeholder "Answer here..."
-                        , onInput UserInput
-                        , value userInput
-                        , inputStyle
-                        ]
-                        []
-                    , button
-                        [ Html.Attributes.type' "submit"
-                        , buttonStyle
-                        ]
-                        [ Html.text "Submit" ]
-                    ]
+        answerPosition =
+            randomValue `rem` (1 + (List.length distractors))
 
-            MultipleChoice ->
-                Html.form [ onSubmit Submit ]
-                    [ div [ questionStyle ] [ Html.text question ]
-                    , div []
-                        [ radio "True" userInput
-                        , radio "False" userInput
-                        ]
-                    , button
-                        [ Html.Attributes.type' "submit"
-                        , buttonStyle
-                        ]
-                        [ Html.text "Submit" ]
-                    ]
+        allItems =
+            (List.drop answerPosition distractors)
+                |> List.append [ answer ]
+                |> List.append (List.take answerPosition distractors)
+
+        -- |> List.append answer
+        -- |> List.append (List.take answerPosition distractors)
+        radios =
+            List.foldl (\i acc -> (radio (fst i) userInput) :: acc) [] allItems
+    in
+        div []
+            radios
+
+
+multipleChoice : Question -> String -> Int -> Html Msg
+multipleChoice quest userInput randomValue =
+    Html.form [ onSubmit Submit ]
+        [ div [ questionStyle ] [ Html.text quest.question ]
+        , (multipleChoiceButtons quest.answer quest.distractors userInput randomValue)
+        , button
+            [ Html.Attributes.type' "submit"
+            , buttonStyle
+            ]
+            [ Html.text "Submit" ]
+        ]
+
+
+displayQuestion : Question -> String -> Int -> Html Msg
+displayQuestion quest userInput randomValue =
+    case quest.format of
+        FillInTheBlank ->
+            fillInTheBlank quest userInput
+
+        MultipleChoice ->
+            multipleChoice quest userInput randomValue
 
 
 radio : String -> String -> Html Msg
@@ -149,67 +131,20 @@ radio name userInput =
             ]
 
 
-
--- questionForm : Model -> Html Msg
--- questionForm model =
---     let
---         { question, distractors, answer, format } =
---             model.question
---
---         success' =
---             model.success
---     in
---         case model.success of
---             -- No answer has been submitted, so display the question
---             Nothing ->
---                 displayQuestion model
---
---             -- Answer has been submitted, so display the feedback
---             Just _ ->
---                 Html.form [ onSubmit GiveFeedback ]
---                     [ div [ questionStyle ] [ Html.text model.feedback ]
---                     , input
---                         [ Html.Attributes.type' "text"
---                         , placeholder "Answer here..."
---                         , onInput UserInput
---                         , value model.userInput
---                         , disabled True
---                         , inputStyle
---                         ]
---                         []
---                     , button
---                         [ Html.Attributes.type' "submit"
---                         , buttonStyle
---                         ]
---                         [ Html.text "Next Question" ]
---                     ]
-
-
-questionForm : Question -> Maybe Bool -> String -> String -> Html Msg
-questionForm quest success userInput feedback =
-    let
-        { question, distractors, answer, format } =
-            quest
-    in
-        case success of
-            -- No answer has been submitted, so display the question
-            Nothing ->
-                displayQuestion quest userInput
-
-            -- Answer has been submitted, so display the feedback
-            Just _ ->
-                Html.form [ onSubmit GiveFeedback ]
-                    [ div [ questionStyle ] [ Html.text feedback ]
-                    , input
-                        [ Html.Attributes.type' "text"
-                        , value userInput
-                        , disabled True
-                        , inputStyle
-                        ]
-                        []
-                    , button
-                        [ Html.Attributes.type' "submit"
-                        , buttonStyle
-                        ]
-                        [ Html.text "Next Question" ]
-                    ]
+displayFeedback : String -> String -> Html Msg
+displayFeedback userInput feedback =
+    Html.form [ onSubmit GiveFeedback ]
+        [ div [ questionStyle ] [ Html.text feedback ]
+        , input
+            [ Html.Attributes.type' "text"
+            , value userInput
+            , disabled True
+            , inputStyle
+            ]
+            []
+        , button
+            [ Html.Attributes.type' "submit"
+            , buttonStyle
+            ]
+            [ Html.text "Next Question" ]
+        ]

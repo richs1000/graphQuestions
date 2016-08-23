@@ -10550,6 +10550,49 @@ var _user$project$QuestionView$questionStyle = _elm_lang$html$Html_Attributes$st
 			{ctor: '_Tuple2', _0: 'font-size', _1: '2em'},
 			{ctor: '_Tuple2', _0: 'margin', _1: '4px'}
 		]));
+var _user$project$QuestionView$fillInTheBlank = F2(
+	function (quest, userInput) {
+		return A2(
+			_elm_lang$html$Html$form,
+			_elm_lang$core$Native_List.fromArray(
+				[
+					_elm_lang$html$Html_Events$onSubmit(_user$project$MessageTypes$Submit)
+				]),
+			_elm_lang$core$Native_List.fromArray(
+				[
+					A2(
+					_elm_lang$html$Html$div,
+					_elm_lang$core$Native_List.fromArray(
+						[_user$project$QuestionView$questionStyle]),
+					_elm_lang$core$Native_List.fromArray(
+						[
+							_elm_lang$html$Html$text(quest.question)
+						])),
+					A2(
+					_elm_lang$html$Html$input,
+					_elm_lang$core$Native_List.fromArray(
+						[
+							_elm_lang$html$Html_Attributes$type$('text'),
+							_elm_lang$html$Html_Attributes$placeholder('Answer here...'),
+							_elm_lang$html$Html_Events$onInput(_user$project$MessageTypes$UserInput),
+							_elm_lang$html$Html_Attributes$value(userInput),
+							_user$project$QuestionView$inputStyle
+						]),
+					_elm_lang$core$Native_List.fromArray(
+						[])),
+					A2(
+					_elm_lang$html$Html$button,
+					_elm_lang$core$Native_List.fromArray(
+						[
+							_elm_lang$html$Html_Attributes$type$('submit'),
+							_user$project$QuestionView$buttonStyle
+						]),
+					_elm_lang$core$Native_List.fromArray(
+						[
+							_elm_lang$html$Html$text('Submit')
+						]))
+				]));
+	});
 var _user$project$QuestionView$radio = F2(
 	function (name, userInput) {
 		var isSelected = _elm_lang$core$Native_Utils.eq(userInput, name);
@@ -10589,146 +10632,123 @@ var _user$project$QuestionView$radio = F2(
 						]))
 				]));
 	});
-var _user$project$QuestionView$displayQuestion = F2(
-	function (quest, userInput) {
-		var _p1 = quest;
-		var question = _p1.question;
-		var distractors = _p1.distractors;
-		var answer = _p1.answer;
-		var format = _p1.format;
-		var _p2 = format;
-		if (_p2.ctor === 'FillInTheBlank') {
-			return A2(
-				_elm_lang$html$Html$form,
+var _user$project$QuestionView$multipleChoiceButtons = F4(
+	function (answer, distractors, userInput, randomValue) {
+		var answerPosition = A2(
+			_elm_lang$core$Basics$rem,
+			randomValue,
+			1 + _elm_lang$core$List$length(distractors));
+		var allItems = A2(
+			_elm_lang$core$List$append,
+			A2(_elm_lang$core$List$take, answerPosition, distractors),
+			A2(
+				_elm_lang$core$List$append,
 				_elm_lang$core$Native_List.fromArray(
-					[
-						_elm_lang$html$Html_Events$onSubmit(_user$project$MessageTypes$Submit)
-					]),
-				_elm_lang$core$Native_List.fromArray(
-					[
+					[answer]),
+				A2(_elm_lang$core$List$drop, answerPosition, distractors)));
+		var radios = A3(
+			_elm_lang$core$List$foldl,
+			F2(
+				function (i, acc) {
+					return A2(
+						_elm_lang$core$List_ops['::'],
 						A2(
-						_elm_lang$html$Html$div,
-						_elm_lang$core$Native_List.fromArray(
-							[_user$project$QuestionView$questionStyle]),
-						_elm_lang$core$Native_List.fromArray(
-							[
-								_elm_lang$html$Html$text(question)
-							])),
-						A2(
-						_elm_lang$html$Html$input,
-						_elm_lang$core$Native_List.fromArray(
-							[
-								_elm_lang$html$Html_Attributes$type$('text'),
-								_elm_lang$html$Html_Attributes$placeholder('Answer here...'),
-								_elm_lang$html$Html_Events$onInput(_user$project$MessageTypes$UserInput),
-								_elm_lang$html$Html_Attributes$value(userInput),
-								_user$project$QuestionView$inputStyle
-							]),
-						_elm_lang$core$Native_List.fromArray(
-							[])),
-						A2(
-						_elm_lang$html$Html$button,
-						_elm_lang$core$Native_List.fromArray(
-							[
-								_elm_lang$html$Html_Attributes$type$('submit'),
-								_user$project$QuestionView$buttonStyle
-							]),
-						_elm_lang$core$Native_List.fromArray(
-							[
-								_elm_lang$html$Html$text('Submit')
-							]))
-					]));
+							_user$project$QuestionView$radio,
+							_elm_lang$core$Basics$fst(i),
+							userInput),
+						acc);
+				}),
+			_elm_lang$core$Native_List.fromArray(
+				[]),
+			allItems);
+		return A2(
+			_elm_lang$html$Html$div,
+			_elm_lang$core$Native_List.fromArray(
+				[]),
+			radios);
+	});
+var _user$project$QuestionView$multipleChoice = F3(
+	function (quest, userInput, randomValue) {
+		return A2(
+			_elm_lang$html$Html$form,
+			_elm_lang$core$Native_List.fromArray(
+				[
+					_elm_lang$html$Html_Events$onSubmit(_user$project$MessageTypes$Submit)
+				]),
+			_elm_lang$core$Native_List.fromArray(
+				[
+					A2(
+					_elm_lang$html$Html$div,
+					_elm_lang$core$Native_List.fromArray(
+						[_user$project$QuestionView$questionStyle]),
+					_elm_lang$core$Native_List.fromArray(
+						[
+							_elm_lang$html$Html$text(quest.question)
+						])),
+					A4(_user$project$QuestionView$multipleChoiceButtons, quest.answer, quest.distractors, userInput, randomValue),
+					A2(
+					_elm_lang$html$Html$button,
+					_elm_lang$core$Native_List.fromArray(
+						[
+							_elm_lang$html$Html_Attributes$type$('submit'),
+							_user$project$QuestionView$buttonStyle
+						]),
+					_elm_lang$core$Native_List.fromArray(
+						[
+							_elm_lang$html$Html$text('Submit')
+						]))
+				]));
+	});
+var _user$project$QuestionView$displayQuestion = F3(
+	function (quest, userInput, randomValue) {
+		var _p1 = quest.format;
+		if (_p1.ctor === 'FillInTheBlank') {
+			return A2(_user$project$QuestionView$fillInTheBlank, quest, userInput);
 		} else {
-			return A2(
-				_elm_lang$html$Html$form,
-				_elm_lang$core$Native_List.fromArray(
-					[
-						_elm_lang$html$Html_Events$onSubmit(_user$project$MessageTypes$Submit)
-					]),
-				_elm_lang$core$Native_List.fromArray(
-					[
-						A2(
-						_elm_lang$html$Html$div,
-						_elm_lang$core$Native_List.fromArray(
-							[_user$project$QuestionView$questionStyle]),
-						_elm_lang$core$Native_List.fromArray(
-							[
-								_elm_lang$html$Html$text(question)
-							])),
-						A2(
-						_elm_lang$html$Html$div,
-						_elm_lang$core$Native_List.fromArray(
-							[]),
-						_elm_lang$core$Native_List.fromArray(
-							[
-								A2(_user$project$QuestionView$radio, 'True', userInput),
-								A2(_user$project$QuestionView$radio, 'False', userInput)
-							])),
-						A2(
-						_elm_lang$html$Html$button,
-						_elm_lang$core$Native_List.fromArray(
-							[
-								_elm_lang$html$Html_Attributes$type$('submit'),
-								_user$project$QuestionView$buttonStyle
-							]),
-						_elm_lang$core$Native_List.fromArray(
-							[
-								_elm_lang$html$Html$text('Submit')
-							]))
-					]));
+			return A3(_user$project$QuestionView$multipleChoice, quest, userInput, randomValue);
 		}
 	});
-var _user$project$QuestionView$questionForm = F4(
-	function (quest, success, userInput, feedback) {
-		var _p3 = quest;
-		var question = _p3.question;
-		var distractors = _p3.distractors;
-		var answer = _p3.answer;
-		var format = _p3.format;
-		var _p4 = success;
-		if (_p4.ctor === 'Nothing') {
-			return A2(_user$project$QuestionView$displayQuestion, quest, userInput);
-		} else {
-			return A2(
-				_elm_lang$html$Html$form,
-				_elm_lang$core$Native_List.fromArray(
-					[
-						_elm_lang$html$Html_Events$onSubmit(_user$project$MessageTypes$GiveFeedback)
-					]),
-				_elm_lang$core$Native_List.fromArray(
-					[
-						A2(
-						_elm_lang$html$Html$div,
-						_elm_lang$core$Native_List.fromArray(
-							[_user$project$QuestionView$questionStyle]),
-						_elm_lang$core$Native_List.fromArray(
-							[
-								_elm_lang$html$Html$text(feedback)
-							])),
-						A2(
-						_elm_lang$html$Html$input,
-						_elm_lang$core$Native_List.fromArray(
-							[
-								_elm_lang$html$Html_Attributes$type$('text'),
-								_elm_lang$html$Html_Attributes$value(userInput),
-								_elm_lang$html$Html_Attributes$disabled(true),
-								_user$project$QuestionView$inputStyle
-							]),
-						_elm_lang$core$Native_List.fromArray(
-							[])),
-						A2(
-						_elm_lang$html$Html$button,
-						_elm_lang$core$Native_List.fromArray(
-							[
-								_elm_lang$html$Html_Attributes$type$('submit'),
-								_user$project$QuestionView$buttonStyle
-							]),
-						_elm_lang$core$Native_List.fromArray(
-							[
-								_elm_lang$html$Html$text('Next Question')
-							]))
-					]));
-		}
+var _user$project$QuestionView$displayFeedback = F2(
+	function (userInput, feedback) {
+		return A2(
+			_elm_lang$html$Html$form,
+			_elm_lang$core$Native_List.fromArray(
+				[
+					_elm_lang$html$Html_Events$onSubmit(_user$project$MessageTypes$GiveFeedback)
+				]),
+			_elm_lang$core$Native_List.fromArray(
+				[
+					A2(
+					_elm_lang$html$Html$div,
+					_elm_lang$core$Native_List.fromArray(
+						[_user$project$QuestionView$questionStyle]),
+					_elm_lang$core$Native_List.fromArray(
+						[
+							_elm_lang$html$Html$text(feedback)
+						])),
+					A2(
+					_elm_lang$html$Html$input,
+					_elm_lang$core$Native_List.fromArray(
+						[
+							_elm_lang$html$Html_Attributes$type$('text'),
+							_elm_lang$html$Html_Attributes$value(userInput),
+							_elm_lang$html$Html_Attributes$disabled(true),
+							_user$project$QuestionView$inputStyle
+						]),
+					_elm_lang$core$Native_List.fromArray(
+						[])),
+					A2(
+					_elm_lang$html$Html$button,
+					_elm_lang$core$Native_List.fromArray(
+						[
+							_elm_lang$html$Html_Attributes$type$('submit'),
+							_user$project$QuestionView$buttonStyle
+						]),
+					_elm_lang$core$Native_List.fromArray(
+						[
+							_elm_lang$html$Html$text('Next Question')
+						]))
+				]));
 	});
 
 var _user$project$View$debugSection = function (model) {
@@ -10809,6 +10829,21 @@ var _user$project$View$debugSection = function (model) {
 		_elm_lang$core$Native_List.fromArray(
 			[]));
 };
+var _user$project$View$questionOrFeedback = function (model) {
+	var _p0 = model.success;
+	if (_p0.ctor === 'Nothing') {
+		return A3(
+			_user$project$QuestionView$displayQuestion,
+			model.question,
+			model.userInput,
+			A2(
+				_elm_lang$core$Maybe$withDefault,
+				0,
+				_elm_lang$core$List$head(model.randomValues)));
+	} else {
+		return A2(_user$project$QuestionView$displayFeedback, model.userInput, model.feedback);
+	}
+};
 var _user$project$View$scoreboardStyle = _elm_lang$html$Html_Attributes$style(
 	_elm_lang$core$Native_List.fromArray(
 		[
@@ -10835,7 +10870,7 @@ var _user$project$View$view = function (model) {
 						_elm_lang$html$Html$text('Test Your Understanding')
 					])),
 				_user$project$GraphView$imageOfGraph(model.graph),
-				A4(_user$project$QuestionView$questionForm, model.question, model.success, model.userInput, model.feedback),
+				_user$project$View$questionOrFeedback(model),
 				A2(_user$project$HistoryView$historySection, model.history, model.denominator),
 				_user$project$View$debugSection(model)
 			]));
