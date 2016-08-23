@@ -7,6 +7,8 @@ var _user$project$Update$update = F2(
 			var edges = _p0.edges;
 			var directed = _p0.directed;
 			var weighted = _p0.weighted;
+			var nodesPerRow = _p0.nodesPerRow;
+			var nodesPerCol = _p0.nodesPerCol;
 			var _p1 = msg;
 			switch (_p1.ctor) {
 				case 'Reset':
@@ -38,23 +40,31 @@ var _user$project$Update$update = F2(
 				case 'NewNodes':
 					var newNodes$ = _elm_lang$core$Set$toList(
 						_elm_lang$core$Set$fromList(_p1._0));
-					var newEdges = _user$project$Graph$createAllEdges(newNodes$);
+					var graph = model.graph;
+					var graph$ = _user$project$Graph$createAllEdges(
+						_elm_lang$core$Native_Utils.update(
+							graph,
+							{nodes: newNodes$}));
 					return {
 						ctor: '_Tuple2',
-						_0: A5(_user$project$Graph$updateGraph, model, newNodes$, newEdges, directed, weighted),
+						_0: _elm_lang$core$Native_Utils.update(
+							model,
+							{graph: graph$}),
 						_1: A2(
 							_elm_lang$core$Random$generate,
 							_user$project$Types$NewEdgeWeights,
 							A2(
 								_elm_lang$core$Random$list,
-								_elm_lang$core$List$length(newEdges),
+								_elm_lang$core$List$length(graph$.edges),
 								A2(_elm_lang$core$Random$int, -1, 5)))
 					};
 				case 'NewEdgeWeights':
-					var newEdges = A2(_user$project$Graph$replaceWeights, edges, _p1._0);
+					var graph$ = A2(_user$project$Graph$replaceWeights, model.graph, _p1._0);
 					return {
 						ctor: '_Tuple2',
-						_0: A5(_user$project$Graph$updateGraph, model, nodes, newEdges, directed, weighted),
+						_0: _elm_lang$core$Native_Utils.update(
+							model,
+							{graph: graph$}),
 						_1: A2(
 							_elm_lang$core$Random$generate,
 							_user$project$Types$NewQuestion,
@@ -111,27 +121,37 @@ var _user$project$Update$update = F2(
 						};
 					}
 				case 'ToggleWeighted':
+					var graph$ = A7(
+						_user$project$Graph$updateGraph,
+						model.graph,
+						nodes,
+						edges,
+						directed,
+						_elm_lang$core$Basics$not(weighted),
+						nodesPerRow,
+						nodesPerCol);
 					return {
 						ctor: '_Tuple2',
-						_0: A5(
-							_user$project$Graph$updateGraph,
+						_0: _elm_lang$core$Native_Utils.update(
 							model,
-							nodes,
-							edges,
-							directed,
-							_elm_lang$core$Basics$not(weighted)),
+							{graph: graph$}),
 						_1: _elm_lang$core$Platform_Cmd$none
 					};
 				case 'ToggleDirectional':
+					var graph$ = A7(
+						_user$project$Graph$updateGraph,
+						model.graph,
+						nodes,
+						edges,
+						_elm_lang$core$Basics$not(directed),
+						weighted,
+						nodesPerRow,
+						nodesPerCol);
 					return {
 						ctor: '_Tuple2',
-						_0: A5(
-							_user$project$Graph$updateGraph,
+						_0: _elm_lang$core$Native_Utils.update(
 							model,
-							nodes,
-							edges,
-							_elm_lang$core$Basics$not(directed),
-							weighted),
+							{graph: graph$}),
 						_1: _elm_lang$core$Platform_Cmd$none
 					};
 				case 'BreadthFirstSearch':

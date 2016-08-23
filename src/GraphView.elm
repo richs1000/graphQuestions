@@ -8,7 +8,7 @@ import Svg.Attributes exposing (..)
 -- import View exposing (..)
 
 import Types exposing (..)
-import GraphTypes exposing (..)
+import Graph exposing (..)
 
 
 nodeSeparation : Pixels

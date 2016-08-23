@@ -92,7 +92,7 @@ var _user$project$Question$questionByIndex = F2(
 						{
 						ctor: '_Tuple2',
 						_0: _elm_lang$core$Basics$toString(
-							_user$project$Graph$numberOfEdges(model)),
+							_user$project$Graph$numberOfEdges(model.graph)),
 						_1: 'That is the number of edges. Nodes are the labeled circles in the picture above.'
 					},
 						{ctor: '_Tuple2', _0: '', _1: 'Incorrect. Nodes are the labeled circles in the picture above. A node is still part of a graph even if it is not connected by an edge to any other nodes'}
@@ -100,7 +100,7 @@ var _user$project$Question$questionByIndex = F2(
 				answer: {
 					ctor: '_Tuple2',
 					_0: _elm_lang$core$Basics$toString(
-						_user$project$Graph$numberOfNodes(model)),
+						_user$project$Graph$numberOfNodes(model.graph)),
 					_1: 'Correct.'
 				},
 				format: _user$project$QuestionTypes$FillInTheBlank
@@ -114,7 +114,7 @@ var _user$project$Question$questionByIndex = F2(
 							{
 							ctor: '_Tuple2',
 							_0: _elm_lang$core$Basics$toString(
-								_user$project$Graph$numberOfNodes(model)),
+								_user$project$Graph$numberOfNodes(model.graph)),
 							_1: 'That is the number of nodes. Edges are the lines connecting circles in the picture above. A bi-directional edge (i.e., an edge with two arrows) still counts as a single edge.'
 						},
 							{ctor: '_Tuple2', _0: '', _1: 'Incorrect. Edges are the lines connecting circles in the picture above. A bi-directional edge (i.e., an edge with two arrows) still counts as a single edge.'}
@@ -122,15 +122,15 @@ var _user$project$Question$questionByIndex = F2(
 					answer: {
 						ctor: '_Tuple2',
 						_0: _elm_lang$core$Basics$toString(
-							_user$project$Graph$numberOfEdges(model)),
+							_user$project$Graph$numberOfEdges(model.graph)),
 						_1: 'Correct.'
 					},
 					format: _user$project$QuestionTypes$FillInTheBlank
 				};
 			} else {
 				if (_elm_lang$core$Native_Utils.eq(index, 3)) {
-					var l = _user$project$Graph$lastNode(model);
-					var f = _user$project$Graph$firstNode(model);
+					var l = _user$project$Graph$lastNode(model.graph);
+					var f = _user$project$Graph$firstNode(model.graph);
 					var ans = A3(_user$project$Search$pathExists, model.graph, f, l);
 					var actualPath = A2(
 						_elm_lang$core$Maybe$withDefault,
@@ -179,14 +179,16 @@ var _user$project$Question$questionByIndex = F2(
 					};
 				} else {
 					if (_elm_lang$core$Native_Utils.eq(index, 4)) {
-						var f = A2(
+						var f = A3(
 							_user$project$Graph$randomNode,
-							model,
+							model.graph,
+							model.randomValues,
 							_elm_lang$core$Native_List.fromArray(
 								[]));
-						var l = A2(
+						var l = A3(
 							_user$project$Graph$randomNode,
-							model,
+							model.graph,
+							model.randomValues,
 							_elm_lang$core$Native_List.fromArray(
 								[f]));
 						var ans = A3(_user$project$Graph$edgeExists, model.graph, f, l);
@@ -260,9 +262,10 @@ var _user$project$Question$questionByIndex = F2(
 						};
 					} else {
 						if (_elm_lang$core$Native_Utils.eq(index, 5) && directed) {
-							var n = A2(
+							var n = A3(
 								_user$project$Graph$randomNode,
-								model,
+								model.graph,
+								model.randomValues,
 								_elm_lang$core$Native_List.fromArray(
 									[]));
 							var deg = A2(_user$project$Graph$degree, model.graph, n);
@@ -304,9 +307,10 @@ var _user$project$Question$questionByIndex = F2(
 							};
 						} else {
 							if (_elm_lang$core$Native_Utils.eq(index, 6) && directed) {
-								var n = A2(
+								var n = A3(
 									_user$project$Graph$randomNode,
-									model,
+									model.graph,
+									model.randomValues,
 									_elm_lang$core$Native_List.fromArray(
 										[]));
 								var deg = A2(_user$project$Graph$degree, model.graph, n);
@@ -348,7 +352,7 @@ var _user$project$Question$questionByIndex = F2(
 								};
 							} else {
 								if (_elm_lang$core$Native_Utils.eq(index, 7) && weighted) {
-									var e = _user$project$Graph$randomEdge(model);
+									var e = A2(_user$project$Graph$randomEdge, model.graph, model.randomValues);
 									var f = e.from;
 									var t = e.to;
 									var weight = e.weight;
@@ -378,9 +382,10 @@ var _user$project$Question$questionByIndex = F2(
 										format: _user$project$QuestionTypes$FillInTheBlank
 									};
 								} else {
-									var n = A2(
+									var n = A3(
 										_user$project$Graph$randomNode,
-										model,
+										model.graph,
+										model.randomValues,
 										_elm_lang$core$Native_List.fromArray(
 											[]));
 									var deg = A2(_user$project$Graph$degree, model.graph, n);

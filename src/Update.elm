@@ -14,7 +14,7 @@ import Model exposing (..)
 update : Msg -> Model -> ( Model, Cmd Msg )
 update msg model =
     let
-        { nodes, edges, directed, weighted } =
+        { nodes, edges, directed, weighted, nodesPerRow, nodesPerCol } =
             model.graph
     in
         case msg of
@@ -28,22 +28,25 @@ update msg model =
 
             NewNodes newNodes ->
                 let
+                    graph =
+                        model.graph
+
                     newNodes' =
                         Set.toList (Set.fromList newNodes)
 
-                    newEdges =
-                        (createAllEdges newNodes')
+                    graph' =
+                        createAllEdges { graph | nodes = newNodes' }
                 in
-                    ( updateGraph model newNodes' newEdges directed weighted
-                    , Random.generate NewEdgeWeights (Random.list (List.length newEdges) (Random.int -1 5))
+                    ( { model | graph = graph' }
+                    , Random.generate NewEdgeWeights (Random.list (List.length graph'.edges) (Random.int -1 5))
                     )
 
             NewEdgeWeights newWeights ->
                 let
-                    newEdges =
-                        (replaceWeights edges newWeights)
+                    graph' =
+                        replaceWeights model.graph newWeights
                 in
-                    ( updateGraph model nodes newEdges directed weighted
+                    ( { model | graph = graph' }
                     , Random.generate NewQuestion (Random.int 1 8)
                     )
 
@@ -73,10 +76,18 @@ update msg model =
 
             -- Debug actions
             ToggleWeighted ->
-                ( updateGraph model nodes edges directed (not weighted), Cmd.none )
+                let
+                    graph' =
+                        updateGraph model.graph nodes edges directed (not weighted) nodesPerRow nodesPerCol
+                in
+                    ( { model | graph = graph' }, Cmd.none )
 
             ToggleDirectional ->
-                ( updateGraph model nodes edges (not directed) weighted, Cmd.none )
+                let
+                    graph' =
+                        updateGraph model.graph nodes edges (not directed) weighted nodesPerRow nodesPerCol
+                in
+                    ( { model | graph = graph' }, Cmd.none )
 
             BreadthFirstSearch ->
                 let

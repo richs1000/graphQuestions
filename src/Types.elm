@@ -1,6 +1,6 @@
 module Types exposing (..)
 
-import GraphTypes exposing (Graph, NodeId, EdgeWeight)
+import Graph exposing (Graph, NodeId, EdgeWeight)
 import QuestionTypes exposing (Question)
 import HistoryTypes exposing (HistoryList)
 

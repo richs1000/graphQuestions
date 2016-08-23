@@ -24,7 +24,7 @@ questionByIndex model index =
         if index == 1 then
             { question = "How many nodes are in the graph above?"
             , distractors =
-                [ ( toString (numberOfEdges model)
+                [ ( toString (numberOfEdges model.graph)
                   , "That is the number of edges. Nodes are the labeled circles in the picture above."
                   )
                 , ( ""
@@ -32,7 +32,7 @@ questionByIndex model index =
                   )
                 ]
             , answer =
-                ( toString (numberOfNodes model)
+                ( toString (numberOfNodes model.graph)
                 , "Correct."
                 )
             , format = FillInTheBlank
@@ -40,7 +40,7 @@ questionByIndex model index =
         else if index == 2 then
             { question = "How many edges are in the graph above?"
             , distractors =
-                [ ( toString (numberOfNodes model)
+                [ ( toString (numberOfNodes model.graph)
                   , "That is the number of nodes. Edges are the lines connecting circles in the picture above. A bi-directional edge (i.e., an edge with two arrows) still counts as a single edge."
                   )
                 , ( ""
@@ -48,7 +48,7 @@ questionByIndex model index =
                   )
                 ]
             , answer =
-                ( toString (numberOfEdges model)
+                ( toString (numberOfEdges model.graph)
                 , "Correct."
                 )
             , format = FillInTheBlank
@@ -56,10 +56,10 @@ questionByIndex model index =
         else if index == 3 then
             let
                 f =
-                    firstNode model
+                    firstNode model.graph
 
                 l =
-                    lastNode model
+                    lastNode model.graph
 
                 ans =
                     pathExists model.graph f l
@@ -88,10 +88,10 @@ questionByIndex model index =
         else if index == 4 then
             let
                 f =
-                    randomNode model []
+                    randomNode model.graph model.randomValues []
 
                 l =
-                    randomNode model [ f ]
+                    randomNode model.graph model.randomValues [ f ]
 
                 ans =
                     edgeExists model.graph f l
@@ -129,7 +129,7 @@ questionByIndex model index =
         else if index == 5 && directed then
             let
                 n =
-                    randomNode model []
+                    randomNode model.graph model.randomValues []
 
                 deg =
                     degree model.graph n
@@ -164,7 +164,7 @@ questionByIndex model index =
         else if index == 6 && directed then
             let
                 n =
-                    randomNode model []
+                    randomNode model.graph model.randomValues []
 
                 deg =
                     degree model.graph n
@@ -199,7 +199,7 @@ questionByIndex model index =
         else if index == 7 && weighted then
             let
                 e =
-                    randomEdge model
+                    randomEdge model.graph model.randomValues
 
                 f =
                     e.from
@@ -225,7 +225,7 @@ questionByIndex model index =
         else
             let
                 n =
-                    randomNode model []
+                    randomNode model.graph model.randomValues []
 
                 deg =
                     degree model.graph n

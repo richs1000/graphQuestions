@@ -1,7 +1,6 @@
 module Search exposing (..)
 
 import Graph exposing (..)
-import GraphTypes exposing (..)
 
 
 breadthFirstSearch : Graph -> NodeId -> NodeId -> Maybe (List NodeId)
