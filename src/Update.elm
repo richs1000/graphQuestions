@@ -52,7 +52,11 @@ update msg model =
 
             -- New Question Flow: NewQuestion -> UserInput -> Submit -> Give Feedback -> Check Mastery -> New Graph Flow
             NewQuestion questionIndex ->
-                ( newQuestion model questionIndex, Cmd.none )
+                let
+                    question' =
+                        newQuestion model.graph model.randomValues questionIndex
+                in
+                    ( { model | question = question', success = Nothing, userInput = "" }, Cmd.none )
 
             UserInput i ->
                 ( { model | userInput = i }, Cmd.none )
@@ -61,7 +65,18 @@ update msg model =
                 if (String.isEmpty model.userInput) then
                     ( model, Cmd.none )
                 else
-                    ( checkAnswer model, Cmd.none )
+                    -- ( checkAnswer model, Cmd.none )
+                    let
+                        newHistory =
+                            List.take (model.denominator - 1) model.history
+
+                        { question, distractors, answer } =
+                            model.question
+                    in
+                        if (fst answer) == model.userInput then
+                            ( { model | success = Just True, history = (Just True) :: newHistory, feedback = (snd answer) }, Cmd.none )
+                        else
+                            ( { model | success = Just False, history = (Just False) :: newHistory, feedback = (findFeedback (fst answer) model.userInput distractors) }, Cmd.none )
 
             GiveFeedback ->
                 update CheckMastery model

@@ -10536,62 +10536,13 @@ var _user$project$Question$findFeedback = F3(
 			}
 		}
 	});
-var _user$project$Question$masteryAchieved = function (model) {
-	var correctAnswers = A5(
-		_elm_lang$core$Debug$log,
-		'in masteryAchieved ',
-		_elm_lang$core$List$foldr,
-		F2(
-			function (h, acc) {
-				return _elm_lang$core$Native_Utils.eq(
-					h,
-					_elm_lang$core$Maybe$Just(true)) ? (acc + 1) : acc;
-			}),
-		0,
-		model.history);
-	return model.implementMastery ? (_elm_lang$core$Native_Utils.cmp(correctAnswers, model.numerator) > -1) : (_elm_lang$core$Native_Utils.cmp(
-		_elm_lang$core$List$length(model.history),
-		model.numerator) > -1);
-};
-var _user$project$Question$checkAnswer = function (model) {
-	var _p2 = model.question;
-	var question = _p2.question;
-	var distractors = _p2.distractors;
-	var answer = _p2.answer;
-	var newHistory = A2(_elm_lang$core$List$take, model.denominator - 1, model.history);
-	return _elm_lang$core$Native_Utils.eq(
-		_elm_lang$core$Basics$fst(answer),
-		model.userInput) ? _elm_lang$core$Native_Utils.update(
-		model,
-		{
-			success: _elm_lang$core$Maybe$Just(true),
-			history: A2(
-				_elm_lang$core$List_ops['::'],
-				_elm_lang$core$Maybe$Just(true),
-				newHistory),
-			feedback: _elm_lang$core$Basics$snd(answer)
-		}) : _elm_lang$core$Native_Utils.update(
-		model,
-		{
-			success: _elm_lang$core$Maybe$Just(false),
-			history: A2(
-				_elm_lang$core$List_ops['::'],
-				_elm_lang$core$Maybe$Just(false),
-				newHistory),
-			feedback: A3(
-				_user$project$Question$findFeedback,
-				_elm_lang$core$Basics$fst(answer),
-				model.userInput,
-				distractors)
-		});
-};
-var _user$project$Question$questionByIndex = F2(
-	function (model, index) {
-		var _p3 = model.graph;
-		var nodes = _p3.nodes;
-		var edges = _p3.edges;
-		var directed = _p3.directed;
-		var weighted = _p3.weighted;
+var _user$project$Question$newQuestion = F3(
+	function (graph, randomValues, index) {
+		var _p2 = graph;
+		var nodes = _p2.nodes;
+		var edges = _p2.edges;
+		var directed = _p2.directed;
+		var weighted = _p2.weighted;
 		if (_elm_lang$core$Native_Utils.eq(index, 1)) {
 			return {
 				question: 'How many nodes are in the graph above?',
@@ -10600,7 +10551,7 @@ var _user$project$Question$questionByIndex = F2(
 						{
 						ctor: '_Tuple2',
 						_0: _elm_lang$core$Basics$toString(
-							_user$project$Graph$numberOfEdges(model.graph)),
+							_user$project$Graph$numberOfEdges(graph)),
 						_1: 'That is the number of edges. Nodes are the labeled circles in the picture above.'
 					},
 						{ctor: '_Tuple2', _0: '', _1: 'Incorrect. Nodes are the labeled circles in the picture above. A node is still part of a graph even if it is not connected by an edge to any other nodes'}
@@ -10608,7 +10559,7 @@ var _user$project$Question$questionByIndex = F2(
 				answer: {
 					ctor: '_Tuple2',
 					_0: _elm_lang$core$Basics$toString(
-						_user$project$Graph$numberOfNodes(model.graph)),
+						_user$project$Graph$numberOfNodes(graph)),
 					_1: 'Correct.'
 				},
 				format: _user$project$QuestionTypes$FillInTheBlank
@@ -10622,7 +10573,7 @@ var _user$project$Question$questionByIndex = F2(
 							{
 							ctor: '_Tuple2',
 							_0: _elm_lang$core$Basics$toString(
-								_user$project$Graph$numberOfNodes(model.graph)),
+								_user$project$Graph$numberOfNodes(graph)),
 							_1: 'That is the number of nodes. Edges are the lines connecting circles in the picture above. A bi-directional edge (i.e., an edge with two arrows) still counts as a single edge.'
 						},
 							{ctor: '_Tuple2', _0: '', _1: 'Incorrect. Edges are the lines connecting circles in the picture above. A bi-directional edge (i.e., an edge with two arrows) still counts as a single edge.'}
@@ -10630,21 +10581,21 @@ var _user$project$Question$questionByIndex = F2(
 					answer: {
 						ctor: '_Tuple2',
 						_0: _elm_lang$core$Basics$toString(
-							_user$project$Graph$numberOfEdges(model.graph)),
+							_user$project$Graph$numberOfEdges(graph)),
 						_1: 'Correct.'
 					},
 					format: _user$project$QuestionTypes$FillInTheBlank
 				};
 			} else {
 				if (_elm_lang$core$Native_Utils.eq(index, 3)) {
-					var l = _user$project$Graph$lastNode(model.graph);
-					var f = _user$project$Graph$firstNode(model.graph);
-					var ans = A3(_user$project$Search$pathExists, model.graph, f, l);
+					var l = _user$project$Graph$lastNode(graph);
+					var f = _user$project$Graph$firstNode(graph);
+					var ans = A3(_user$project$Search$pathExists, graph, f, l);
 					var actualPath = A2(
 						_elm_lang$core$Maybe$withDefault,
 						_elm_lang$core$Native_List.fromArray(
 							[]),
-						A3(_user$project$Search$genericSearch, model.graph, f, l));
+						A3(_user$project$Search$genericSearch, graph, f, l));
 					var fbackString = ans ? A2(
 						_elm_lang$core$Basics_ops['++'],
 						'One valid path is ',
@@ -10689,18 +10640,18 @@ var _user$project$Question$questionByIndex = F2(
 					if (_elm_lang$core$Native_Utils.eq(index, 4)) {
 						var f = A3(
 							_user$project$Graph$randomNode,
-							model.graph,
-							model.randomValues,
+							graph,
+							randomValues,
 							_elm_lang$core$Native_List.fromArray(
 								[]));
 						var l = A3(
 							_user$project$Graph$randomNode,
-							model.graph,
-							model.randomValues,
+							graph,
+							randomValues,
 							_elm_lang$core$Native_List.fromArray(
 								[f]));
-						var ans = A3(_user$project$Graph$edgeExists, model.graph, f, l);
-						var opposite = A3(_user$project$Graph$edgeExists, model.graph, l, f);
+						var ans = A3(_user$project$Graph$edgeExists, graph, f, l);
+						var opposite = A3(_user$project$Graph$edgeExists, graph, l, f);
 						var fbackString = ans ? A2(
 							_elm_lang$core$Basics_ops['++'],
 							'There is an edge from Node ',
@@ -10772,13 +10723,13 @@ var _user$project$Question$questionByIndex = F2(
 						if (_elm_lang$core$Native_Utils.eq(index, 5) && directed) {
 							var n = A3(
 								_user$project$Graph$randomNode,
-								model.graph,
-								model.randomValues,
+								graph,
+								randomValues,
 								_elm_lang$core$Native_List.fromArray(
 									[]));
-							var deg = A2(_user$project$Graph$degree, model.graph, n);
-							var inDeg = A2(_user$project$Graph$inDegree, model.graph, n);
-							var outDeg = A2(_user$project$Graph$outDegree, model.graph, n);
+							var deg = A2(_user$project$Graph$degree, graph, n);
+							var inDeg = A2(_user$project$Graph$inDegree, graph, n);
+							var outDeg = A2(_user$project$Graph$outDegree, graph, n);
 							return {
 								question: A2(
 									_elm_lang$core$Basics_ops['++'],
@@ -10817,13 +10768,13 @@ var _user$project$Question$questionByIndex = F2(
 							if (_elm_lang$core$Native_Utils.eq(index, 6) && directed) {
 								var n = A3(
 									_user$project$Graph$randomNode,
-									model.graph,
-									model.randomValues,
+									graph,
+									randomValues,
 									_elm_lang$core$Native_List.fromArray(
 										[]));
-								var deg = A2(_user$project$Graph$degree, model.graph, n);
-								var inDeg = A2(_user$project$Graph$inDegree, model.graph, n);
-								var outDeg = A2(_user$project$Graph$outDegree, model.graph, n);
+								var deg = A2(_user$project$Graph$degree, graph, n);
+								var inDeg = A2(_user$project$Graph$inDegree, graph, n);
+								var outDeg = A2(_user$project$Graph$outDegree, graph, n);
 								return {
 									question: A2(
 										_elm_lang$core$Basics_ops['++'],
@@ -10860,7 +10811,7 @@ var _user$project$Question$questionByIndex = F2(
 								};
 							} else {
 								if (_elm_lang$core$Native_Utils.eq(index, 7) && weighted) {
-									var e = A2(_user$project$Graph$randomEdge, model.graph, model.randomValues);
+									var e = A2(_user$project$Graph$randomEdge, graph, randomValues);
 									var f = e.from;
 									var t = e.to;
 									var weight = e.weight;
@@ -10892,13 +10843,13 @@ var _user$project$Question$questionByIndex = F2(
 								} else {
 									var n = A3(
 										_user$project$Graph$randomNode,
-										model.graph,
-										model.randomValues,
+										graph,
+										randomValues,
 										_elm_lang$core$Native_List.fromArray(
 											[]));
-									var deg = A2(_user$project$Graph$degree, model.graph, n);
-									var inDeg = A2(_user$project$Graph$inDegree, model.graph, n);
-									var outDeg = A2(_user$project$Graph$outDegree, model.graph, n);
+									var deg = A2(_user$project$Graph$degree, graph, n);
+									var inDeg = A2(_user$project$Graph$inDegree, graph, n);
+									var outDeg = A2(_user$project$Graph$outDegree, graph, n);
 									return {
 										question: A2(
 											_elm_lang$core$Basics_ops['++'],
@@ -10941,18 +10892,6 @@ var _user$project$Question$questionByIndex = F2(
 			}
 		}
 	});
-var _user$project$Question$newQuestion = F2(
-	function (model, index) {
-		var newQuestion = A2(_user$project$Question$questionByIndex, model, index);
-		var _p4 = model.graph;
-		var nodes = _p4.nodes;
-		var edges = _p4.edges;
-		var directed = _p4.directed;
-		var weighted = _p4.weighted;
-		return _elm_lang$core$Native_Utils.update(
-			model,
-			{question: newQuestion, success: _elm_lang$core$Maybe$Nothing, userInput: ''});
-	});
 var _user$project$Question$emptyQuestion = {
 	question: '',
 	distractors: _elm_lang$core$Native_List.fromArray(
@@ -10979,6 +10918,23 @@ var _user$project$Model$initModel = {
 	implementMastery: false
 };
 var _user$project$Model$init = {ctor: '_Tuple2', _0: _user$project$Model$initModel, _1: _elm_lang$core$Platform_Cmd$none};
+var _user$project$Model$masteryAchieved = function (model) {
+	var correctAnswers = A5(
+		_elm_lang$core$Debug$log,
+		'in masteryAchieved ',
+		_elm_lang$core$List$foldr,
+		F2(
+			function (h, acc) {
+				return _elm_lang$core$Native_Utils.eq(
+					h,
+					_elm_lang$core$Maybe$Just(true)) ? (acc + 1) : acc;
+			}),
+		0,
+		model.history);
+	return model.implementMastery ? (_elm_lang$core$Native_Utils.cmp(correctAnswers, model.numerator) > -1) : (_elm_lang$core$Native_Utils.cmp(
+		_elm_lang$core$List$length(model.history),
+		model.numerator) > -1);
+};
 
 var _user$project$Update$update = F2(
 	function (msg, model) {
@@ -11053,9 +11009,12 @@ var _user$project$Update$update = F2(
 							A2(_elm_lang$core$Random$int, 1, 8))
 					};
 				case 'NewQuestion':
+					var question$ = A3(_user$project$Question$newQuestion, model.graph, model.randomValues, _p1._0);
 					return {
 						ctor: '_Tuple2',
-						_0: A2(_user$project$Question$newQuestion, model, _p1._0),
+						_0: _elm_lang$core$Native_Utils.update(
+							model,
+							{question: question$, success: _elm_lang$core$Maybe$Nothing, userInput: ''}),
 						_1: _elm_lang$core$Platform_Cmd$none
 					};
 				case 'UserInput':
@@ -11067,11 +11026,48 @@ var _user$project$Update$update = F2(
 						_1: _elm_lang$core$Platform_Cmd$none
 					};
 				case 'Submit':
-					return _elm_lang$core$String$isEmpty(model.userInput) ? {ctor: '_Tuple2', _0: model, _1: _elm_lang$core$Platform_Cmd$none} : {
-						ctor: '_Tuple2',
-						_0: _user$project$Question$checkAnswer(model),
-						_1: _elm_lang$core$Platform_Cmd$none
-					};
+					if (_elm_lang$core$String$isEmpty(model.userInput)) {
+						return {ctor: '_Tuple2', _0: model, _1: _elm_lang$core$Platform_Cmd$none};
+					} else {
+						var _p2 = model.question;
+						var question = _p2.question;
+						var distractors = _p2.distractors;
+						var answer = _p2.answer;
+						var newHistory = A2(_elm_lang$core$List$take, model.denominator - 1, model.history);
+						return _elm_lang$core$Native_Utils.eq(
+							_elm_lang$core$Basics$fst(answer),
+							model.userInput) ? {
+							ctor: '_Tuple2',
+							_0: _elm_lang$core$Native_Utils.update(
+								model,
+								{
+									success: _elm_lang$core$Maybe$Just(true),
+									history: A2(
+										_elm_lang$core$List_ops['::'],
+										_elm_lang$core$Maybe$Just(true),
+										newHistory),
+									feedback: _elm_lang$core$Basics$snd(answer)
+								}),
+							_1: _elm_lang$core$Platform_Cmd$none
+						} : {
+							ctor: '_Tuple2',
+							_0: _elm_lang$core$Native_Utils.update(
+								model,
+								{
+									success: _elm_lang$core$Maybe$Just(false),
+									history: A2(
+										_elm_lang$core$List_ops['::'],
+										_elm_lang$core$Maybe$Just(false),
+										newHistory),
+									feedback: A3(
+										_user$project$Question$findFeedback,
+										_elm_lang$core$Basics$fst(answer),
+										model.userInput,
+										distractors)
+								}),
+							_1: _elm_lang$core$Platform_Cmd$none
+						};
+					}
 				case 'GiveFeedback':
 					var _v1 = _user$project$Types$CheckMastery,
 						_v2 = model;
@@ -11079,7 +11075,7 @@ var _user$project$Update$update = F2(
 					model = _v2;
 					continue update;
 				case 'CheckMastery':
-					if (_user$project$Question$masteryAchieved(model)) {
+					if (_user$project$Model$masteryAchieved(model)) {
 						var _v3 = _user$project$Types$UpdateMastery,
 							_v4 = _elm_lang$core$Native_Utils.update(
 							model,
@@ -11140,12 +11136,12 @@ var _user$project$Update$update = F2(
 					var lastNode = _elm_lang$core$List$head(
 						_elm_lang$core$List$reverse(nodes));
 					var firstNode = _elm_lang$core$List$head(nodes);
-					var _p2 = firstNode;
-					if (_p2.ctor === 'Nothing') {
+					var _p3 = firstNode;
+					if (_p3.ctor === 'Nothing') {
 						return {ctor: '_Tuple2', _0: model, _1: _elm_lang$core$Platform_Cmd$none};
 					} else {
-						var _p3 = lastNode;
-						if (_p3.ctor === 'Nothing') {
+						var _p4 = lastNode;
+						if (_p4.ctor === 'Nothing') {
 							return {ctor: '_Tuple2', _0: model, _1: _elm_lang$core$Platform_Cmd$none};
 						} else {
 							return {
@@ -11153,7 +11149,7 @@ var _user$project$Update$update = F2(
 								_0: _elm_lang$core$Native_Utils.update(
 									model,
 									{
-										bfs: A3(_user$project$Search$breadthFirstSearch, model.graph, _p2._0, _p3._0)
+										bfs: A3(_user$project$Search$breadthFirstSearch, model.graph, _p3._0, _p4._0)
 									}),
 								_1: _elm_lang$core$Platform_Cmd$none
 							};
@@ -11166,16 +11162,16 @@ var _user$project$Update$update = F2(
 						_1: _user$project$Ports$updateMastery(model.mastery)
 					};
 				default:
-					var _p4 = _p1._0;
+					var _p5 = _p1._0;
 					var graph = model.graph;
 					var graph$ = _elm_lang$core$Native_Utils.update(
 						graph,
-						{weighted: _p4.weighted, directed: _p4.directed});
+						{weighted: _p5.weighted, directed: _p5.directed});
 					return {
 						ctor: '_Tuple2',
 						_0: _elm_lang$core$Native_Utils.update(
 							model,
-							{mastery: _p4.mastery, numerator: _p4.numerator, denominator: _p4.denominator, implementMastery: _p4.implementMastery, graph: graph$, debug: _p4.debug}),
+							{mastery: _p5.mastery, numerator: _p5.numerator, denominator: _p5.denominator, implementMastery: _p5.implementMastery, graph: graph$, debug: _p5.debug}),
 						_1: A2(
 							_elm_lang$core$Random$generate,
 							_user$project$Types$NewRandomValues,

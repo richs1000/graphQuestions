@@ -71,9 +71,12 @@ var _user$project$Update$update = F2(
 							A2(_elm_lang$core$Random$int, 1, 8))
 					};
 				case 'NewQuestion':
+					var question$ = A3(_user$project$Question$newQuestion, model.graph, model.randomValues, _p1._0);
 					return {
 						ctor: '_Tuple2',
-						_0: A2(_user$project$Question$newQuestion, model, _p1._0),
+						_0: _elm_lang$core$Native_Utils.update(
+							model,
+							{question: question$, success: _elm_lang$core$Maybe$Nothing, userInput: ''}),
 						_1: _elm_lang$core$Platform_Cmd$none
 					};
 				case 'UserInput':
@@ -85,11 +88,48 @@ var _user$project$Update$update = F2(
 						_1: _elm_lang$core$Platform_Cmd$none
 					};
 				case 'Submit':
-					return _elm_lang$core$String$isEmpty(model.userInput) ? {ctor: '_Tuple2', _0: model, _1: _elm_lang$core$Platform_Cmd$none} : {
-						ctor: '_Tuple2',
-						_0: _user$project$Question$checkAnswer(model),
-						_1: _elm_lang$core$Platform_Cmd$none
-					};
+					if (_elm_lang$core$String$isEmpty(model.userInput)) {
+						return {ctor: '_Tuple2', _0: model, _1: _elm_lang$core$Platform_Cmd$none};
+					} else {
+						var _p2 = model.question;
+						var question = _p2.question;
+						var distractors = _p2.distractors;
+						var answer = _p2.answer;
+						var newHistory = A2(_elm_lang$core$List$take, model.denominator - 1, model.history);
+						return _elm_lang$core$Native_Utils.eq(
+							_elm_lang$core$Basics$fst(answer),
+							model.userInput) ? {
+							ctor: '_Tuple2',
+							_0: _elm_lang$core$Native_Utils.update(
+								model,
+								{
+									success: _elm_lang$core$Maybe$Just(true),
+									history: A2(
+										_elm_lang$core$List_ops['::'],
+										_elm_lang$core$Maybe$Just(true),
+										newHistory),
+									feedback: _elm_lang$core$Basics$snd(answer)
+								}),
+							_1: _elm_lang$core$Platform_Cmd$none
+						} : {
+							ctor: '_Tuple2',
+							_0: _elm_lang$core$Native_Utils.update(
+								model,
+								{
+									success: _elm_lang$core$Maybe$Just(false),
+									history: A2(
+										_elm_lang$core$List_ops['::'],
+										_elm_lang$core$Maybe$Just(false),
+										newHistory),
+									feedback: A3(
+										_user$project$Question$findFeedback,
+										_elm_lang$core$Basics$fst(answer),
+										model.userInput,
+										distractors)
+								}),
+							_1: _elm_lang$core$Platform_Cmd$none
+						};
+					}
 				case 'GiveFeedback':
 					var _v1 = _user$project$Types$CheckMastery,
 						_v2 = model;
@@ -97,7 +137,7 @@ var _user$project$Update$update = F2(
 					model = _v2;
 					continue update;
 				case 'CheckMastery':
-					if (_user$project$Question$masteryAchieved(model)) {
+					if (_user$project$Model$masteryAchieved(model)) {
 						var _v3 = _user$project$Types$UpdateMastery,
 							_v4 = _elm_lang$core$Native_Utils.update(
 							model,
@@ -158,12 +198,12 @@ var _user$project$Update$update = F2(
 					var lastNode = _elm_lang$core$List$head(
 						_elm_lang$core$List$reverse(nodes));
 					var firstNode = _elm_lang$core$List$head(nodes);
-					var _p2 = firstNode;
-					if (_p2.ctor === 'Nothing') {
+					var _p3 = firstNode;
+					if (_p3.ctor === 'Nothing') {
 						return {ctor: '_Tuple2', _0: model, _1: _elm_lang$core$Platform_Cmd$none};
 					} else {
-						var _p3 = lastNode;
-						if (_p3.ctor === 'Nothing') {
+						var _p4 = lastNode;
+						if (_p4.ctor === 'Nothing') {
 							return {ctor: '_Tuple2', _0: model, _1: _elm_lang$core$Platform_Cmd$none};
 						} else {
 							return {
@@ -171,7 +211,7 @@ var _user$project$Update$update = F2(
 								_0: _elm_lang$core$Native_Utils.update(
 									model,
 									{
-										bfs: A3(_user$project$Search$breadthFirstSearch, model.graph, _p2._0, _p3._0)
+										bfs: A3(_user$project$Search$breadthFirstSearch, model.graph, _p3._0, _p4._0)
 									}),
 								_1: _elm_lang$core$Platform_Cmd$none
 							};
@@ -184,16 +224,16 @@ var _user$project$Update$update = F2(
 						_1: _user$project$Ports$updateMastery(model.mastery)
 					};
 				default:
-					var _p4 = _p1._0;
+					var _p5 = _p1._0;
 					var graph = model.graph;
 					var graph$ = _elm_lang$core$Native_Utils.update(
 						graph,
-						{weighted: _p4.weighted, directed: _p4.directed});
+						{weighted: _p5.weighted, directed: _p5.directed});
 					return {
 						ctor: '_Tuple2',
 						_0: _elm_lang$core$Native_Utils.update(
 							model,
-							{mastery: _p4.mastery, numerator: _p4.numerator, denominator: _p4.denominator, implementMastery: _p4.implementMastery, graph: graph$, debug: _p4.debug}),
+							{mastery: _p5.mastery, numerator: _p5.numerator, denominator: _p5.denominator, implementMastery: _p5.implementMastery, graph: graph$, debug: _p5.debug}),
 						_1: A2(
 							_elm_lang$core$Random$generate,
 							_user$project$Types$NewRandomValues,
