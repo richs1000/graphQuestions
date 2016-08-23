@@ -10104,7 +10104,7 @@ var _user$project$Question$newQuestion = F3(
 	});
 
 
-var _user$project$Types$Model = function (a) {
+var _user$project$ModelType$Model = function (a) {
 	return function (b) {
 		return function (c) {
 			return function (d) {
@@ -10162,93 +10162,6 @@ var _user$project$MessageTypes$NewRandomValues = function (a) {
 	return {ctor: 'NewRandomValues', _0: a};
 };
 var _user$project$MessageTypes$Reset = {ctor: 'Reset'};
-
-var _user$project$DebugView$buttonStyle = _elm_lang$html$Html_Attributes$style(
-	_elm_lang$core$Native_List.fromArray(
-		[
-			{ctor: '_Tuple2', _0: 'text-align', _1: 'center'},
-			{ctor: '_Tuple2', _0: 'font-size', _1: '16px'},
-			{ctor: '_Tuple2', _0: 'padding', _1: '15px 32px'},
-			{ctor: '_Tuple2', _0: 'margin', _1: '2px'}
-		]));
-var _user$project$DebugView$debugSection = function (model) {
-	return model.debug ? A2(
-		_elm_lang$html$Html$div,
-		_elm_lang$core$Native_List.fromArray(
-			[]),
-		_elm_lang$core$Native_List.fromArray(
-			[
-				A2(
-				_elm_lang$html$Html$button,
-				_elm_lang$core$Native_List.fromArray(
-					[
-						_elm_lang$html$Html_Events$onClick(_user$project$MessageTypes$Reset),
-						_user$project$DebugView$buttonStyle
-					]),
-				_elm_lang$core$Native_List.fromArray(
-					[
-						_elm_lang$html$Html$text('Reset')
-					])),
-				A2(
-				_elm_lang$html$Html$button,
-				_elm_lang$core$Native_List.fromArray(
-					[
-						_elm_lang$html$Html_Events$onClick(_user$project$MessageTypes$ToggleWeighted),
-						_user$project$DebugView$buttonStyle
-					]),
-				_elm_lang$core$Native_List.fromArray(
-					[
-						_elm_lang$html$Html$text('Toggle Weighted')
-					])),
-				A2(
-				_elm_lang$html$Html$button,
-				_elm_lang$core$Native_List.fromArray(
-					[
-						_elm_lang$html$Html_Events$onClick(_user$project$MessageTypes$ToggleDirectional),
-						_user$project$DebugView$buttonStyle
-					]),
-				_elm_lang$core$Native_List.fromArray(
-					[
-						_elm_lang$html$Html$text('Toggle Directional')
-					])),
-				A2(
-				_elm_lang$html$Html$button,
-				_elm_lang$core$Native_List.fromArray(
-					[
-						_elm_lang$html$Html_Events$onClick(_user$project$MessageTypes$BreadthFirstSearch),
-						_user$project$DebugView$buttonStyle
-					]),
-				_elm_lang$core$Native_List.fromArray(
-					[
-						_elm_lang$html$Html$text('BFS')
-					])),
-				A2(
-				_elm_lang$html$Html$button,
-				_elm_lang$core$Native_List.fromArray(
-					[
-						_elm_lang$html$Html_Events$onClick(_user$project$MessageTypes$UpdateMastery),
-						_user$project$DebugView$buttonStyle
-					]),
-				_elm_lang$core$Native_List.fromArray(
-					[
-						_elm_lang$html$Html$text('Mastery')
-					])),
-				A2(
-				_elm_lang$html$Html$p,
-				_elm_lang$core$Native_List.fromArray(
-					[]),
-				_elm_lang$core$Native_List.fromArray(
-					[
-						_elm_lang$html$Html$text(
-						_elm_lang$core$Basics$toString(model))
-					]))
-			])) : A2(
-		_elm_lang$html$Html$div,
-		_elm_lang$core$Native_List.fromArray(
-			[]),
-		_elm_lang$core$Native_List.fromArray(
-			[]));
-};
 
 var _user$project$GraphView$arrowHeads = _elm_lang$core$Native_List.fromArray(
 	[
@@ -10590,19 +10503,20 @@ var _user$project$HistoryView$historyList = F2(
 				[]);
 		}
 	});
-var _user$project$HistoryView$historySection = function (model) {
-	return A2(
-		_elm_lang$svg$Svg$svg,
-		_elm_lang$core$Native_List.fromArray(
-			[
-				_elm_lang$svg$Svg_Attributes$version('1.1'),
-				_elm_lang$svg$Svg_Attributes$baseProfile('full'),
-				_elm_lang$svg$Svg_Attributes$width(
-				_elm_lang$core$Basics$toString(model.denominator * (_user$project$HistoryView$historySquareSize + _user$project$HistoryView$historySquareSeparation))),
-				_elm_lang$svg$Svg_Attributes$height('50')
-			]),
-		A2(_user$project$HistoryView$historyList, model.history, 0));
-};
+var _user$project$HistoryView$historySection = F2(
+	function (history, historyLength) {
+		return A2(
+			_elm_lang$svg$Svg$svg,
+			_elm_lang$core$Native_List.fromArray(
+				[
+					_elm_lang$svg$Svg_Attributes$version('1.1'),
+					_elm_lang$svg$Svg_Attributes$baseProfile('full'),
+					_elm_lang$svg$Svg_Attributes$width(
+					_elm_lang$core$Basics$toString(historyLength * (_user$project$HistoryView$historySquareSize + _user$project$HistoryView$historySquareSeparation))),
+					_elm_lang$svg$Svg_Attributes$height('50')
+				]),
+			A2(_user$project$HistoryView$historyList, history, 0));
+	});
 
 var _user$project$QuestionView$buttonStyle = _elm_lang$html$Html_Attributes$style(
 	_elm_lang$core$Native_List.fromArray(
@@ -10637,8 +10551,8 @@ var _user$project$QuestionView$questionStyle = _elm_lang$html$Html_Attributes$st
 			{ctor: '_Tuple2', _0: 'margin', _1: '4px'}
 		]));
 var _user$project$QuestionView$radio = F2(
-	function (name, model) {
-		var isSelected = _elm_lang$core$Native_Utils.eq(model.userInput, name);
+	function (name, userInput) {
+		var isSelected = _elm_lang$core$Native_Utils.eq(userInput, name);
 		return A2(
 			_elm_lang$html$Html$label,
 			_elm_lang$core$Native_List.fromArray(
@@ -10675,149 +10589,226 @@ var _user$project$QuestionView$radio = F2(
 						]))
 				]));
 	});
-var _user$project$QuestionView$displayQuestion = function (model) {
-	var _p1 = model.question;
-	var question = _p1.question;
-	var distractors = _p1.distractors;
-	var answer = _p1.answer;
-	var format = _p1.format;
-	var _p2 = format;
-	if (_p2.ctor === 'FillInTheBlank') {
-		return A2(
-			_elm_lang$html$Html$form,
-			_elm_lang$core$Native_List.fromArray(
-				[
-					_elm_lang$html$Html_Events$onSubmit(_user$project$MessageTypes$Submit)
-				]),
-			_elm_lang$core$Native_List.fromArray(
-				[
-					A2(
-					_elm_lang$html$Html$div,
-					_elm_lang$core$Native_List.fromArray(
-						[_user$project$QuestionView$questionStyle]),
-					_elm_lang$core$Native_List.fromArray(
-						[
-							_elm_lang$html$Html$text(question)
-						])),
-					A2(
-					_elm_lang$html$Html$input,
-					_elm_lang$core$Native_List.fromArray(
-						[
-							_elm_lang$html$Html_Attributes$type$('text'),
-							_elm_lang$html$Html_Attributes$placeholder('Answer here...'),
-							_elm_lang$html$Html_Events$onInput(_user$project$MessageTypes$UserInput),
-							_elm_lang$html$Html_Attributes$value(model.userInput),
-							_user$project$QuestionView$inputStyle
-						]),
-					_elm_lang$core$Native_List.fromArray(
-						[])),
-					A2(
-					_elm_lang$html$Html$button,
-					_elm_lang$core$Native_List.fromArray(
-						[
-							_elm_lang$html$Html_Attributes$type$('submit'),
-							_user$project$QuestionView$buttonStyle
-						]),
-					_elm_lang$core$Native_List.fromArray(
-						[
-							_elm_lang$html$Html$text('Submit')
-						]))
-				]));
-	} else {
-		return A2(
-			_elm_lang$html$Html$form,
-			_elm_lang$core$Native_List.fromArray(
-				[
-					_elm_lang$html$Html_Events$onSubmit(_user$project$MessageTypes$Submit)
-				]),
-			_elm_lang$core$Native_List.fromArray(
-				[
-					A2(
-					_elm_lang$html$Html$div,
-					_elm_lang$core$Native_List.fromArray(
-						[_user$project$QuestionView$questionStyle]),
-					_elm_lang$core$Native_List.fromArray(
-						[
-							_elm_lang$html$Html$text(question)
-						])),
-					A2(
-					_elm_lang$html$Html$div,
-					_elm_lang$core$Native_List.fromArray(
-						[]),
-					_elm_lang$core$Native_List.fromArray(
-						[
-							A2(_user$project$QuestionView$radio, 'True', model),
-							A2(_user$project$QuestionView$radio, 'False', model)
-						])),
-					A2(
-					_elm_lang$html$Html$button,
-					_elm_lang$core$Native_List.fromArray(
-						[
-							_elm_lang$html$Html_Attributes$type$('submit'),
-							_user$project$QuestionView$buttonStyle
-						]),
-					_elm_lang$core$Native_List.fromArray(
-						[
-							_elm_lang$html$Html$text('Submit')
-						]))
-				]));
-	}
-};
-var _user$project$QuestionView$questionForm = function (model) {
-	var success$ = model.success;
-	var _p3 = model.question;
-	var question = _p3.question;
-	var distractors = _p3.distractors;
-	var answer = _p3.answer;
-	var format = _p3.format;
-	var _p4 = model.success;
-	if (_p4.ctor === 'Nothing') {
-		return _user$project$QuestionView$displayQuestion(model);
-	} else {
-		return A2(
-			_elm_lang$html$Html$form,
-			_elm_lang$core$Native_List.fromArray(
-				[
-					_elm_lang$html$Html_Events$onSubmit(_user$project$MessageTypes$GiveFeedback)
-				]),
-			_elm_lang$core$Native_List.fromArray(
-				[
-					A2(
-					_elm_lang$html$Html$div,
-					_elm_lang$core$Native_List.fromArray(
-						[_user$project$QuestionView$questionStyle]),
-					_elm_lang$core$Native_List.fromArray(
-						[
-							_elm_lang$html$Html$text(model.feedback)
-						])),
-					A2(
-					_elm_lang$html$Html$input,
-					_elm_lang$core$Native_List.fromArray(
-						[
-							_elm_lang$html$Html_Attributes$type$('text'),
-							_elm_lang$html$Html_Attributes$placeholder('Answer here...'),
-							_elm_lang$html$Html_Events$onInput(_user$project$MessageTypes$UserInput),
-							_elm_lang$html$Html_Attributes$value(model.userInput),
-							_elm_lang$html$Html_Attributes$disabled(true),
-							_user$project$QuestionView$inputStyle
-						]),
-					_elm_lang$core$Native_List.fromArray(
-						[])),
-					A2(
-					_elm_lang$html$Html$button,
-					_elm_lang$core$Native_List.fromArray(
-						[
-							_elm_lang$html$Html_Attributes$type$('submit'),
-							_user$project$QuestionView$buttonStyle
-						]),
-					_elm_lang$core$Native_List.fromArray(
-						[
-							_elm_lang$html$Html$text('Next Question')
-						]))
-				]));
-	}
-};
+var _user$project$QuestionView$displayQuestion = F2(
+	function (quest, userInput) {
+		var _p1 = quest;
+		var question = _p1.question;
+		var distractors = _p1.distractors;
+		var answer = _p1.answer;
+		var format = _p1.format;
+		var _p2 = format;
+		if (_p2.ctor === 'FillInTheBlank') {
+			return A2(
+				_elm_lang$html$Html$form,
+				_elm_lang$core$Native_List.fromArray(
+					[
+						_elm_lang$html$Html_Events$onSubmit(_user$project$MessageTypes$Submit)
+					]),
+				_elm_lang$core$Native_List.fromArray(
+					[
+						A2(
+						_elm_lang$html$Html$div,
+						_elm_lang$core$Native_List.fromArray(
+							[_user$project$QuestionView$questionStyle]),
+						_elm_lang$core$Native_List.fromArray(
+							[
+								_elm_lang$html$Html$text(question)
+							])),
+						A2(
+						_elm_lang$html$Html$input,
+						_elm_lang$core$Native_List.fromArray(
+							[
+								_elm_lang$html$Html_Attributes$type$('text'),
+								_elm_lang$html$Html_Attributes$placeholder('Answer here...'),
+								_elm_lang$html$Html_Events$onInput(_user$project$MessageTypes$UserInput),
+								_elm_lang$html$Html_Attributes$value(userInput),
+								_user$project$QuestionView$inputStyle
+							]),
+						_elm_lang$core$Native_List.fromArray(
+							[])),
+						A2(
+						_elm_lang$html$Html$button,
+						_elm_lang$core$Native_List.fromArray(
+							[
+								_elm_lang$html$Html_Attributes$type$('submit'),
+								_user$project$QuestionView$buttonStyle
+							]),
+						_elm_lang$core$Native_List.fromArray(
+							[
+								_elm_lang$html$Html$text('Submit')
+							]))
+					]));
+		} else {
+			return A2(
+				_elm_lang$html$Html$form,
+				_elm_lang$core$Native_List.fromArray(
+					[
+						_elm_lang$html$Html_Events$onSubmit(_user$project$MessageTypes$Submit)
+					]),
+				_elm_lang$core$Native_List.fromArray(
+					[
+						A2(
+						_elm_lang$html$Html$div,
+						_elm_lang$core$Native_List.fromArray(
+							[_user$project$QuestionView$questionStyle]),
+						_elm_lang$core$Native_List.fromArray(
+							[
+								_elm_lang$html$Html$text(question)
+							])),
+						A2(
+						_elm_lang$html$Html$div,
+						_elm_lang$core$Native_List.fromArray(
+							[]),
+						_elm_lang$core$Native_List.fromArray(
+							[
+								A2(_user$project$QuestionView$radio, 'True', userInput),
+								A2(_user$project$QuestionView$radio, 'False', userInput)
+							])),
+						A2(
+						_elm_lang$html$Html$button,
+						_elm_lang$core$Native_List.fromArray(
+							[
+								_elm_lang$html$Html_Attributes$type$('submit'),
+								_user$project$QuestionView$buttonStyle
+							]),
+						_elm_lang$core$Native_List.fromArray(
+							[
+								_elm_lang$html$Html$text('Submit')
+							]))
+					]));
+		}
+	});
+var _user$project$QuestionView$questionForm = F4(
+	function (quest, success, userInput, feedback) {
+		var _p3 = quest;
+		var question = _p3.question;
+		var distractors = _p3.distractors;
+		var answer = _p3.answer;
+		var format = _p3.format;
+		var _p4 = success;
+		if (_p4.ctor === 'Nothing') {
+			return A2(_user$project$QuestionView$displayQuestion, quest, userInput);
+		} else {
+			return A2(
+				_elm_lang$html$Html$form,
+				_elm_lang$core$Native_List.fromArray(
+					[
+						_elm_lang$html$Html_Events$onSubmit(_user$project$MessageTypes$GiveFeedback)
+					]),
+				_elm_lang$core$Native_List.fromArray(
+					[
+						A2(
+						_elm_lang$html$Html$div,
+						_elm_lang$core$Native_List.fromArray(
+							[_user$project$QuestionView$questionStyle]),
+						_elm_lang$core$Native_List.fromArray(
+							[
+								_elm_lang$html$Html$text(feedback)
+							])),
+						A2(
+						_elm_lang$html$Html$input,
+						_elm_lang$core$Native_List.fromArray(
+							[
+								_elm_lang$html$Html_Attributes$type$('text'),
+								_elm_lang$html$Html_Attributes$value(userInput),
+								_elm_lang$html$Html_Attributes$disabled(true),
+								_user$project$QuestionView$inputStyle
+							]),
+						_elm_lang$core$Native_List.fromArray(
+							[])),
+						A2(
+						_elm_lang$html$Html$button,
+						_elm_lang$core$Native_List.fromArray(
+							[
+								_elm_lang$html$Html_Attributes$type$('submit'),
+								_user$project$QuestionView$buttonStyle
+							]),
+						_elm_lang$core$Native_List.fromArray(
+							[
+								_elm_lang$html$Html$text('Next Question')
+							]))
+					]));
+		}
+	});
 
+var _user$project$View$debugSection = function (model) {
+	return model.debug ? A2(
+		_elm_lang$html$Html$div,
+		_elm_lang$core$Native_List.fromArray(
+			[]),
+		_elm_lang$core$Native_List.fromArray(
+			[
+				A2(
+				_elm_lang$html$Html$button,
+				_elm_lang$core$Native_List.fromArray(
+					[
+						_elm_lang$html$Html_Events$onClick(_user$project$MessageTypes$Reset),
+						_user$project$QuestionView$buttonStyle
+					]),
+				_elm_lang$core$Native_List.fromArray(
+					[
+						_elm_lang$html$Html$text('Reset')
+					])),
+				A2(
+				_elm_lang$html$Html$button,
+				_elm_lang$core$Native_List.fromArray(
+					[
+						_elm_lang$html$Html_Events$onClick(_user$project$MessageTypes$ToggleWeighted),
+						_user$project$QuestionView$buttonStyle
+					]),
+				_elm_lang$core$Native_List.fromArray(
+					[
+						_elm_lang$html$Html$text('Toggle Weighted')
+					])),
+				A2(
+				_elm_lang$html$Html$button,
+				_elm_lang$core$Native_List.fromArray(
+					[
+						_elm_lang$html$Html_Events$onClick(_user$project$MessageTypes$ToggleDirectional),
+						_user$project$QuestionView$buttonStyle
+					]),
+				_elm_lang$core$Native_List.fromArray(
+					[
+						_elm_lang$html$Html$text('Toggle Directional')
+					])),
+				A2(
+				_elm_lang$html$Html$button,
+				_elm_lang$core$Native_List.fromArray(
+					[
+						_elm_lang$html$Html_Events$onClick(_user$project$MessageTypes$BreadthFirstSearch),
+						_user$project$QuestionView$buttonStyle
+					]),
+				_elm_lang$core$Native_List.fromArray(
+					[
+						_elm_lang$html$Html$text('BFS')
+					])),
+				A2(
+				_elm_lang$html$Html$button,
+				_elm_lang$core$Native_List.fromArray(
+					[
+						_elm_lang$html$Html_Events$onClick(_user$project$MessageTypes$UpdateMastery),
+						_user$project$QuestionView$buttonStyle
+					]),
+				_elm_lang$core$Native_List.fromArray(
+					[
+						_elm_lang$html$Html$text('Mastery')
+					])),
+				A2(
+				_elm_lang$html$Html$p,
+				_elm_lang$core$Native_List.fromArray(
+					[]),
+				_elm_lang$core$Native_List.fromArray(
+					[
+						_elm_lang$html$Html$text(
+						_elm_lang$core$Basics$toString(model))
+					]))
+			])) : A2(
+		_elm_lang$html$Html$div,
+		_elm_lang$core$Native_List.fromArray(
+			[]),
+		_elm_lang$core$Native_List.fromArray(
+			[]));
+};
 var _user$project$View$scoreboardStyle = _elm_lang$html$Html_Attributes$style(
 	_elm_lang$core$Native_List.fromArray(
 		[
@@ -10844,9 +10835,9 @@ var _user$project$View$view = function (model) {
 						_elm_lang$html$Html$text('Test Your Understanding')
 					])),
 				_user$project$GraphView$imageOfGraph(model.graph),
-				_user$project$QuestionView$questionForm(model),
-				_user$project$HistoryView$historySection(model),
-				_user$project$DebugView$debugSection(model)
+				A4(_user$project$QuestionView$questionForm, model.question, model.success, model.userInput, model.feedback),
+				A2(_user$project$HistoryView$historySection, model.history, model.denominator),
+				_user$project$View$debugSection(model)
 			]));
 };
 

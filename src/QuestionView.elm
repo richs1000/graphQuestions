@@ -3,7 +3,6 @@ module QuestionView exposing (..)
 import Html exposing (..)
 import Html.Attributes exposing (..)
 import Html.Events exposing (..)
-import Types exposing (..)
 import Question exposing (..)
 import MessageTypes exposing (Msg(..))
 
@@ -50,11 +49,52 @@ buttonStyle =
         ]
 
 
-displayQuestion : Model -> Html Msg
-displayQuestion model =
+
+-- displayQuestion : Model -> Html Msg
+-- displayQuestion model =
+--     let
+--         { question, distractors, answer, format } =
+--             model.question
+--     in
+--         case format of
+--             FillInTheBlank ->
+--                 Html.form [ onSubmit Submit ]
+--                     [ div [ questionStyle ] [ Html.text question ]
+--                     , input
+--                         [ Html.Attributes.type' "text"
+--                         , placeholder "Answer here..."
+--                         , onInput UserInput
+--                         , value model.userInput
+--                         , inputStyle
+--                         ]
+--                         []
+--                     , button
+--                         [ Html.Attributes.type' "submit"
+--                         , buttonStyle
+--                         ]
+--                         [ Html.text "Submit" ]
+--                     ]
+--
+--             MultipleChoice ->
+--                 Html.form [ onSubmit Submit ]
+--                     [ div [ questionStyle ] [ Html.text question ]
+--                     , div []
+--                         [ radio "True" model
+--                         , radio "False" model
+--                         ]
+--                     , button
+--                         [ Html.Attributes.type' "submit"
+--                         , buttonStyle
+--                         ]
+--                         [ Html.text "Submit" ]
+--                     ]
+
+
+displayQuestion : Question -> String -> Html Msg
+displayQuestion quest userInput =
     let
         { question, distractors, answer, format } =
-            model.question
+            quest
     in
         case format of
             FillInTheBlank ->
@@ -64,7 +104,7 @@ displayQuestion model =
                         [ Html.Attributes.type' "text"
                         , placeholder "Answer here..."
                         , onInput UserInput
-                        , value model.userInput
+                        , value userInput
                         , inputStyle
                         ]
                         []
@@ -79,8 +119,8 @@ displayQuestion model =
                 Html.form [ onSubmit Submit ]
                     [ div [ questionStyle ] [ Html.text question ]
                     , div []
-                        [ radio "True" model
-                        , radio "False" model
+                        [ radio "True" userInput
+                        , radio "False" userInput
                         ]
                     , button
                         [ Html.Attributes.type' "submit"
@@ -90,11 +130,11 @@ displayQuestion model =
                     ]
 
 
-radio : String -> Model -> Html Msg
-radio name model =
+radio : String -> String -> Html Msg
+radio name userInput =
     let
         isSelected =
-            model.userInput == name
+            userInput == name
     in
         label []
             [ br [] []
@@ -109,29 +149,60 @@ radio name model =
             ]
 
 
-questionForm : Model -> Html Msg
-questionForm model =
+
+-- questionForm : Model -> Html Msg
+-- questionForm model =
+--     let
+--         { question, distractors, answer, format } =
+--             model.question
+--
+--         success' =
+--             model.success
+--     in
+--         case model.success of
+--             -- No answer has been submitted, so display the question
+--             Nothing ->
+--                 displayQuestion model
+--
+--             -- Answer has been submitted, so display the feedback
+--             Just _ ->
+--                 Html.form [ onSubmit GiveFeedback ]
+--                     [ div [ questionStyle ] [ Html.text model.feedback ]
+--                     , input
+--                         [ Html.Attributes.type' "text"
+--                         , placeholder "Answer here..."
+--                         , onInput UserInput
+--                         , value model.userInput
+--                         , disabled True
+--                         , inputStyle
+--                         ]
+--                         []
+--                     , button
+--                         [ Html.Attributes.type' "submit"
+--                         , buttonStyle
+--                         ]
+--                         [ Html.text "Next Question" ]
+--                     ]
+
+
+questionForm : Question -> Maybe Bool -> String -> String -> Html Msg
+questionForm quest success userInput feedback =
     let
         { question, distractors, answer, format } =
-            model.question
-
-        success' =
-            model.success
+            quest
     in
-        case model.success of
+        case success of
             -- No answer has been submitted, so display the question
             Nothing ->
-                displayQuestion model
+                displayQuestion quest userInput
 
             -- Answer has been submitted, so display the feedback
             Just _ ->
                 Html.form [ onSubmit GiveFeedback ]
-                    [ div [ questionStyle ] [ Html.text model.feedback ]
+                    [ div [ questionStyle ] [ Html.text feedback ]
                     , input
                         [ Html.Attributes.type' "text"
-                        , placeholder "Answer here..."
-                        , onInput UserInput
-                        , value model.userInput
+                        , value userInput
                         , disabled True
                         , inputStyle
                         ]

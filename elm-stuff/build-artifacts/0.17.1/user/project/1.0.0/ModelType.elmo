@@ -1,4 +1,4 @@
-var _user$project$Types$Model = function (a) {
+var _user$project$ModelType$Model = function (a) {
 	return function (b) {
 		return function (c) {
 			return function (d) {

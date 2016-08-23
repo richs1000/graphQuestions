@@ -1,7 +1,7 @@
 module GraphQuestions exposing (..)
 
 import Html.App as Html
-import Types exposing (Model)
+import ModelType exposing (Model)
 import View exposing (view)
 import Ports exposing (..)
 import Update exposing (update)

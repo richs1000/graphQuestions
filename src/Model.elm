@@ -1,6 +1,6 @@
 module Model exposing (..)
 
-import Types exposing (Model)
+import ModelType exposing (Model)
 import MessageTypes exposing (Msg(..))
 import Graph exposing (emptyGraph)
 import Question exposing (emptyQuestion)

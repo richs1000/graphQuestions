@@ -3,11 +3,6 @@ module GraphView exposing (..)
 import Html exposing (..)
 import Svg exposing (..)
 import Svg.Attributes exposing (..)
-
-
--- import View exposing (..)
--- import Types exposing (..)
-
 import Graph exposing (..)
 import MessageTypes exposing (Msg(..))
 
@@ -39,39 +34,6 @@ weightOffset =
 graphUpperLeft : ( Pixels, Pixels )
 graphUpperLeft =
     ( 40, 20 )
-
-
-
--- nodesPerRow : Int
--- nodesPerRow =
---     4
---
---
--- nodesPerCol : Int
--- nodesPerCol =
---     4
--- imageOfGraph : Model -> Html Msg
--- imageOfGraph model =
---     let
---         graphWidth =
---             ((nodeSeparation + nodeRadius) * nodesPerRow)
---
---         graphHeight =
---             ((nodeSeparation + nodeRadius)
---                 * (nodesPerCol - 1)
---                 + nodeRadius
---                 + (nodeSeparation // 2)
---             )
---     in
---         Svg.svg
---             [ version "1.1"
---             , baseProfile "full"
---             , Svg.Attributes.width (toString graphWidth)
---             , Svg.Attributes.height (toString graphHeight)
---             ]
---             (drawGraph model.graph)
---
---
 
 
 drawGraph : Graph -> List (Svg a)
@@ -115,31 +77,6 @@ drawNodes graph =
         drawNodesHelper graph.nodes
 
 
-
--- nodeX : NodeId -> Pixels
--- nodeX nodeId =
---     let
---         x0 =
---             fst graphUpperLeft
---
---         col =
---             nodeId `rem` nodesPerCol
---     in
---         x0 + col * (nodeRadius + nodeSeparation)
---
---
--- nodeY : NodeId -> Pixels
--- nodeY nodeId =
---     let
---         y0 =
---             snd graphUpperLeft
---
---         row =
---             nodeId // nodesPerCol
---     in
---         y0 + row * (nodeRadius + nodeSeparation)
-
-
 nodeX : Graph -> NodeId -> Pixels
 nodeX graph nodeId =
     let
@@ -162,27 +99,6 @@ nodeY graph nodeId =
             nodeId // graph.nodesPerCol
     in
         y0 + row * (nodeRadius + nodeSeparation)
-
-
-
--- drawNode : NodeId -> List (Svg a)
--- drawNode nodeId =
---     [ Svg.circle
---         [ cx (toString (nodeX nodeId))
---         , cy (toString (nodeY nodeId))
---         , r (toString nodeRadius)
---         , fill "blue"
---         ]
---         []
---     , Svg.text'
---         [ x (toString (nodeX nodeId))
---         , y (toString (nodeY nodeId))
---         , Svg.Attributes.fontSize "14"
---         , Svg.Attributes.textAnchor "middle"
---         , fill "white"
---         ]
---         [ Svg.text (toString nodeId) ]
---     ]
 
 
 drawNode : Graph -> NodeId -> List (Svg a)
@@ -217,31 +133,6 @@ drawEdges graph =
                     List.append (drawEdge graph e weighted directed) (drawEdgesHelper es weighted directed)
     in
         drawEdgesHelper graph.edges graph.weighted graph.directed
-
-
-
--- drawEdge : Edge -> Bool -> Bool -> List (Svg a)
--- drawEdge edge weighted directed =
---     let
---         x_1 =
---             nodeX edge.from
---
---         y_1 =
---             nodeY edge.from
---
---         x_2 =
---             nodeX edge.to
---
---         y_2 =
---             nodeY edge.to
---
---         lne =
---             [ edgeLine x_1 y_1 x_2 y_2 directed edge.direction ]
---     in
---         if weighted && (edge.weight > 0) then
---             List.append lne [ edgeWeight edge.weight x_1 y_1 x_2 y_2 ]
---         else
---             lne
 
 
 drawEdge : Graph -> Edge -> Bool -> Bool -> List (Svg a)

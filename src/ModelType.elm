@@ -1,4 +1,4 @@
-module Types exposing (..)
+module ModelType exposing (..)
 
 import Graph exposing (Graph, NodeId, EdgeWeight)
 import Question exposing (Question)
@@ -23,10 +23,3 @@ type alias Model =
     , denominator : Int
     , implementMastery : Bool
     }
-
-
-
--- VIEW
--- type alias Pixels =
---     Int
--- UPDATE
