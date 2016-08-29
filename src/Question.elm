@@ -1,9 +1,24 @@
 module Question exposing (..)
 
-import Types exposing (..)
 import Graph exposing (..)
 import Search exposing (..)
-import QuestionTypes exposing (..)
+
+
+type QuestionFormat
+    = FillInTheBlank
+    | MultipleChoice
+
+
+type alias Question =
+    { question : String
+    , distractors : List ResponseAndFeedback
+    , answer : ResponseAndFeedback
+    , format : QuestionFormat
+    }
+
+
+type alias ResponseAndFeedback =
+    ( String, String )
 
 
 emptyQuestion : Question
@@ -15,16 +30,16 @@ emptyQuestion =
     }
 
 
-questionByIndex : Model -> Int -> Question
-questionByIndex model index =
+newQuestion : Graph -> List Int -> Int -> Question
+newQuestion graph randomValues index =
     let
         { nodes, edges, directed, weighted } =
-            model.graph
+            graph
     in
         if index == 1 then
             { question = "How many nodes are in the graph above?"
             , distractors =
-                [ ( toString (numberOfEdges model)
+                [ ( toString (numberOfEdges graph)
                   , "That is the number of edges. Nodes are the labeled circles in the picture above."
                   )
                 , ( ""
@@ -32,7 +47,7 @@ questionByIndex model index =
                   )
                 ]
             , answer =
-                ( toString (numberOfNodes model)
+                ( toString (numberOfNodes graph)
                 , "Correct."
                 )
             , format = FillInTheBlank
@@ -40,7 +55,7 @@ questionByIndex model index =
         else if index == 2 then
             { question = "How many edges are in the graph above?"
             , distractors =
-                [ ( toString (numberOfNodes model)
+                [ ( toString (numberOfNodes graph)
                   , "That is the number of nodes. Edges are the lines connecting circles in the picture above. A bi-directional edge (i.e., an edge with two arrows) still counts as a single edge."
                   )
                 , ( ""
@@ -48,7 +63,7 @@ questionByIndex model index =
                   )
                 ]
             , answer =
-                ( toString (numberOfEdges model)
+                ( toString (numberOfEdges graph)
                 , "Correct."
                 )
             , format = FillInTheBlank
@@ -56,16 +71,16 @@ questionByIndex model index =
         else if index == 3 then
             let
                 f =
-                    firstNode model
+                    firstNode graph
 
                 l =
-                    lastNode model
+                    lastNode graph
 
                 ans =
-                    pathExists model.graph f l
+                    pathExists graph f l
 
                 actualPath =
-                    Maybe.withDefault [] (genericSearch model.graph f l)
+                    Maybe.withDefault [] (genericSearch graph f l)
 
                 fbackString =
                     if ans then
@@ -88,16 +103,16 @@ questionByIndex model index =
         else if index == 4 then
             let
                 f =
-                    randomNode model []
+                    randomNode graph randomValues []
 
                 l =
-                    randomNode model [ f ]
+                    randomNode graph randomValues [ f ]
 
                 ans =
-                    edgeExists model.graph f l
+                    edgeExists graph f l
 
                 opposite =
-                    edgeExists model.graph l f
+                    edgeExists graph l f
 
                 fbackString =
                     if ans then
@@ -129,16 +144,16 @@ questionByIndex model index =
         else if index == 5 && directed then
             let
                 n =
-                    randomNode model []
+                    randomNode graph randomValues []
 
                 deg =
-                    degree model.graph n
+                    degree graph n
 
                 inDeg =
-                    inDegree model.graph n
+                    inDegree graph n
 
                 outDeg =
-                    outDegree model.graph n
+                    outDegree graph n
             in
                 { question = "What is the in-degree of Node " ++ toString n ++ "?"
                 , distractors =
@@ -164,16 +179,16 @@ questionByIndex model index =
         else if index == 6 && directed then
             let
                 n =
-                    randomNode model []
+                    randomNode graph randomValues []
 
                 deg =
-                    degree model.graph n
+                    degree graph n
 
                 inDeg =
-                    inDegree model.graph n
+                    inDegree graph n
 
                 outDeg =
-                    outDegree model.graph n
+                    outDegree graph n
             in
                 { question = "What is the out-degree of Node " ++ toString n ++ "?"
                 , distractors =
@@ -199,7 +214,7 @@ questionByIndex model index =
         else if index == 7 && weighted then
             let
                 e =
-                    randomEdge model
+                    randomEdge graph randomValues
 
                 f =
                     e.from
@@ -225,16 +240,16 @@ questionByIndex model index =
         else
             let
                 n =
-                    randomNode model []
+                    randomNode graph randomValues []
 
                 deg =
-                    degree model.graph n
+                    degree graph n
 
                 inDeg =
-                    inDegree model.graph n
+                    inDegree graph n
 
                 outDeg =
-                    outDegree model.graph n
+                    outDegree graph n
             in
                 { question = "What is the degree of Node " ++ toString n ++ "?"
                 , distractors =
@@ -257,54 +272,6 @@ questionByIndex model index =
                     )
                 , format = FillInTheBlank
                 }
-
-
-newQuestion : Model -> Int -> Model
-newQuestion model index =
-    let
-        { nodes, edges, directed, weighted } =
-            model.graph
-
-        newQuestion =
-            questionByIndex model index
-    in
-        { model | question = newQuestion, success = Nothing, userInput = "" }
-
-
-checkAnswer : Model -> Model
-checkAnswer model =
-    let
-        newHistory =
-            List.take (model.denominator - 1) model.history
-
-        { question, distractors, answer } =
-            model.question
-    in
-        if (fst answer) == model.userInput then
-            { model | success = Just True, history = (Just True) :: newHistory, feedback = (snd answer) }
-        else
-            { model | success = Just False, history = (Just False) :: newHistory, feedback = (findFeedback (fst answer) model.userInput distractors) }
-
-
-masteryAchieved : Model -> Bool
-masteryAchieved model =
-    let
-        correctAnswers =
-            Debug.log "in masteryAchieved "
-                List.foldr
-                (\h acc ->
-                    if h == Just True then
-                        acc + 1
-                    else
-                        acc
-                )
-                0
-                model.history
-    in
-        if model.implementMastery then
-            correctAnswers >= model.numerator
-        else
-            (List.length model.history) >= model.numerator
 
 
 findFeedback : String -> String -> List ResponseAndFeedback -> String

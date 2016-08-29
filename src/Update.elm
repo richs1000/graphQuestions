@@ -3,18 +3,19 @@ module Update exposing (..)
 import Random exposing (..)
 import Set exposing (..)
 import String exposing (..)
-import Types exposing (..)
+import ModelType exposing (..)
 import Graph exposing (..)
 import Question exposing (..)
 import Search exposing (..)
 import Ports exposing (..)
 import Model exposing (..)
+import MessageTypes exposing (Msg(..))
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )
 update msg model =
     let
-        { nodes, edges, directed, weighted } =
+        { nodes, edges, directed, weighted, nodesPerRow, nodesPerCol } =
             model.graph
     in
         case msg of
@@ -28,28 +29,35 @@ update msg model =
 
             NewNodes newNodes ->
                 let
+                    graph =
+                        model.graph
+
                     newNodes' =
                         Set.toList (Set.fromList newNodes)
 
-                    newEdges =
-                        (createAllEdges newNodes')
+                    graph' =
+                        createAllEdges { graph | nodes = newNodes' }
                 in
-                    ( updateGraph model newNodes' newEdges directed weighted
-                    , Random.generate NewEdgeWeights (Random.list (List.length newEdges) (Random.int -1 5))
+                    ( { model | graph = graph' }
+                    , Random.generate NewEdgeWeights (Random.list (List.length graph'.edges) (Random.int -1 5))
                     )
 
             NewEdgeWeights newWeights ->
                 let
-                    newEdges =
-                        (replaceWeights edges newWeights)
+                    graph' =
+                        replaceWeights model.graph newWeights
                 in
-                    ( updateGraph model nodes newEdges directed weighted
+                    ( { model | graph = graph' }
                     , Random.generate NewQuestion (Random.int 1 8)
                     )
 
             -- New Question Flow: NewQuestion -> UserInput -> Submit -> Give Feedback -> Check Mastery -> New Graph Flow
             NewQuestion questionIndex ->
-                ( newQuestion model questionIndex, Cmd.none )
+                let
+                    question' =
+                        newQuestion model.graph model.randomValues questionIndex
+                in
+                    ( { model | question = question', success = Nothing, userInput = "" }, Cmd.none )
 
             UserInput i ->
                 ( { model | userInput = i }, Cmd.none )
@@ -58,7 +66,18 @@ update msg model =
                 if (String.isEmpty model.userInput) then
                     ( model, Cmd.none )
                 else
-                    ( checkAnswer model, Cmd.none )
+                    -- ( checkAnswer model, Cmd.none )
+                    let
+                        newHistory =
+                            List.take (model.denominator - 1) model.history
+
+                        { question, distractors, answer } =
+                            model.question
+                    in
+                        if (fst answer) == model.userInput then
+                            ( { model | success = Just True, history = (Just True) :: newHistory, feedback = (snd answer) }, Cmd.none )
+                        else
+                            ( { model | success = Just False, history = (Just False) :: newHistory, feedback = (findFeedback (fst answer) model.userInput distractors) }, Cmd.none )
 
             GiveFeedback ->
                 update CheckMastery model
@@ -73,10 +92,18 @@ update msg model =
 
             -- Debug actions
             ToggleWeighted ->
-                ( updateGraph model nodes edges directed (not weighted), Cmd.none )
+                let
+                    graph' =
+                        updateGraph model.graph nodes edges directed (not weighted) nodesPerRow nodesPerCol
+                in
+                    ( { model | graph = graph' }, Cmd.none )
 
             ToggleDirectional ->
-                ( updateGraph model nodes edges (not directed) weighted, Cmd.none )
+                let
+                    graph' =
+                        updateGraph model.graph nodes edges (not directed) weighted nodesPerRow nodesPerCol
+                in
+                    ( { model | graph = graph' }, Cmd.none )
 
             BreadthFirstSearch ->
                 let

@@ -3,8 +3,8 @@ module QuestionView exposing (..)
 import Html exposing (..)
 import Html.Attributes exposing (..)
 import Html.Events exposing (..)
-import Types exposing (..)
-import QuestionTypes exposing (..)
+import Question exposing (..)
+import MessageTypes exposing (Msg(..))
 
 
 questionStyle : Html.Attribute msg
@@ -49,51 +49,74 @@ buttonStyle =
         ]
 
 
-displayQuestion : Model -> Html Msg
-displayQuestion model =
+fillInTheBlank : Question -> String -> Html Msg
+fillInTheBlank quest userInput =
+    Html.form [ onSubmit Submit ]
+        [ div [ questionStyle ] [ Html.text quest.question ]
+        , input
+            [ Html.Attributes.type' "text"
+            , placeholder "Answer here..."
+            , onInput UserInput
+            , value userInput
+            , inputStyle
+            ]
+            []
+        , button
+            [ Html.Attributes.type' "submit"
+            , buttonStyle
+            ]
+            [ Html.text "Submit" ]
+        ]
+
+
+multipleChoiceButtons : ResponseAndFeedback -> List ResponseAndFeedback -> String -> Int -> Html Msg
+multipleChoiceButtons answer distractors userInput randomValue =
     let
-        { question, distractors, answer, format } =
-            model.question
+        answerPosition =
+            randomValue `rem` (1 + (List.length distractors))
+
+        allItems =
+            (List.drop answerPosition distractors)
+                |> List.append [ answer ]
+                |> List.append (List.take answerPosition distractors)
+
+        -- |> List.append answer
+        -- |> List.append (List.take answerPosition distractors)
+        radios =
+            List.foldl (\i acc -> (radio (fst i) userInput) :: acc) [] allItems
     in
-        case format of
-            FillInTheBlank ->
-                Html.form [ onSubmit Submit ]
-                    [ div [ questionStyle ] [ Html.text question ]
-                    , input
-                        [ Html.Attributes.type' "text"
-                        , placeholder "Answer here..."
-                        , onInput UserInput
-                        , value model.userInput
-                        , inputStyle
-                        ]
-                        []
-                    , button
-                        [ Html.Attributes.type' "submit"
-                        , buttonStyle
-                        ]
-                        [ Html.text "Submit" ]
-                    ]
-
-            MultipleChoice ->
-                Html.form [ onSubmit Submit ]
-                    [ div [ questionStyle ] [ Html.text question ]
-                    , div []
-                        [ radio "True" model
-                        , radio "False" model
-                        ]
-                    , button
-                        [ Html.Attributes.type' "submit"
-                        , buttonStyle
-                        ]
-                        [ Html.text "Submit" ]
-                    ]
+        div []
+            radios
 
 
-radio : String -> Model -> Html Msg
-radio name model =
+multipleChoice : Question -> String -> Int -> Html Msg
+multipleChoice quest userInput randomValue =
+    Html.form [ onSubmit Submit ]
+        [ div [ questionStyle ] [ Html.text quest.question ]
+        , (multipleChoiceButtons quest.answer quest.distractors userInput randomValue)
+        , button
+            [ Html.Attributes.type' "submit"
+            , buttonStyle
+            ]
+            [ Html.text "Submit" ]
+        ]
+
+
+displayQuestion : Question -> String -> Int -> Html Msg
+displayQuestion quest userInput randomValue =
+    case quest.format of
+        FillInTheBlank ->
+            fillInTheBlank quest userInput
+
+        MultipleChoice ->
+            multipleChoice quest userInput randomValue
+
+
+radio : String -> String -> Html Msg
+radio name userInput =
     let
         isSelected =
-            model.userInput == name
+            userInput == name
     in
         label []
             [ br [] []
@@ -108,36 +131,20 @@ radio name model =
             ]
 
 
-questionForm : Model -> Html Msg
-questionForm model =
-    let
-        { question, distractors, answer, format } =
-            model.question
-
-        success' =
-            model.success
-    in
-        case model.success of
-            -- No answer has been submitted, so display the question
-            Nothing ->
-                displayQuestion model
-
-            -- Answer has been submitted, so display the feedback
-            Just _ ->
-                Html.form [ onSubmit GiveFeedback ]
-                    [ div [ questionStyle ] [ Html.text model.feedback ]
-                    , input
-                        [ Html.Attributes.type' "text"
-                        , placeholder "Answer here..."
-                        , onInput UserInput
-                        , value model.userInput
-                        , disabled True
-                        , inputStyle
-                        ]
-                        []
-                    , button
-                        [ Html.Attributes.type' "submit"
-                        , buttonStyle
-                        ]
-                        [ Html.text "Next Question" ]
-                    ]
+displayFeedback : String -> String -> Html Msg
+displayFeedback userInput feedback =
+    Html.form [ onSubmit GiveFeedback ]
+        [ div [ questionStyle ] [ Html.text feedback ]
+        , input
+            [ Html.Attributes.type' "text"
+            , value userInput
+            , disabled True
+            , inputStyle
+            ]
+            []
+        , button
+            [ Html.Attributes.type' "submit"
+            , buttonStyle
+            ]
+            [ Html.text "Next Question" ]
+        ]

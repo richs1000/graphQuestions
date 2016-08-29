@@ -1,49 +1,75 @@
 module Graph exposing (..)
 
-import Types exposing (..)
-import GraphTypes exposing (..)
+
+type alias NodeId =
+    Int
 
 
--- Overlap with VIEW
+type alias EdgeWeight =
+    Int
 
 
-nodesPerRow : Int
-nodesPerRow =
-    4
+
+-- An edge may be unidirectional (from one node to another), or
+-- bi-directional (between two nodes).
 
 
-nodesPerCol : Int
-nodesPerCol =
-    4
+type ArrowDirection
+    = UniDirectional
+    | BiDirectional
 
 
-nodeRow : NodeId -> Int
-nodeRow node =
-    node // nodesPerCol
+
+-- An edge goes between two nodes. It may have a weight and it may
+-- be unidirectional (an arrow at one end), bidirectional (an arrow
+-- at both ends) or it may not have a direction (no arrows)
 
 
-sameRow : NodeId -> NodeId -> Bool
-sameRow n1 n2 =
-    (n1 // nodesPerCol) == (n2 // nodesPerCol)
+type alias Edge =
+    { from : NodeId
+    , to : NodeId
+    , weight : EdgeWeight
+    , direction : ArrowDirection
+    }
 
 
-nodeCol : NodeId -> Int
-nodeCol node =
-    node `rem` nodesPerCol
+type alias Graph =
+    { nodes : List NodeId
+    , edges : List Edge
+    , directed : Bool
+    , weighted : Bool
+    , nodesPerRow : Int
+    , nodesPerCol : Int
+    }
 
 
-sameCol : NodeId -> NodeId -> Bool
-sameCol n1 n2 =
-    (n1 `rem` nodesPerCol) == (n1 `rem` nodesPerCol)
+nodeRow : Graph -> NodeId -> Int
+nodeRow graph node =
+    node // graph.nodesPerCol
 
 
-closestNeighbor : List NodeId -> NodeId -> (NodeId -> NodeId -> Bool) -> Int -> Maybe NodeId
-closestNeighbor allNodes fromNode pred offset =
+sameRow : Graph -> NodeId -> NodeId -> Bool
+sameRow graph n1 n2 =
+    (n1 // graph.nodesPerCol) == (n2 // graph.nodesPerCol)
+
+
+nodeCol : Graph -> NodeId -> Int
+nodeCol graph node =
+    node `rem` graph.nodesPerCol
+
+
+sameCol : Graph -> NodeId -> NodeId -> Bool
+sameCol graph n1 n2 =
+    (n1 `rem` graph.nodesPerCol) == (n1 `rem` graph.nodesPerCol)
+
+
+closestNeighbor : Graph -> NodeId -> (NodeId -> NodeId -> Bool) -> Int -> Maybe NodeId
+closestNeighbor graph fromNode pred offset =
     let
         closestNeighborHelper nodeId =
-            if (nodeId < 0) || (nodeId >= nodesPerRow * nodesPerCol) then
+            if (nodeId < 0) || (nodeId >= graph.nodesPerRow * graph.nodesPerCol) then
                 Nothing
-            else if (List.member nodeId allNodes) && (pred fromNode nodeId) then
+            else if (List.member nodeId graph.nodes) && (pred fromNode nodeId) then
                 Just nodeId
             else
                 closestNeighborHelper (nodeId + offset)
@@ -56,12 +82,12 @@ closestNeighbor allNodes fromNode pred offset =
 -- the right. If any of these doesn't exist, return a Nothing value
 
 
-findNeighbors : List NodeId -> NodeId -> List (Maybe NodeId)
-findNeighbors nodes node =
-    [ closestNeighbor nodes node sameRow 1
-    , closestNeighbor nodes node sameRow -1
-    , closestNeighbor nodes node sameCol nodesPerRow
-    , closestNeighbor nodes node sameCol -nodesPerRow
+findNeighbors : Graph -> NodeId -> List (Maybe NodeId)
+findNeighbors graph node =
+    [ closestNeighbor graph node (sameRow graph) 1
+    , closestNeighbor graph node (sameRow graph) -1
+    , closestNeighbor graph node (sameCol graph) graph.nodesPerRow
+    , closestNeighbor graph node (sameCol graph) -graph.nodesPerRow
     ]
 
 
@@ -98,15 +124,15 @@ stripList maybes =
 
 
 
--- Given a list of nodes, create all edges between each node such that:
+-- Given a graph with nodes, create all edges between each node such that:
 -- * each edge is either horizontal or vertical
 -- * edges don't pass through nodes
 
 
-createAllEdges : List NodeId -> List Edge
-createAllEdges nodes =
+createAllEdges : Graph -> Graph
+createAllEdges graph =
     let
-        createAllEdgesHelper allNodes nodes =
+        createAllEdgesHelper nodes =
             case nodes of
                 [] ->
                     []
@@ -114,16 +140,26 @@ createAllEdges nodes =
                 n :: ns ->
                     List.append
                         (createEdgesFromNode n
-                            (stripList (findNeighbors allNodes n))
+                            (stripList (Debug.log "findNeighbors " (findNeighbors graph n)))
                         )
-                        (createAllEdgesHelper allNodes ns)
+                        (createAllEdgesHelper ns)
+
+        edges' =
+            createAllEdgesHelper graph.nodes
     in
-        createAllEdgesHelper nodes nodes
+        { graph | edges = edges' }
 
 
-updateGraph : Model -> List NodeId -> List Edge -> Bool -> Bool -> Model
-updateGraph model ns es d w =
-    { model | graph = { nodes = ns, edges = es, directed = d, weighted = w } }
+updateGraph : Graph -> List NodeId -> List Edge -> Bool -> Bool -> Int -> Int -> Graph
+updateGraph graph ns es d w npr npc =
+    { graph
+        | nodes = ns
+        , edges = es
+        , directed = d
+        , weighted = w
+        , nodesPerRow = npr
+        , nodesPerCol = npc
+    }
 
 
 visited : List NodeId -> List NodeId -> NodeId -> Bool
@@ -170,46 +206,31 @@ outDegree graph node =
         |> List.length
 
 
-numberOfNodes : Model -> Int
-numberOfNodes model =
+numberOfNodes : Graph -> Int
+numberOfNodes graph =
+    List.length graph.nodes
+
+
+numberOfEdges : Graph -> Int
+numberOfEdges graph =
+    List.length graph.edges
+
+
+firstNode : Graph -> NodeId
+firstNode graph =
+    case graph.nodes of
+        [] ->
+            0
+
+        n :: ns ->
+            n
+
+
+lastNode : Graph -> NodeId
+lastNode graph =
     let
-        { nodes, edges, directed, weighted } =
-            model.graph
-    in
-        List.length nodes
-
-
-numberOfEdges : Model -> Int
-numberOfEdges model =
-    let
-        { nodes, edges, directed, weighted } =
-            model.graph
-    in
-        List.length edges
-
-
-firstNode : Model -> NodeId
-firstNode model =
-    let
-        { nodes, edges, directed, weighted } =
-            model.graph
-    in
-        case nodes of
-            [] ->
-                0
-
-            n :: ns ->
-                n
-
-
-lastNode : Model -> NodeId
-lastNode model =
-    let
-        { nodes, edges, directed, weighted } =
-            model.graph
-
         nodes' =
-            List.reverse nodes
+            List.reverse graph.nodes
     in
         case nodes' of
             [] ->
@@ -226,92 +247,133 @@ lastNode model =
 -- bi-directional edge
 
 
-replaceWeights : List Edge -> List EdgeWeight -> List Edge
-replaceWeights edges newWeights =
-    newWeights
-        -- create a new list of edges with new weights
-        |>
-            List.map2 (\e w -> { from = e.from, to = e.to, weight = w, direction = e.direction }) edges
-        -- remove all edges with weight <= 0
-        |>
-            List.filter (\e -> e.weight > 0)
-        -- merge matched edges into single bi-directional edges
-        |>
-            mergeDuplicates
-        -- remove a vertical edge if it crosses a horizontal edge
-        |>
-            removeOverlappingEdges
-
-
-mergeDuplicates : List Edge -> List Edge
-mergeDuplicates edges =
-    case edges of
-        [] ->
-            []
-
-        e :: es ->
-            let
-                ( rev, notRev ) =
-                    List.partition (\ee -> e.to == ee.from && e.from == ee.to) es
-            in
-                case rev of
-                    [] ->
-                        e :: mergeDuplicates notRev
-
-                    r :: rs ->
-                        { e | direction = BiDirectional } :: mergeDuplicates notRev
-
-
-edgesOverlap : Edge -> Edge -> Bool
-edgesOverlap e1 e2 =
-    -- e1 is horizontal - in same row
-    (sameRow e1.from e1.to)
-        && -- e2 is vertical - in same column
-           (sameCol e2.from e2.to)
-        && -- row of e1 is between rows of e2
-           ((nodeRow e2.from)
-                < (nodeRow e1.from)
-                && (nodeRow e1.from)
-                < (nodeRow e2.to)
-                || (nodeRow e2.to)
-                < (nodeRow e1.from)
-                && (nodeRow e1.from)
-                < (nodeRow e2.from)
-           )
-        && -- col of e2 is between columns of e1
-           ((nodeCol e1.from)
-                < (nodeCol e2.from)
-                && (nodeCol e2.from)
-                < (nodeCol e1.to)
-                || (nodeCol e1.to)
-                < (nodeCol e2.from)
-                && (nodeCol e2.from)
-                < (nodeCol e1.from)
-           )
-
-
-removeOverlappingEdges : List Edge -> List Edge
-removeOverlappingEdges edges =
-    case edges of
-        [] ->
-            []
-
-        e :: es ->
-            let
-                ( overlap, notOverlap ) =
-                    List.partition (\ee -> (edgesOverlap e ee) || (edgesOverlap ee e)) es
-            in
-                e :: removeOverlappingEdges notOverlap
-
-
-randomNode : Model -> List NodeId -> NodeId
-randomNode model alreadyChosen =
+replaceWeights : Graph -> List EdgeWeight -> Graph
+replaceWeights graph newWeights =
     let
-        graph =
-            model.graph
+        edges' =
+            newWeights
+                -- create a new list of edges with new weights
+                |>
+                    List.map2 (\e w -> { from = e.from, to = e.to, direction = e.direction, weight = w }) graph.edges
+                -- remove all edges with weight <= 0
+                |>
+                    List.filter (\e -> e.weight > 0)
 
+        graph' =
+            { graph | edges = edges' }
+    in
+        graph'
+            -- merge matched edges into single bi-directional edges
+            |>
+                mergeDuplicateEdges
+            -- remove a vertical edge if it crosses a horizontal edge
+            |>
+                removeOverlappingEdges
+
+
+
+-- Find all edges (e, e') where e.from = e'.to and e.to = e'.from and merge
+-- them into single bi-directional edges
+
+
+mergeDuplicateEdges : Graph -> Graph
+mergeDuplicateEdges graph =
+    let
+        helperFunc edges =
+            case edges of
+                [] ->
+                    []
+
+                e :: es ->
+                    let
+                        ( rev, notRev ) =
+                            List.partition (\ee -> e.to == ee.from && e.from == ee.to) es
+                    in
+                        case rev of
+                            [] ->
+                                e :: helperFunc notRev
+
+                            r :: rs ->
+                                { e | direction = BiDirectional } :: helperFunc notRev
+
+        edges' =
+            helperFunc graph.edges
+    in
+        { graph | edges = edges' }
+
+
+
+-- Remove all edges in the graph that overlap when drawn. This is tightly
+-- connected to the view of the graph, which is unfortunate.
+
+
+removeOverlappingEdges : Graph -> Graph
+removeOverlappingEdges graph =
+    let
+        helperFunc edges =
+            case edges of
+                [] ->
+                    []
+
+                e :: es ->
+                    let
+                        ( overlap, notOverlap ) =
+                            List.partition (\ee -> (edgesOverlap graph e ee) || (edgesOverlap graph ee e)) es
+                    in
+                        e :: helperFunc notOverlap
+
+        edges' =
+            helperFunc graph.edges
+    in
+        { graph | edges = edges' }
+
+
+edgesOverlap : Graph -> Edge -> Edge -> Bool
+edgesOverlap g e1 e2 =
+    let
+        isHorizontal e =
+            sameRow g e.from e.to
+
+        isVertical e =
+            sameCol g e.from e.to
+
+        nodeRowG n =
+            nodeRow g n
+
+        nodeColG n =
+            nodeCol g n
+
+        between f e1 e2 =
+            ((f e2.from)
+                < (f e1.from)
+                && (f e1.from)
+                < (f e2.to)
+                || (f e2.to)
+                < (f e1.from)
+                && (f e1.from)
+                < (f e2.from)
+            )
+    in
+        -- e1 is horizontal - in same row
+        (isHorizontal e1)
+            && -- e2 is vertical - in same column
+               (isVertical e2)
+            && -- row of e1 is between rows of e2
+               (between nodeRowG e1 e2)
+            && -- col of e2 is between columns of e1
+               (between nodeColG e1 e2)
+
+
+
+-- Choose the index of a random node from within the graph. If there are no
+-- nodes, then return an index of zero
+
+
+randomNode : Graph -> List Int -> List NodeId -> NodeId
+randomNode graph randomValues alreadyChosen =
+    let
         validNodes =
-            model.randomValues
+            randomValues
                 |> List.filter (\n -> List.member n graph.nodes)
                 |> List.filter (\n -> not (List.member n alreadyChosen))
 
@@ -326,17 +388,19 @@ randomNode model alreadyChosen =
                 n
 
 
-randomEdge : Model -> Edge
-randomEdge model =
-    let
-        graph =
-            model.graph
 
+-- Choose a random edge from within the graph. If there are no edges then
+-- return an "empty" edge
+
+
+randomEdge : Graph -> List Int -> Edge
+randomEdge graph randomValues =
+    let
         edges =
             graph.edges
 
         index =
-            model.randomValues
+            randomValues
                 |> List.filter (\n -> n < List.length edges)
                 |> List.head
 
@@ -369,4 +433,6 @@ emptyGraph =
     , edges = []
     , directed = True
     , weighted = True
+    , nodesPerRow = 4
+    , nodesPerCol = 4
     }

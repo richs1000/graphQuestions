@@ -3,8 +3,12 @@ module HistoryView exposing (..)
 import Html exposing (..)
 import Svg exposing (..)
 import Svg.Attributes exposing (..)
-import Types exposing (..)
 import HistoryTypes exposing (HistoryList)
+import MessageTypes exposing (Msg(..))
+
+
+type alias Pixels =
+    Int
 
 
 historySquareSize : Pixels
@@ -17,20 +21,38 @@ historySquareSeparation =
     5
 
 
-historySection : Model -> Html Msg
-historySection model =
+
+-- historySection : Model -> Html Msg
+-- historySection model =
+--     Svg.svg
+--         [ version "1.1"
+--         , baseProfile "full"
+--         , Svg.Attributes.width
+--             (toString
+--                 (model.denominator
+--                     * (historySquareSize + historySquareSeparation)
+--                 )
+--             )
+--         , Svg.Attributes.height "50"
+--         ]
+--         (historyList model.history 0)
+--
+
+
+historySection : HistoryList -> Int -> Html Msg
+historySection history historyLength =
     Svg.svg
         [ version "1.1"
         , baseProfile "full"
         , Svg.Attributes.width
             (toString
-                (model.denominator
+                (historyLength
                     * (historySquareSize + historySquareSeparation)
                 )
             )
         , Svg.Attributes.height "50"
         ]
-        (historyList model.history 0)
+        (historyList history 0)
 
 
 historySquare : Maybe Bool -> Int -> Svg a

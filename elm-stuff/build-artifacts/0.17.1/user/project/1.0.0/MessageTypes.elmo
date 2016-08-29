@@ -1,0 +1,30 @@
+var _user$project$MessageTypes$SSData = F7(
+	function (a, b, c, d, e, f, g) {
+		return {mastery: a, numerator: b, denominator: c, weighted: d, directed: e, implementMastery: f, debug: g};
+	});
+var _user$project$MessageTypes$GetValuesFromSS = function (a) {
+	return {ctor: 'GetValuesFromSS', _0: a};
+};
+var _user$project$MessageTypes$UpdateMastery = {ctor: 'UpdateMastery'};
+var _user$project$MessageTypes$ToggleDirectional = {ctor: 'ToggleDirectional'};
+var _user$project$MessageTypes$ToggleWeighted = {ctor: 'ToggleWeighted'};
+var _user$project$MessageTypes$BreadthFirstSearch = {ctor: 'BreadthFirstSearch'};
+var _user$project$MessageTypes$CheckMastery = {ctor: 'CheckMastery'};
+var _user$project$MessageTypes$GiveFeedback = {ctor: 'GiveFeedback'};
+var _user$project$MessageTypes$Submit = {ctor: 'Submit'};
+var _user$project$MessageTypes$UserInput = function (a) {
+	return {ctor: 'UserInput', _0: a};
+};
+var _user$project$MessageTypes$NewQuestion = function (a) {
+	return {ctor: 'NewQuestion', _0: a};
+};
+var _user$project$MessageTypes$NewEdgeWeights = function (a) {
+	return {ctor: 'NewEdgeWeights', _0: a};
+};
+var _user$project$MessageTypes$NewNodes = function (a) {
+	return {ctor: 'NewNodes', _0: a};
+};
+var _user$project$MessageTypes$NewRandomValues = function (a) {
+	return {ctor: 'NewRandomValues', _0: a};
+};
+var _user$project$MessageTypes$Reset = {ctor: 'Reset'};
